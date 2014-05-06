@@ -14,7 +14,7 @@ var filteredPieData = [];
 
 //D3 helper function to populate pie slice parameters from array data
 var donut = d3.layout.pie().value(function(d){
-  return d.octetTotalCount;
+  return d.triples;
 });
 
 //D3 helper function to create colors from an ordinal scale
@@ -37,8 +37,8 @@ var streakerDataAdded;
 
 function fillArray() {
   return {
-    serialization: "port",
-    octetTotalCount: Math.ceil(Math.random()*(arrayRange))
+    content_type: "port",
+    triples: Math.ceil(Math.random()*(arrayRange))
   };
 }
 
@@ -98,7 +98,7 @@ var totalUnits = center_group.append("svg:text")
   .attr("class", "units")
   .attr("dy", 21)
   .attr("text-anchor", "middle") // text-align: right
-  .text("kb");
+  .text("triples");
 
 
 ///////////////////////////////////////////////////////////
@@ -107,6 +107,8 @@ var totalUnits = center_group.append("svg:text")
 
 // to run each time data is generated
 function update(data) {
+	//get values in json object as array
+	var dataValues = $.map(data, function (value, key) { return value; });
   
   arraySize = Math.ceil(Math.random()*10);
   streakerDataAdded = d3.range(arraySize).map(fillArray);
@@ -114,24 +116,23 @@ function update(data) {
   oldPieData = filteredPieData;
   pieData = donut(streakerDataAdded);
 
-  var totalOctets = 0;
+  var totalTriples = 0;
   filteredPieData = pieData.filter(filterData);
   function filterData(element, index, array) {
-    element.name = streakerDataAdded[index].serialization;
-    element.value = streakerDataAdded[index].octetTotalCount;
-    totalOctets += element.value;
+    element.name = streakerDataAdded[index].content_type;
+    element.value = streakerDataAdded[index].triples;
+    totalTriples += element.value;
     return (element.value > 0);
   }
-
+  
   if(filteredPieData.length > 0 && oldPieData.length > 0){
 
     //REMOVE PLACEHOLDER CIRCLE
     arc_group.selectAll("circle").remove();
 
     totalValue.text(function(){
-      var kb = totalOctets/1024;
+      var kb = totalTriples/1024;
       return kb.toFixed(1);
-      //return bchart.label.abbreviated(totalOctets*8);
     });
 
     //DRAW ARC PATHS
@@ -188,7 +189,7 @@ function update(data) {
         }
       })
       .text(function(d){
-        var percentage = (d.value/totalOctets)*100;
+        var percentage = (d.value/totalTriples)*100;
         return percentage.toFixed(1) + "%";
       });
 
@@ -211,7 +212,7 @@ function update(data) {
           return "end";
         }
       }).text(function(d){
-        var percentage = (d.value/totalOctets)*100;
+        var percentage = (d.value/totalTriples)*100;
         return percentage.toFixed(1) + "%";
       });
 
