@@ -1,0 +1,22 @@
+{
+  "name": "lodlaundry",
+  "version": "0.0.0",
+  "homepage": "https://github.com/LODLaundy/lodlaundy.github.io",
+  "authors": [
+    "Laurens Rietveld <laurens.rietveld@gmail.com>"
+  ],
+  "main": "index.html",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+    "dependencies": {
+   "bootstrap": "3.1.1",
+   "d3js": "master",
+   "github-fork-ribbon-css": "0.1.0"
+  }
+}

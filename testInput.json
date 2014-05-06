@@ -1,0 +1,3075 @@
+{
+  "http://acm.rkbexplorer.com/id/998550": {
+    "base_iri":"http://acm.rkbexplorer.com/id/998550",
+    "content_length":1997,
+    "content_type":"application/rdf+xml",
+    "duplicates":1,
+    "last_modified":"Sun, 27 Apr 2014 15:29:21 GMT",
+    "md5":"0c6fe29b6c4b2ed57b779438dacf8587",
+    "triples":11,
+    "url":"http://acm.rkbexplorer.com/id/998550"
+  },
+  "http://acm.rkbexplorer.com/models/dump.tgz/models/acm-bookchapters.rdf": {
+    "base_iri":"http://acm.rkbexplorer.com/models/dump.tgz/models/acm-bookchapters.rdf",
+    "content_length":41477542,
+    "content_type":"application/rdf+xml",
+    "duplicates":174539,
+    "last_modified":"Tue, 03 Jul 2012 16:07:03 GMT",
+    "md5":"fdab2e9c185b356090b293c651d0503e",
+    "triples":399412,
+    "url":"http://acm.rkbexplorer.com/models/dump.tgz/models/acm-bookchapters.rdf"
+  },
+  "http://acm.rkbexplorer.com/models/dump.tgz/models/acm-periodicals.rdf": {
+    "base_iri":"http://acm.rkbexplorer.com/models/dump.tgz/models/acm-periodicals.rdf",
+    "content_length":467826304,
+    "content_type":"application/rdf+xml",
+    "duplicates":2003766,
+    "last_modified":"Tue, 03 Jul 2012 16:07:03 GMT",
+    "md5":"bab07bc8a48ba029f0113a9fb155966d",
+    "triples":4368365,
+    "url":"http://acm.rkbexplorer.com/models/dump.tgz/models/acm-periodicals.rdf"
+  },
+  "http://acm.rkbexplorer.com/models/dump.tgz/models/acm-proceedings.rdf": {
+    "base_iri":"http://acm.rkbexplorer.com/models/dump.tgz/models/acm-proceedings.rdf",
+    "content_length":447200235,
+    "content_type":"application/rdf+xml",
+    "duplicates":2234950,
+    "last_modified":"Tue, 03 Jul 2012 16:07:03 GMT",
+    "md5":"06e9f67ca767d96ece1434efd94b10c0",
+    "triples":3913489,
+    "url":"http://acm.rkbexplorer.com/models/dump.tgz/models/acm-proceedings.rdf"
+  },
+  "http://acm.rkbexplorer.com/models/dump.tgz/models/acm-research-area-attributions-A.rdf": {
+    "base_iri":"http://acm.rkbexplorer.com/models/dump.tgz/models/acm-research-area-attributions-A.rdf",
+    "content_length":373371,
+    "content_type":"application/rdf+xml",
+    "duplicates":68,
+    "last_modified":"Tue, 03 Jul 2012 16:07:03 GMT",
+    "md5":"b45ed4db182bf9ac254160fe3ea11963",
+    "triples":2993,
+    "url":"http://acm.rkbexplorer.com/models/dump.tgz/models/acm-research-area-attributions-A.rdf"
+  },
+  "http://acm.rkbexplorer.com/models/dump.tgz/models/acm-research-area-attributions-B.rdf": {
+    "base_iri":"http://acm.rkbexplorer.com/models/dump.tgz/models/acm-research-area-attributions-B.rdf",
+    "content_length":2502663,
+    "content_type":"application/rdf+xml",
+    "duplicates":85,
+    "last_modified":"Tue, 03 Jul 2012 16:07:03 GMT",
+    "md5":"2a768284541da6395ff07ac40df534ee",
+    "triples":22966,
+    "url":"http://acm.rkbexplorer.com/models/dump.tgz/models/acm-research-area-attributions-B.rdf"
+  },
+  "http://acm.rkbexplorer.com/models/dump.tgz/models/acm-research-area-attributions-C.rdf": {
+    "base_iri":"http://acm.rkbexplorer.com/models/dump.tgz/models/acm-research-area-attributions-C.rdf",
+    "content_length":4513915,
+    "content_type":"application/rdf+xml",
+    "duplicates":225,
+    "last_modified":"Tue, 03 Jul 2012 16:07:03 GMT",
+    "md5":"fc64c71345d887b888c10d16c155c88e",
+    "triples":43158,
+    "url":"http://acm.rkbexplorer.com/models/dump.tgz/models/acm-research-area-attributions-C.rdf"
+  },
+  "http://acm.rkbexplorer.com/models/dump.tgz/models/acm-research-area-attributions-D.rdf": {
+    "base_iri":"http://acm.rkbexplorer.com/models/dump.tgz/models/acm-research-area-attributions-D.rdf",
+    "content_length":6193529,
+    "content_type":"application/rdf+xml",
+    "duplicates":457,
+    "last_modified":"Tue, 03 Jul 2012 16:07:03 GMT",
+    "md5":"37006dcd86fa0e128d9cf3177996c42b",
+    "triples":57784,
+    "url":"http://acm.rkbexplorer.com/models/dump.tgz/models/acm-research-area-attributions-D.rdf"
+  },
+  "http://acm.rkbexplorer.com/models/dump.tgz/models/acm-research-area-attributions-E.rdf": {
+    "base_iri":"http://acm.rkbexplorer.com/models/dump.tgz/models/acm-research-area-attributions-E.rdf",
+    "content_length":706901,
+    "content_type":"application/rdf+xml",
+    "duplicates":15,
+    "last_modified":"Tue, 03 Jul 2012 16:07:03 GMT",
+    "md5":"b0e859729fda3c98e7737377495b20c2",
+    "triples":6897,
+    "url":"http://acm.rkbexplorer.com/models/dump.tgz/models/acm-research-area-attributions-E.rdf"
+  },
+  "http://acm.rkbexplorer.com/models/dump.tgz/models/acm-research-area-attributions-F.rdf": {
+    "base_iri":"http://acm.rkbexplorer.com/models/dump.tgz/models/acm-research-area-attributions-F.rdf",
+    "content_length":452019,
+    "content_type":"application/rdf+xml",
+    "duplicates":20,
+    "last_modified":"Tue, 03 Jul 2012 16:07:03 GMT",
+    "md5":"681fe9192d2c23d8cd7c410f0830261b",
+    "triples":4340,
+    "url":"http://acm.rkbexplorer.com/models/dump.tgz/models/acm-research-area-attributions-F.rdf"
+  },
+  "http://acm.rkbexplorer.com/models/dump.tgz/models/acm-research-area-attributions-G.rdf": {
+    "base_iri":"http://acm.rkbexplorer.com/models/dump.tgz/models/acm-research-area-attributions-G.rdf",
+    "content_length":1861123,
+    "content_type":"application/rdf+xml",
+    "duplicates":49,
+    "last_modified":"Tue, 03 Jul 2012 16:07:03 GMT",
+    "md5":"39436a203e964150ad49f0c59c92fadc",
+    "triples":17950,
+    "url":"http://acm.rkbexplorer.com/models/dump.tgz/models/acm-research-area-attributions-G.rdf"
+  },
+  "http://acm.rkbexplorer.com/models/dump.tgz/models/acm-research-area-attributions-H.rdf": {
+    "base_iri":"http://acm.rkbexplorer.com/models/dump.tgz/models/acm-research-area-attributions-H.rdf",
+    "content_length":6108577,
+    "content_type":"application/rdf+xml",
+    "duplicates":670,
+    "last_modified":"Tue, 03 Jul 2012 16:07:03 GMT",
+    "md5":"057d77593e0802fd0bf41ae3128eca04",
+    "triples":56960,
+    "url":"http://acm.rkbexplorer.com/models/dump.tgz/models/acm-research-area-attributions-H.rdf"
+  },
+  "http://acm.rkbexplorer.com/models/dump.tgz/models/acm-research-area-attributions-I.rdf": {
+    "base_iri":"http://acm.rkbexplorer.com/models/dump.tgz/models/acm-research-area-attributions-I.rdf",
+    "content_length":6482017,
+    "content_type":"application/rdf+xml",
+    "duplicates":215,
+    "last_modified":"Tue, 03 Jul 2012 16:07:03 GMT",
+    "md5":"a70d3aba9d7042b157d0cc4c3820e126",
+    "triples":61245,
+    "url":"http://acm.rkbexplorer.com/models/dump.tgz/models/acm-research-area-attributions-I.rdf"
+  },
+  "http://acm.rkbexplorer.com/models/dump.tgz/models/acm-research-area-attributions-J.rdf": {
+    "base_iri":"http://acm.rkbexplorer.com/models/dump.tgz/models/acm-research-area-attributions-J.rdf",
+    "content_length":2905108,
+    "content_type":"application/rdf+xml",
+    "duplicates":88,
+    "last_modified":"Tue, 03 Jul 2012 16:07:03 GMT",
+    "md5":"4b802db9010fbc488e4a8688d326b3fb",
+    "triples":27732,
+    "url":"http://acm.rkbexplorer.com/models/dump.tgz/models/acm-research-area-attributions-J.rdf"
+  },
+  "http://acm.rkbexplorer.com/models/dump.tgz/models/acm-research-area-attributions-K.rdf": {
+    "base_iri":"http://acm.rkbexplorer.com/models/dump.tgz/models/acm-research-area-attributions-K.rdf",
+    "content_length":4041544,
+    "content_type":"application/rdf+xml",
+    "duplicates":223,
+    "last_modified":"Tue, 03 Jul 2012 16:07:03 GMT",
+    "md5":"885fabcd691dd51de980d3b02e060bc4",
+    "triples":36766,
+    "url":"http://acm.rkbexplorer.com/models/dump.tgz/models/acm-research-area-attributions-K.rdf"
+  },
+  "http://acm.rkbexplorer.com/models/void.ttl": {
+    "base_iri":"http://acm.rkbexplorer.com/models/void.ttl",
+    "content_length":20982,
+    "content_type":"text/turtle",
+    "duplicates":0,
+    "last_modified":"Sat, 21 Apr 2012 11:53:11 GMT",
+    "md5":"f028e777b3904d66a5ebbe5831eaf674",
+    "triples":483,
+    "url":"http://acm.rkbexplorer.com/models/void.ttl"
+  },
+  "http://aemet.linkeddata.es/files/aemetontologynetworkv2.rar/Ssn.xml": {
+    "base_iri":"http://aemet.linkeddata.es/files/aemetontologynetworkv2.rar/Ssn.xml",
+    "content_length":82438,
+    "content_type":"application/rdf+xml",
+    "duplicates":0,
+    "last_modified":"Mon, 13 Jun 2011 07:30:00 GMT",
+    "md5":"5b0ab9c73bbe2be6404402c5046578dc",
+    "triples":769,
+    "url":"http://aemet.linkeddata.es/files/aemetontologynetworkv2.rar/Ssn.xml"
+  },
+  "http://aemet.linkeddata.es/files/aemetontologynetworkv2.rar/aemet.owl": {
+    "content_length":60718,
+    "content_type":"application/rar",
+    "last_modified":"Mon, 13 Jun 2011 07:30:00 GMT",
+    "md5":"9c37c055a6ec76c6170f7af77bf50ece",
+    "url":"http://aemet.linkeddata.es/files/aemetontologynetworkv2.rar/aemet.owl"
+  },
+  "http://aemet.linkeddata.es/files/aemetontologynetworkv2.rar/describevar - instancias.owl": {
+    "content_length":16988,
+    "content_type":"application/rar",
+    "last_modified":"Mon, 13 Jun 2011 07:30:00 GMT",
+    "md5":"b892bf16a8c43da6f993575338ea5a44",
+    "url":"http://aemet.linkeddata.es/files/aemetontologynetworkv2.rar/describevar - instancias.owl"
+  },
+  "http://aemet.linkeddata.es/files/aemetontologynetworkv2.rar/geografica.owl": {
+    "base_iri":"http://aemet.linkeddata.es/files/aemetontologynetworkv2.rar/geografica.owl",
+    "content_length":14072,
+    "content_type":"application/rdf+xml",
+    "duplicates":0,
+    "last_modified":"Mon, 13 Jun 2011 07:30:00 GMT",
+    "md5":"d3ae7d7826f3287808c997d3db48c0a0",
+    "triples":201,
+    "url":"http://aemet.linkeddata.es/files/aemetontologynetworkv2.rar/geografica.owl"
+  },
+  "http://aemet.linkeddata.es/files/aemetontologynetworkv2.rar/localizacion.owl": {
+    "base_iri":"http://aemet.linkeddata.es/files/aemetontologynetworkv2.rar/localizacion.owl",
+    "content_length":9360,
+    "content_type":"application/rdf+xml",
+    "duplicates":0,
+    "last_modified":"Mon, 13 Jun 2011 07:30:00 GMT",
+    "md5":"04e7f042e72f6b4a683935da72e4b170",
+    "triples":38,
+    "url":"http://aemet.linkeddata.es/files/aemetontologynetworkv2.rar/localizacion.owl"
+  },
+  "http://aemet.linkeddata.es/files/aemetontologynetworkv2.rar/time.owl": {
+    "base_iri":"http://aemet.linkeddata.es/files/aemetontologynetworkv2.rar/time.owl",
+    "content_length":24409,
+    "content_type":"application/rdf+xml",
+    "duplicates":0,
+    "last_modified":"Mon, 13 Jun 2011 07:30:00 GMT",
+    "md5":"2f1b89c7ea4b42fd8d6f528d7d255583",
+    "triples":325,
+    "url":"http://aemet.linkeddata.es/files/aemetontologynetworkv2.rar/time.owl"
+  },
+  "http://aemet.linkeddata.es/metadata": {
+    "content_length":898,
+    "content_type":"text/html;charset=UTF-8",
+    "md5":"414795d06e36d31c22c3f050c99bd09c",
+    "url":"http://aemet.linkeddata.es/metadata"
+  },
+  "http://aemet.linkeddata.es/resource/WeatherStation/id08001": {
+    "content_type":"application/rdf+xml",
+    "md5":"859482d58bdb2fca95342fe72669093e",
+    "url":"http://aemet.linkeddata.es/resource/WeatherStation/id08001"
+  },
+  "http://aemet.linkeddata.es/resource/WeatherStation/id08001?output=ttl": {
+    "content_type":"application/rdf+xml",
+    "md5":"7c51b89bbf1b473693206ec317c3b352",
+    "url":"http://aemet.linkeddata.es/resource/WeatherStation/id08001?output=ttl"
+  },
+  "http://aemet.linkeddata.es/source/rdf/data.zip/201105212110_datos.ttl": {
+    "base_iri":"http://aemet.linkeddata.es/source/rdf/data.zip/201105212110_datos.ttl",
+    "content_length":223203146,
+    "content_type":"text/turtle",
+    "duplicates":286,
+    "last_modified":"Thu, 02 Feb 2012 13:01:36 GMT",
+    "md5":"540edc88d4856d67308c68e5e9f6ac46",
+    "triples":3547154,
+    "url":"http://aemet.linkeddata.es/source/rdf/data.zip/201105212110_datos.ttl"
+  },
+  "http://aemet.linkeddata.es/sparql_en.html": {
+    "base_iri":"http://aemet.linkeddata.es/sparql_en.html",
+    "content_length":1771,
+    "last_modified":"Wed, 12 Sep 2012 08:52:32 GMT",
+    "md5":"10ce865e8ea5357c3805182103bccc17",
+    "status":"no_rdfa",
+    "url":"http://aemet.linkeddata.es/sparql_en.html"
+  },
+  "http://agalpha.mathbiol.org/repositories/tcga/statements": {
+    "content_type":"application/rdf+xml; charset=UTF-8",
+    "md5":"63ba1b1ca31624e4790450411fb36791",
+    "url":"http://agalpha.mathbiol.org/repositories/tcga/statements"
+  },
+  "http://agalpha.mathbiol.org/repositories/tcga/statements?subj=%3Chttp://purl.org/tcga/core%23c92261c2-84fe-4a15-9dd9-8bb89ca8301d%3E": {
+    "content_type":"application/rdf+xml; charset=UTF-8",
+    "md5":"bbb7d01a293c8a8b67272ab3e538625b",
+    "url":"http://agalpha.mathbiol.org/repositories/tcga/statements?subj=%3Chttp://purl.org/tcga/core%23c92261c2-84fe-4a15-9dd9-8bb89ca8301d%3E"
+  },
+  "http://agencies.publicdata.eu/model/export/?m=http://agencies.publicdata.eu/&f=rdfxml": {
+    "content_length":5435,
+    "content_type":"application/rdf+xml",
+    "md5":"14dd91bd21f9176be921329b7eed2184",
+    "url":"http://agencies.publicdata.eu/model/export/?m=http://agencies.publicdata.eu/&f=rdfxml"
+  },
+  "http://agencies.publicdata.eu/resource/export/f/rdfxml?r=http://agencies.publicdata.eu/r/EEA": {
+    "content_length":2467,
+    "content_type":"application/rdf+xml",
+    "md5":"77ff7bc1341b4ad22c99133726b69ca1",
+    "url":"http://agencies.publicdata.eu/resource/export/f/rdfxml?r=http://agencies.publicdata.eu/r/EEA"
+  },
+  "http://agrinepaldata.com/download/agrinepaldataont.owl": {
+    "base_iri":"http://agrinepaldata.com/download/agrinepaldataont.owl",
+    "content_length":80040,
+    "content_type":"application/rdf+xml",
+    "duplicates":0,
+    "last_modified":"Thu, 13 Mar 2014 15:58:37 GMT",
+    "md5":"365359d12c3cfb7e29cb41867fe21bda",
+    "triples":824,
+    "url":"http://agrinepaldata.com/download/agrinepaldataont.owl"
+  },
+  "http://agrinepaldata.com/download/void.ttl": {
+    "base_iri":"http://agrinepaldata.com/download/void.ttl",
+    "content_length":1481,
+    "content_type":"text/turtle",
+    "duplicates":0,
+    "last_modified":"Mon, 17 Mar 2014 15:52:49 GMT",
+    "md5":"d126b5defb8676bf5a2a08314af10fff",
+    "messages": [
+      "Stream <stream>(0x7fbcfa7ec450):0:23 Turtle empty prefix (:) is not defined",
+      "Stream <stream>(0x7fbcfa7ec450):29:18 turtle_prefix `void' does not exist",
+      "Stream <stream>(0x7fbcfa7ec450):30:18 Syntax error: Expected \":\""
+    ],
+    "triples":1,
+    "url":"http://agrinepaldata.com/download/void.ttl"
+  },
+  "http://agris.fao.org/aos/records/data/JP2010001379?output=xml": {
+    "content_type":"application/rdf+xml",
+    "md5":"2c7b65e0bab6abe9fec1c1b9ecd21d71",
+    "url":"http://agris.fao.org/aos/records/data/JP2010001379?output=xml"
+  },
+  "http://agris.fao.org/void.ttl": {
+    "base_iri":"http://agris.fao.org/void.ttl",
+    "content_length":5007,
+    "content_type":"text/turtle",
+    "duplicates":0,
+    "last_modified":"Fri, 29 Nov 2013 16:27:51 GMT",
+    "md5":"caad38587dea6d449de0f350afd3d87c",
+    "triples":83,
+    "url":"http://agris.fao.org/void.ttl"
+  },
+  "http://aims.fao.org/aos/data/c_2724?output=xml": {
+    "content_type":"application/rdf+xml",
+    "md5":"7b39cd8238b973d85143c7868dd1ffc4",
+    "url":"http://aims.fao.org/aos/data/c_2724?output=xml"
+  },
+  "http://aims.fao.org/aos/geopolitical.owl": {
+    "base_iri":"http://aims.fao.org/aos/geopolitical.owl",
+    "content_length":1780714,
+    "content_type":"application/rdf+xml",
+    "duplicates":0,
+    "last_modified":"Wed, 18 Jan 2012 15:08:41 GMT",
+    "md5":"efd3942fa19ef467b92810e8ae5fd8b9",
+    "triples":23780,
+    "url":"http://aims.fao.org/aos/geopolitical.owl"
+  },
+  "http://aims.fao.org/aos/jita/O?output=xml": {
+    "content_type":"application/rdf+xml",
+    "md5":"4f5f5734e1719911a6ea81b78b619b4b",
+    "url":"http://aims.fao.org/aos/jita/O?output=xml"
+  },
+  "http://aims.fao.org/aos/jita/P?output=xml": {
+    "content_type":"application/rdf+xml",
+    "md5":"889a6a85407b2684cc0970a0575ee823",
+    "url":"http://aims.fao.org/aos/jita/P?output=xml"
+  },
+  "http://aims.fao.org/aos/jita/T?output=xml": {
+    "content_type":"application/rdf+xml",
+    "md5":"0ec0b38b024fea2b33568aaf4488cdcf",
+    "url":"http://aims.fao.org/aos/jita/T?output=xml"
+  },
+  "http://aksw.org/Projects/AKSWorg.ttl": {
+    "base_iri":"http://aksw.org/Projects/AKSWorg.ttl",
+    "content_length":3869,
+    "content_type":"text/turtle",
+    "duplicates":0,
+    "last_modified":"Mon, 17 Feb 2014 01:26:12 +0100",
+    "md5":"043e989bbe5ab6c2dec55696d3936713",
+    "triples":10,
+    "url":"http://aksw.org/Projects/AKSWorg.ttl"
+  },
+  "http://alaska.eagle-i.net/i/0000012a-25c2-5d13-76e0-f22c80000005?format=application/xml": {
+    "content_type":"application/xml;charset=UTF-8",
+    "md5":"16f28005ecbf85c493952d19d7f72694",
+    "url":"http://alaska.eagle-i.net/i/0000012a-25c2-5d13-76e0-f22c80000005?format=application/xml"
+  },
+  "http://aleph.mzk.cz/OAI": {
+    "content_length":399,
+    "content_type":"text/xml",
+    "md5":"2b3970e6c77d6b7b25da64bfa235e423",
+    "url":"http://aleph.mzk.cz/OAI"
+  },
+  "http://allie.dbcls.jp/void.ttl": {
+    "base_iri":"http://allie.dbcls.jp/void.ttl",
+    "content_length":1020,
+    "content_type":"text/turtle",
+    "duplicates":0,
+    "last_modified":"Fri, 13 Jan 2012 08:09:12 GMT",
+    "md5":"b7d40ead79bb991f86a6e61309e78656",
+    "triples":12,
+    "url":"http://allie.dbcls.jp/void.ttl"
+  },
+  "http://amrapali.aksw.org/patents/sparql": {
+    "content_length":572,
+    "content_type":"text/rdf+n3; charset=UTF-8",
+    "md5":"560f45979b6404278592c32a19bd322d",
+    "url":"http://amrapali.aksw.org/patents/sparql"
+  },
+  "http://api.iisg.nl/solr/all/srw": {
+    "content_type":"text/xml;charset=UTF-8",
+    "md5":"6e2bcf7dca27fa04185c46fab95c8a11",
+    "url":"http://api.iisg.nl/solr/all/srw"
+  },
+  "http://api.irail.be": {
+    "content_length":14389,
+    "content_type":"text/html;charset=utf-8",
+    "md5":"9d8d432a90c539376a509a43e1449027",
+    "url":"http://api.irail.be"
+  },
+  "http://api.irail.be/stations/": {
+    "content_length":63810,
+    "content_type":"text/xml; charset=UTF-8",
+    "md5":"51608f331428e95b4eb2a4199be2608b",
+    "url":"http://api.irail.be/stations/"
+  },
+  "http://api.stlouisfed.org/": {
+    "content_type":"text/html; charset=UTF-8",
+    "md5":"2fe5a45bcd62c43c1c543ae1a456d59c",
+    "url":"http://api.stlouisfed.org/"
+  },
+  "http://api.stockholm.se": {
+    "content_length":3429,
+    "content_type":"text/html; charset=utf-8",
+    "md5":"9b1465d83e7aec202b5952beb3a2976e",
+    "url":"http://api.stockholm.se"
+  },
+  "http://appdb-pi.egi.eu/rest/1.0/applications/": {
+    "content_type":"text/xml",
+    "md5":"20cd996eb829737ae2e2be466041291b",
+    "url":"http://appdb-pi.egi.eu/rest/1.0/applications/"
+  },
+  "http://apps.ideaconsult.net:8080/ambit2/dataset/112?media=application/rdf%2Bxml": {
+    "content_type":"application/rdf+xml;charset=UTF-8",
+    "md5":"f87403b6007ed26bc508d3b882ea14ef",
+    "url":"http://apps.ideaconsult.net:8080/ambit2/dataset/112?media=application/rdf%2Bxml"
+  },
+  "http://archive.org/download/kasabi/bricklink.gz": {
+    "content_length":21019010,
+    "content_type":"application/octet-stream",
+    "last_modified":"Tue, 17 Jul 2012 21:21:44 GMT",
+    "md5":"eb909eec1e0af61877882bebfb1c4d15",
+    "messages": ["No RDF in 'http://archive.org/download/kasabi/bricklink.gz'" ],
+    "url":"http://archive.org/download/kasabi/bricklink.gz"
+  },
+  "http://archivi.ibc.regione.emilia-romagna.it/ontology/eac-cpf/": {
+    "base_iri":"http://archivi.ibc.regione.emilia-romagna.it/ontology/eac-cpf/",
+    "content_length":25745,
+    "content_type":"application/rdf+xml",
+    "duplicates":0,
+    "last_modified":"Mon, 14 Apr 2014 09:33:09 GMT",
+    "md5":"30f019280c109478c226361c37bd2619",
+    "triples":269,
+    "url":"http://archivi.ibc.regione.emilia-romagna.it/ontology/eac-cpf/"
+  },
+  "http://arthroscopyportal.com/en/community/Arthroscopy/advanced-search/tag/Arthroscopy?rdf": {
+    "content_length":83366,
+    "content_type":"text/html; charset=utf-8",
+    "md5":"993cb6c31a862cd8d9e770581d557925",
+    "url":"http://arthroscopyportal.com/en/community/Arthroscopy/advanced-search/tag/Arthroscopy?rdf"
+  },
+  "http://arthroscopyportal.com/en/community/Arthroscopy/resource/Reconstruccion-de-LCA-mediante-tendones-isquiotibi/267556b2-67f0-4264-8071-1932151c8439": {
+    "content_length":197084,
+    "content_type":"text/html; charset=utf-8",
+    "md5":"fc93af04fef0ca6f3f00edb8df88d154",
+    "url":"http://arthroscopyportal.com/en/community/Arthroscopy/resource/Reconstruccion-de-LCA-mediante-tendones-isquiotibi/267556b2-67f0-4264-8071-1932151c8439"
+  },
+  "http://arthroscopyportal.com/en/community/Arthroscopy/resource/Reparacion-de-cartilago-en-la-rodilla/a7617f64-8a3c-4913-aea1-17657100cc45?rdf": {
+    "content_length":190885,
+    "content_type":"text/html; charset=utf-8",
+    "md5":"c65363197b4f390bcc78110eddb180cf",
+    "url":"http://arthroscopyportal.com/en/community/Arthroscopy/resource/Reparacion-de-cartilago-en-la-rodilla/a7617f64-8a3c-4913-aea1-17657100cc45?rdf"
+  },
+  "http://aseg.cs.concordia.ca/ontologies/2010/11/meton.rdf": {
+    "base_iri":"http://aseg.cs.concordia.ca/ontologies/2010/11/meton.rdf",
+    "content_length":4030,
+    "content_type":"application/rdf+xml",
+    "duplicates":0,
+    "last_modified":"Fri, 28 Jan 2011 04:44:58 GMT",
+    "md5":"bd4bd6759cd61b46cef3bee62c023721",
+    "triples":16,
+    "url":"http://aseg.cs.concordia.ca/ontologies/2010/11/meton.rdf"
+  },
+  "http://aseg.cs.concordia.ca/ontologies/2010/11/socon.rdf": {
+    "base_iri":"http://aseg.cs.concordia.ca/ontologies/2010/11/socon.rdf",
+    "content_length":8683,
+    "content_type":"application/rdf+xml",
+    "duplicates":0,
+    "last_modified":"Fri, 28 Jan 2011 04:46:22 GMT",
+    "md5":"22b519cadb37c5e56034a826b742e727",
+    "triples":49,
+    "url":"http://aseg.cs.concordia.ca/ontologies/2010/11/socon.rdf"
+  },
+  "http://aseg.cs.concordia.ca/ontologies/2010/11/veron.rdf": {
+    "base_iri":"http://aseg.cs.concordia.ca/ontologies/2010/11/veron.rdf",
+    "content_length":4722,
+    "content_type":"application/rdf+xml",
+    "duplicates":0,
+    "last_modified":"Fri, 28 Jan 2011 04:52:09 GMT",
+    "md5":"72beb81408694243fd0716626bd2bfdd",
+    "triples":22,
+    "url":"http://aseg.cs.concordia.ca/ontologies/2010/11/veron.rdf"
+  },
+  "http://aseg.cs.concordia.ca/secold/download/static/secold_001_samples/sample_fqn_java.util.Collection.rdf": {
+    "base_iri":"http://aseg.cs.concordia.ca/secold/download/static/secold_001_samples/sample_fqn_java.util.Collection.rdf",
+    "content_length":38628,
+    "content_type":"application/rdf+xml",
+    "duplicates":0,
+    "last_modified":"Thu, 24 Feb 2011 18:04:46 GMT",
+    "md5":"436c7c43d74b2a5eaff33fccdbd61bd6",
+    "triples":104,
+    "url":"http://aseg.cs.concordia.ca/secold/download/static/secold_001_samples/sample_fqn_java.util.Collection.rdf"
+  },
+  "http://aseg.cs.concordia.ca/secold/download/static/secold_001_samples/sample_project_apache_lucene.rdf": {
+    "base_iri":"http://aseg.cs.concordia.ca/secold/download/static/secold_001_samples/sample_project_apache_lucene.rdf",
+    "content_length":1900,
+    "content_type":"application/rdf+xml",
+    "duplicates":0,
+    "last_modified":"Thu, 24 Feb 2011 18:05:52 GMT",
+    "md5":"3cf1c2a7bdca5656d3ec0a37a595b824",
+    "triples":10,
+    "url":"http://aseg.cs.concordia.ca/secold/download/static/secold_001_samples/sample_project_apache_lucene.rdf"
+  },
+  "http://aseg.cs.concordia.ca/secold/download/static/secold_001_samples/sample_snapshot_of_lucene_project.rdf": {
+    "base_iri":"http://aseg.cs.concordia.ca/secold/download/static/secold_001_samples/sample_snapshot_of_lucene_project.rdf",
+    "content_length":273536,
+    "content_type":"application/rdf+xml",
+    "duplicates":0,
+    "last_modified":"Thu, 24 Feb 2011 18:23:57 GMT",
+    "md5":"4d4d803c9c7f03a6e13f12d0906f9f72",
+    "triples":1004,
+    "url":"http://aseg.cs.concordia.ca/secold/download/static/secold_001_samples/sample_snapshot_of_lucene_project.rdf"
+  },
+  "http://aseg.cs.concordia.ca/secold/download/static/secold_001_samples/sample_variation_of_a_java_class.rdf": {
+    "base_iri":"http://aseg.cs.concordia.ca/secold/download/static/secold_001_samples/sample_variation_of_a_java_class.rdf",
+    "content_length":144057,
+    "content_type":"application/rdf+xml",
+    "duplicates":0,
+    "last_modified":"Thu, 24 Feb 2011 18:25:28 GMT",
+    "md5":"9aafcfedec6ed45045c7380731e28eb7",
+    "triples":583,
+    "url":"http://aseg.cs.concordia.ca/secold/download/static/secold_001_samples/sample_variation_of_a_java_class.rdf"
+  },
+  "http://asn.jesandco.org/resources/S2377506.n3": {
+    "base_iri":"http://asn.jesandco.org/resources/S2377506.n3",
+    "content_length":10871,
+    "content_type":"text/turtle",
+    "duplicates":0,
+    "last_modified":"Mon, 15 Jul 2013 18:54:45 GMT",
+    "md5":"23c3b72e0f499f7c07ce30a487d7ec0e",
+    "triples":75,
+    "url":"http://asn.jesandco.org/resources/S2377506.n3"
+  },
+  "http://asn.jesandco.org/resources/S2377506.ttl": {
+    "base_iri":"http://asn.jesandco.org/resources/S2377506.ttl",
+    "content_length":9292,
+    "content_type":"text/turtle",
+    "duplicates":0,
+    "last_modified":"Mon, 15 Jul 2013 18:54:45 GMT",
+    "md5":"3e380c1a60d23f82271346f8c132633b",
+    "triples":75,
+    "url":"http://asn.jesandco.org/resources/S2377506.ttl"
+  },
+  "http://asn.jesandco.org/resources/S2377506.xml": {
+    "base_iri":"http://asn.jesandco.org/resources/S2377506.xml",
+    "content_length":8378,
+    "content_type":"application/rdf+xml",
+    "duplicates":0,
+    "last_modified":"Mon, 15 Jul 2013 18:54:45 GMT",
+    "md5":"4bb628e30b788568abfe5e1e2eeba50d",
+    "triples":75,
+    "url":"http://asn.jesandco.org/resources/S2377506.xml"
+  },
+  "http://athelia.com/comunidad/atheliasolutions/recurso/Athelia-Services/2fad094b-4ff6-42ce-bf2c-02c72fb57eb9?rdf": {
+    "content_type":"application/rdf+xml",
+    "md5":"a58ecda08fc26dd480e83376a9426a8b",
+    "url":"http://athelia.com/comunidad/atheliasolutions/recurso/Athelia-Services/2fad094b-4ff6-42ce-bf2c-02c72fb57eb9?rdf"
+  },
+  "http://athelia.com/comunidad/atheliasolutions/recurso/Django-Maintenance--Inspection/1ea18bcd-ce29-4443-86b7-485df3ef4d0a?rdf": {
+    "content_type":"application/rdf+xml",
+    "md5":"69e7c7ccdc8f0b373325d5acf3c27b26",
+    "url":"http://athelia.com/comunidad/atheliasolutions/recurso/Django-Maintenance--Inspection/1ea18bcd-ce29-4443-86b7-485df3ef4d0a?rdf"
+  },
+  "http://athelia.com/en/community/atheliasolutions/advanced-search/tag/rfid?rdf": {
+    "content_length":96992,
+    "content_type":"text/html; charset=utf-8",
+    "md5":"526ecfb5c2a8238e62eebdd6c046408a",
+    "url":"http://athelia.com/en/community/atheliasolutions/advanced-search/tag/rfid?rdf"
+  },
+  "http://athelia.com/voidAtheliaRFIDGNOSS.n3": {
+    "base_iri":"http://athelia.com/voidAtheliaRFIDGNOSS.n3",
+    "content_length":10006,
+    "content_type":"text/turtle",
+    "duplicates":0,
+    "last_modified":"Thu, 16 Aug 2012 09:30:36 GMT",
+    "md5":"2570ea2d41d6f3c2ce902ec233e51a68",
+    "triples":122,
+    "url":"http://athelia.com/voidAtheliaRFIDGNOSS.n3"
+  },
+  "http://atlantides.org/downloads/pleiades/rdf/pleiades-latest.tar.gz/authors.ttl": {
+    "base_iri":"http://atlantides.org/downloads/pleiades/rdf/pleiades-latest.tar.gz/authors.ttl",
+    "content_length":29452,
+    "content_type":"text/turtle",
+    "duplicates":0,
+    "last_modified":"Sun, 04 May 2014 15:27:35 GMT",
+    "md5":"76e664a29c806a1f87f8e65348f49d69",
+    "triples":528,
+    "url":"http://atlantides.org/downloads/pleiades/rdf/pleiades-latest.tar.gz/authors.ttl"
+  },
+  "http://atlantides.org/downloads/pleiades/rdf/pleiades-latest.tar.gz/errata.ttl": {
+    "base_iri":"http://atlantides.org/downloads/pleiades/rdf/pleiades-latest.tar.gz/errata.ttl",
+    "content_length":230589,
+    "content_type":"text/turtle",
+    "duplicates":0,
+    "last_modified":"Sun, 04 May 2014 15:27:35 GMT",
+    "md5":"d75094469f4070373c17e81f0ebf1882",
+    "triples":4087,
+    "url":"http://atlantides.org/downloads/pleiades/rdf/pleiades-latest.tar.gz/errata.ttl"
+  },
+  "http://atlantides.org/downloads/pleiades/rdf/pleiades-latest.tar.gz/place-types.ttl": {
+    "base_iri":"http://atlantides.org/downloads/pleiades/rdf/pleiades-latest.tar.gz/place-types.ttl",
+    "content_length":22932,
+    "content_type":"text/turtle",
+    "duplicates":0,
+    "last_modified":"Sun, 04 May 2014 15:27:35 GMT",
+    "md5":"48ea00ff885603927b8f335cd60d7251",
+    "triples":289,
+    "url":"http://atlantides.org/downloads/pleiades/rdf/pleiades-latest.tar.gz/place-types.ttl"
+  },
+  "http://atlantides.org/downloads/pleiades/rdf/pleiades-latest.tar.gz/places-1.ttl": {
+    "base_iri":"http://atlantides.org/downloads/pleiades/rdf/pleiades-latest.tar.gz/places-1.ttl",
+    "content_length":14192092,
+    "content_type":"text/turtle",
+    "duplicates":6,
+    "last_modified":"Sun, 04 May 2014 15:27:35 GMT",
+    "md5":"3d4c79f4c83646741025af7d2f4398df",
+    "triples":258326,
+    "url":"http://atlantides.org/downloads/pleiades/rdf/pleiades-latest.tar.gz/places-1.ttl"
+  },
+  "http://atlantides.org/downloads/pleiades/rdf/pleiades-latest.tar.gz/places-2.ttl": {
+    "base_iri":"http://atlantides.org/downloads/pleiades/rdf/pleiades-latest.tar.gz/places-2.ttl",
+    "content_length":21533474,
+    "content_type":"text/turtle",
+    "duplicates":0,
+    "last_modified":"Sun, 04 May 2014 15:27:35 GMT",
+    "md5":"8e16517f0ed904c763051c5df0611c6e",
+    "triples":390455,
+    "url":"http://atlantides.org/downloads/pleiades/rdf/pleiades-latest.tar.gz/places-2.ttl"
+  },
+  "http://atlantides.org/downloads/pleiades/rdf/pleiades-latest.tar.gz/places-3.ttl": {
+    "base_iri":"http://atlantides.org/downloads/pleiades/rdf/pleiades-latest.tar.gz/places-3.ttl",
+    "content_length":10054065,
+    "content_type":"text/turtle",
+    "duplicates":0,
+    "last_modified":"Sun, 04 May 2014 15:27:35 GMT",
+    "md5":"c31fac66e3ea21391af96344c87f6cab",
+    "triples":180585,
+    "url":"http://atlantides.org/downloads/pleiades/rdf/pleiades-latest.tar.gz/places-3.ttl"
+  },
+  "http://atlantides.org/downloads/pleiades/rdf/pleiades-latest.tar.gz/places-4.ttl": {
+    "base_iri":"http://atlantides.org/downloads/pleiades/rdf/pleiades-latest.tar.gz/places-4.ttl",
+    "content_length":15137164,
+    "content_type":"text/turtle",
+    "duplicates":17,
+    "last_modified":"Sun, 04 May 2014 15:27:35 GMT",
+    "md5":"cb9ef49b20aa3a314200ea785a408494",
+    "triples":269693,
+    "url":"http://atlantides.org/downloads/pleiades/rdf/pleiades-latest.tar.gz/places-4.ttl"
+  },
+  "http://atlantides.org/downloads/pleiades/rdf/pleiades-latest.tar.gz/places-5.ttl": {
+    "base_iri":"http://atlantides.org/downloads/pleiades/rdf/pleiades-latest.tar.gz/places-5.ttl",
+    "content_length":20819346,
+    "content_type":"text/turtle",
+    "duplicates":8,
+    "last_modified":"Sun, 04 May 2014 15:27:35 GMT",
+    "md5":"a9e121446694e630c434f2ccde7e8fff",
+    "triples":376392,
+    "url":"http://atlantides.org/downloads/pleiades/rdf/pleiades-latest.tar.gz/places-5.ttl"
+  },
+  "http://atlantides.org/downloads/pleiades/rdf/pleiades-latest.tar.gz/places-6.ttl": {
+    "base_iri":"http://atlantides.org/downloads/pleiades/rdf/pleiades-latest.tar.gz/places-6.ttl",
+    "content_length":14900854,
+    "content_type":"text/turtle",
+    "duplicates":10,
+    "last_modified":"Sun, 04 May 2014 15:27:35 GMT",
+    "md5":"3c9c775d9a6a1c99477298451e16754b",
+    "triples":272412,
+    "url":"http://atlantides.org/downloads/pleiades/rdf/pleiades-latest.tar.gz/places-6.ttl"
+  },
+  "http://atlantides.org/downloads/pleiades/rdf/pleiades-latest.tar.gz/places-7.ttl": {
+    "base_iri":"http://atlantides.org/downloads/pleiades/rdf/pleiades-latest.tar.gz/places-7.ttl",
+    "content_length":9347313,
+    "content_type":"text/turtle",
+    "duplicates":0,
+    "last_modified":"Sun, 04 May 2014 15:27:35 GMT",
+    "md5":"10494abb8e255e5b4716f1a262a07bc8",
+    "triples":172175,
+    "url":"http://atlantides.org/downloads/pleiades/rdf/pleiades-latest.tar.gz/places-7.ttl"
+  },
+  "http://atlantides.org/downloads/pleiades/rdf/pleiades-latest.tar.gz/places-8.ttl": {
+    "base_iri":"http://atlantides.org/downloads/pleiades/rdf/pleiades-latest.tar.gz/places-8.ttl",
+    "content_length":11353764,
+    "content_type":"text/turtle",
+    "duplicates":26,
+    "last_modified":"Sun, 04 May 2014 15:27:35 GMT",
+    "md5":"0cb4fde35164827317265ba0bae744c7",
+    "triples":211912,
+    "url":"http://atlantides.org/downloads/pleiades/rdf/pleiades-latest.tar.gz/places-8.ttl"
+  },
+  "http://atlantides.org/downloads/pleiades/rdf/pleiades-latest.tar.gz/places-9.ttl": {
+    "base_iri":"http://atlantides.org/downloads/pleiades/rdf/pleiades-latest.tar.gz/places-9.ttl",
+    "content_length":6551461,
+    "content_type":"text/turtle",
+    "duplicates":0,
+    "last_modified":"Sun, 04 May 2014 15:27:35 GMT",
+    "md5":"1825d68f79088ff6dcf753b0acaa9765",
+    "triples":120442,
+    "url":"http://atlantides.org/downloads/pleiades/rdf/pleiades-latest.tar.gz/places-9.ttl"
+  },
+  "http://atlantides.org/downloads/pleiades/rdf/pleiades-latest.tar.gz/time-periods.ttl": {
+    "base_iri":"http://atlantides.org/downloads/pleiades/rdf/pleiades-latest.tar.gz/time-periods.ttl",
+    "content_length":54745,
+    "content_type":"text/turtle",
+    "duplicates":0,
+    "last_modified":"Sun, 04 May 2014 15:27:35 GMT",
+    "md5":"5753cfc40a96e8ffca84aa5703461205",
+    "triples":597,
+    "url":"http://atlantides.org/downloads/pleiades/rdf/pleiades-latest.tar.gz/time-periods.ttl"
+  },
+  "http://atlantides.org/downloads/pleiades/rdf/void.ttl": {
+    "base_iri":"http://atlantides.org/downloads/pleiades/rdf/void.ttl",
+    "content_length":774,
+    "content_type":"text/turtle",
+    "duplicates":0,
+    "last_modified":"Mon, 21 May 2012 16:47:28 GMT",
+    "md5":"35a1488743ad1e2c6bb2193b9194ecc5",
+    "messages": [
+      "Stream <stream>(0x7fbcd476ec00):37:14 Turtle empty prefix (:) is not defined",
+      "Stream <stream>(0x7fbcd476ec00):16:52 Turtle empty prefix (:) is not defined",
+      "Stream <stream>(0x7fbcd476ec00):15:17 Turtle empty prefix (:) is not defined"
+    ],
+    "triples":3,
+    "url":"http://atlantides.org/downloads/pleiades/rdf/void.ttl"
+  },
+  "http://austgate.co.uk/development/funding.zip/funding.xml": {
+    "content_length":5765117,
+    "content_type":"application/zip",
+    "last_modified":"Sun, 05 Dec 2010 14:14:06 GMT",
+    "md5":"d1fbd614a591555e3bc2331e74667a8f",
+    "url":"http://austgate.co.uk/development/funding.zip/funding.xml"
+  },
+  "http://baidu.com": {
+    "base_iri":"http://baidu.com",
+    "content_length":81,
+    "last_modified":"Tue, 12 Jan 2010 13:48:00 GMT",
+    "md5":"23901b9dc3d84176eb001d386a96be9e",
+    "status":"no_rdfa",
+    "url":"http://baidu.com"
+  },
+  "http://bblfish.net/work/atom-owl/2006-06-06/": {
+    "base_iri":"http://bblfish.net/work/atom-owl/2006-06-06/",
+    "content_length":65146,
+    "last_modified":"Sun, 27 Jun 2010 15:39:05 GMT",
+    "md5":"2cc4dc6cabc5df67432a3420efed7e7e",
+    "status":"no_rdfa",
+    "url":"http://bblfish.net/work/atom-owl/2006-06-06/"
+  },
+  "http://bcc.musiclibraryassoc.org/BCC-Historical/BCC2011/Thematic_Indexes.htm": {
+    "content_length":418446,
+    "content_type":"text/html",
+    "last_modified":"Fri, 25 Apr 2014 02:31:17 GMT",
+    "md5":"ab5bde2f8de177b367c608a1684587e9",
+    "messages": [
+      "No RDF in 'http://bcc.musiclibraryassoc.org/BCC-Historical/BCC2011/Thematic_Indexes.htm'"
+    ],
+    "url":"http://bcc.musiclibraryassoc.org/BCC-Historical/BCC2011/Thematic_Indexes.htm"
+  },
+  "http://benosteen.com/describe/info:iucr:bd6b36c3-b1bd-4ff5-9998-f5d8ca0e041e": {
+    "content_length":7627,
+    "content_type":"text/html; charset=utf-8",
+    "md5":"677574389b9a6b2867142cd144231425",
+    "url":"http://benosteen.com/describe/info:iucr:bd6b36c3-b1bd-4ff5-9998-f5d8ca0e041e"
+  },
+  "http://bfs.270a.info/code/1.0/CL_STATES_AND_TERRITORIES": {
+    "content_length":44166,
+    "content_type":"text/html; charset=utf-8",
+    "md5":"0d649168ce0c687b656e026c6f1ccb52",
+    "url":"http://bfs.270a.info/code/1.0/CL_STATES_AND_TERRITORIES"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/CH1_BN+HCL_CSP+2.0.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/CH1_BN+HCL_CSP+2.0.rdf",
+    "content_length":65257,
+    "content_type":"application/rdf+xml",
+    "duplicates":14,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"e77dda22c31a6cb14f969d57a2cfeaed",
+    "triples":669,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/CH1_BN+HCL_CSP+2.0.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/CH1_BN+HCL_ISCO+1.0.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/CH1_BN+HCL_ISCO+1.0.rdf",
+    "content_length":1064597,
+    "content_type":"application/rdf+xml",
+    "duplicates":28,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"4d438592f1a9301a1bd6d66bd6e0aae3",
+    "triples":10471,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/CH1_BN+HCL_ISCO+1.0.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/CH1_BN+HCL_ISCO+2.0.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/CH1_BN+HCL_ISCO+2.0.rdf",
+    "content_length":832438,
+    "content_type":"application/rdf+xml",
+    "duplicates":28,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"0f5123bb4ac9c3d74af85fb75714682c",
+    "triples":8209,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/CH1_BN+HCL_ISCO+2.0.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/CH1_BN+HCL_SBN+2.0.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/CH1_BN+HCL_SBN+2.0.rdf",
+    "content_length":641518,
+    "content_type":"application/rdf+xml",
+    "duplicates":28,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"72077acac4793649f3f7501caf56bd3c",
+    "triples":6382,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/CH1_BN+HCL_SBN+2.0.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/CH1_BUR+CL_LEGALFORMS+1.0.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/CH1_BUR+CL_LEGALFORMS+1.0.rdf",
+    "content_length":37192,
+    "content_type":"application/rdf+xml",
+    "duplicates":0,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"7c49ecfdcb5adbce5c3d59f06edd07f0",
+    "triples":439,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/CH1_BUR+CL_LEGALFORMS+1.0.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/CH1_BUR+CL_LEGALFORMS+2.0.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/CH1_BUR+CL_LEGALFORMS+2.0.rdf",
+    "content_length":38412,
+    "content_type":"application/rdf+xml",
+    "duplicates":0,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"be879bf7679ad6eb46bb6fde2064703c",
+    "triples":454,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/CH1_BUR+CL_LEGALFORMS+2.0.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/CH1_BUR+CL_LEGALFORMS+3.0.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/CH1_BUR+CL_LEGALFORMS+3.0.rdf",
+    "content_length":46663,
+    "content_type":"application/rdf+xml",
+    "duplicates":0,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"d85d1fef2242f7c6fa3df29c509b9a63",
+    "triples":551,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/CH1_BUR+CL_LEGALFORMS+3.0.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/CH1_DEM+HCL_LANGUAGESPUB+1.0.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/CH1_DEM+HCL_LANGUAGESPUB+1.0.rdf",
+    "content_length":91509,
+    "content_type":"application/rdf+xml",
+    "duplicates":21,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"82c349fcadfc3d1020c05e3ff9af44ef",
+    "triples":925,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/CH1_DEM+HCL_LANGUAGESPUB+1.0.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/CH1_DEM+HCL_LANGUAGESPUB+2.0.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/CH1_DEM+HCL_LANGUAGESPUB+2.0.rdf",
+    "content_length":91432,
+    "content_type":"application/rdf+xml",
+    "duplicates":21,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"7cf7050d84287446e089deba1ae32573",
+    "triples":935,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/CH1_DEM+HCL_LANGUAGESPUB+2.0.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/CH1_DEM+HCL_LANGUAGESSYST+1.0.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/CH1_DEM+HCL_LANGUAGESSYST+1.0.rdf",
+    "content_length":1152279,
+    "content_type":"application/rdf+xml",
+    "duplicates":21,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"72dac4e297dbc1cf522c50a26d1179b3",
+    "triples":12739,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/CH1_DEM+HCL_LANGUAGESSYST+1.0.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/CH1_DEM+HCL_LANGUAGESSYST+2.0.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/CH1_DEM+HCL_LANGUAGESSYST+2.0.rdf",
+    "content_length":1787092,
+    "content_type":"application/rdf+xml",
+    "duplicates":28,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"e7f1d3ab9da3e740eefe24cf8236718e",
+    "triples":19179,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/CH1_DEM+HCL_LANGUAGESSYST+2.0.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/CH1_NOGA+HCL_NOGA+1.0.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/CH1_NOGA+HCL_NOGA+1.0.rdf",
+    "content_length":2113732,
+    "content_type":"application/rdf+xml",
+    "duplicates":42,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"48a4996a3420cde7bfd6710bfc0cb3b5",
+    "triples":20596,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/CH1_NOGA+HCL_NOGA+1.0.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/CH1_NOGA+HCL_NOGA+2.0.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/CH1_NOGA+HCL_NOGA+2.0.rdf",
+    "content_length":2147156,
+    "content_type":"application/rdf+xml",
+    "duplicates":42,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"7738fedf9ead300eb1814e033d12f2be",
+    "triples":20661,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/CH1_NOGA+HCL_NOGA+2.0.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/CH1_NOGA+HCL_NOGA+3.0.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/CH1_NOGA+HCL_NOGA+3.0.rdf",
+    "content_length":3011111,
+    "content_type":"application/rdf+xml",
+    "duplicates":35,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"7d2c5adb93692600a140ee38515748e9",
+    "triples":30616,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/CH1_NOGA+HCL_NOGA+3.0.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/CH1_RE+CL_MARITALSTATUS+3.0.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/CH1_RE+CL_MARITALSTATUS+3.0.rdf",
+    "content_length":11933,
+    "content_type":"application/rdf+xml",
+    "duplicates":0,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"b0bfb867f69df4198ce34236145b0c4a",
+    "triples":126,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/CH1_RE+CL_MARITALSTATUS+3.0.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/CH1_RN+HCL_COUNTRIESGEO+1.0.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/CH1_RN+HCL_COUNTRIESGEO+1.0.rdf",
+    "content_length":448642,
+    "content_type":"application/rdf+xml",
+    "duplicates":21,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"ba061b8200438e971bcdd9c248cacdc6",
+    "triples":4637,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/CH1_RN+HCL_COUNTRIESGEO+1.0.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/CH1_RN+HCL_COUNTRIESGEO+2012.1.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/CH1_RN+HCL_COUNTRIESGEO+2012.1.rdf",
+    "content_length":99402,
+    "content_type":"application/rdf+xml",
+    "duplicates":0,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"db05b6fe3fc3ae9092a3990aa9d60fda",
+    "triples":660,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/CH1_RN+HCL_COUNTRIESGEO+2012.1.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/CH1_RN+HCL_COUNTRIESGEO+2014.1.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/CH1_RN+HCL_COUNTRIESGEO+2014.1.rdf",
+    "content_length":377150,
+    "content_type":"application/rdf+xml",
+    "duplicates":21,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"ed140919b8c714af1143e87e5409e476",
+    "triples":4002,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/CH1_RN+HCL_COUNTRIESGEO+2014.1.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/CH1_RN+HCL_COUNTRIESPOLIT+2012.1.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/CH1_RN+HCL_COUNTRIESPOLIT+2012.1.rdf",
+    "content_length":59341,
+    "content_type":"application/rdf+xml",
+    "duplicates":0,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"305dff73d39d5945e9c510cdc9511052",
+    "triples":449,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/CH1_RN+HCL_COUNTRIESPOLIT+2012.1.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/CH1_RN+HCL_COUNTRIESPOLIT+2014.1.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/CH1_RN+HCL_COUNTRIESPOLIT+2014.1.rdf",
+    "content_length":227570,
+    "content_type":"application/rdf+xml",
+    "duplicates":14,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"415d38e42ead6ef191bea5a62795d2b3",
+    "triples":2627,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/CH1_RN+HCL_COUNTRIESPOLIT+2014.1.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/CH1_RN+HCL_HGDE+2011.2.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/CH1_RN+HCL_HGDE+2011.2.rdf",
+    "content_length":3013555,
+    "content_type":"application/rdf+xml",
+    "duplicates":21,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"0d860f615af3160a0695eb865d16d3ab",
+    "triples":32535,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/CH1_RN+HCL_HGDE+2011.2.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/CH1_RN+HCL_HGDE+2012.1.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/CH1_RN+HCL_HGDE+2012.1.rdf",
+    "content_length":2992360,
+    "content_type":"application/rdf+xml",
+    "duplicates":21,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"a1419c78ab46ccba68cd8b6d5b1ca38e",
+    "triples":32308,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/CH1_RN+HCL_HGDE+2012.1.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/CH1_RN+HCL_HGDE+2012.2.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/CH1_RN+HCL_HGDE+2012.2.rdf",
+    "content_length":2979938,
+    "content_type":"application/rdf+xml",
+    "duplicates":21,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"4d424a902da83994f0789060641738d3",
+    "triples":32172,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/CH1_RN+HCL_HGDE+2012.2.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/CH1_RN+HCL_HGDE+2013.1.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/CH1_RN+HCL_HGDE+2013.1.rdf",
+    "content_length":1012428,
+    "content_type":"application/rdf+xml",
+    "duplicates":0,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"3b43c3be8ffb0b1a06db13301b65c023",
+    "triples":7773,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/CH1_RN+HCL_HGDE+2013.1.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/CH1_RN+HCL_HGDE+2013.2.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/CH1_RN+HCL_HGDE+2013.2.rdf",
+    "content_length":1007724,
+    "content_type":"application/rdf+xml",
+    "duplicates":0,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"1c6ec22cefdc4e01756d0935674e4aa3",
+    "triples":7737,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/CH1_RN+HCL_HGDE+2013.2.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/CH1_RN+HCL_HGDE+2014.1.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/CH1_RN+HCL_HGDE+2014.1.rdf",
+    "content_length":2833007,
+    "content_type":"application/rdf+xml",
+    "duplicates":21,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"8726cad946b3ecd5a8aad419335b96ab",
+    "triples":30587,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/CH1_RN+HCL_HGDE+2014.1.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/CH1_RN+HCL_HGDE_HIST+1.0.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/CH1_RN+HCL_HGDE_HIST+1.0.rdf",
+    "content_length":6777568,
+    "content_type":"application/rdf+xml",
+    "duplicates":21,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"062b469d71a70d4bfaf4c80b25d106d8",
+    "triples":74503,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/CH1_RN+HCL_HGDE_HIST+1.0.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/CH1_RS+CL_SEX+1.0.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/CH1_RS+CL_SEX+1.0.rdf",
+    "content_length":7268,
+    "content_type":"application/rdf+xml",
+    "duplicates":0,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"b4cf30be3a0dd4ea38b3c1d4a02ce72f",
+    "triples":70,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/CH1_RS+CL_SEX+1.0.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/CH1_WSA+CL_NOGA_TIC+2.0.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/CH1_WSA+CL_NOGA_TIC+2.0.rdf",
+    "content_length":69263,
+    "content_type":"application/rdf+xml",
+    "duplicates":0,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"3c2dfe44394433c7fd1ef0acc3335473",
+    "triples":739,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/CH1_WSA+CL_NOGA_TIC+2.0.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/OFS_BS_AES_SBN+HCL_CSP+1.0.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/OFS_BS_AES_SBN+HCL_CSP+1.0.rdf",
+    "content_length":60374,
+    "content_type":"application/rdf+xml",
+    "duplicates":14,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"2d9ac5694700525499d1187a51c1be3b",
+    "triples":615,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/OFS_BS_AES_SBN+HCL_CSP+1.0.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/OFS_BS_AES_SBN+HCL_CSP+2.0.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/OFS_BS_AES_SBN+HCL_CSP+2.0.rdf",
+    "content_length":65324,
+    "content_type":"application/rdf+xml",
+    "duplicates":14,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"d9edf6fca32c9745003e2b15ccd75ad9",
+    "triples":669,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/OFS_BS_AES_SBN+HCL_CSP+2.0.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/OFS_BS_AES_SBN+HCL_ISCO+1.0.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/OFS_BS_AES_SBN+HCL_ISCO+1.0.rdf",
+    "content_length":1064469,
+    "content_type":"application/rdf+xml",
+    "duplicates":28,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"258ec60ffe7cb0b1235381f1d7a4fe07",
+    "triples":10467,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/OFS_BS_AES_SBN+HCL_ISCO+1.0.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/OFS_BS_AES_SBN+HCL_ISCO+2.0.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/OFS_BS_AES_SBN+HCL_ISCO+2.0.rdf",
+    "content_length":831031,
+    "content_type":"application/rdf+xml",
+    "duplicates":28,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"b9f99dc0fe971511e74129804c5f343a",
+    "triples":8201,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/OFS_BS_AES_SBN+HCL_ISCO+2.0.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/OFS_BS_AES_SBN+HCL_SBN+1.0.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/OFS_BS_AES_SBN+HCL_SBN+1.0.rdf",
+    "content_length":625225,
+    "content_type":"application/rdf+xml",
+    "duplicates":28,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"11f7c2f3f8ba905ba93d73797c7fa430",
+    "triples":6243,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/OFS_BS_AES_SBN+HCL_SBN+1.0.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/OFS_BS_AES_SBN+HCL_SBN+2.0.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/OFS_BS_AES_SBN+HCL_SBN+2.0.rdf",
+    "content_length":779516,
+    "content_type":"application/rdf+xml",
+    "duplicates":28,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"b6fc80bfb61366cdea41e4668895aac3",
+    "triples":7892,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/OFS_BS_AES_SBN+HCL_SBN+2.0.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/OFS_BS_POP_GRP+CL_MARITALSTATUS+1.0.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/OFS_BS_POP_GRP+CL_MARITALSTATUS+1.0.rdf",
+    "content_length":9733,
+    "content_type":"application/rdf+xml",
+    "duplicates":0,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"f3399b8df756ca4437318ad2c78f2533",
+    "triples":98,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/OFS_BS_POP_GRP+CL_MARITALSTATUS+1.0.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/OFS_BS_POP_GRP+CL_MARITALSTATUS+2.0.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/OFS_BS_POP_GRP+CL_MARITALSTATUS+2.0.rdf",
+    "content_length":11332,
+    "content_type":"application/rdf+xml",
+    "duplicates":0,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"8432dfcbad1668726721358d867f3fa3",
+    "triples":117,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/OFS_BS_POP_GRP+CL_MARITALSTATUS+2.0.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/OFS_SI_BUR_BUR+CL_LEGALFORMS+1.0.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_BUR_BUR+CL_LEGALFORMS+1.0.rdf",
+    "content_length":37213,
+    "content_type":"application/rdf+xml",
+    "duplicates":0,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"1795db59c4b4b3168632424581c16335",
+    "triples":439,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_BUR_BUR+CL_LEGALFORMS+1.0.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/OFS_SI_BUR_BUR+CL_LEGALFORMS+2.0.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_BUR_BUR+CL_LEGALFORMS+2.0.rdf",
+    "content_length":38371,
+    "content_type":"application/rdf+xml",
+    "duplicates":0,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"dabb56bda785465ef25400a31f4d68e1",
+    "triples":453,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_BUR_BUR+CL_LEGALFORMS+2.0.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/OFS_SI_BUR_NOGA+HCL_NOGA+1.0.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_BUR_NOGA+HCL_NOGA+1.0.rdf",
+    "content_length":2113111,
+    "content_type":"application/rdf+xml",
+    "duplicates":42,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"1c281bb7bd65df2bc4981d6dbff66839",
+    "triples":20584,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_BUR_NOGA+HCL_NOGA+1.0.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/OFS_SI_BUR_NOGA+HCL_NOGA+2.0.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_BUR_NOGA+HCL_NOGA+2.0.rdf",
+    "content_length":2146535,
+    "content_type":"application/rdf+xml",
+    "duplicates":42,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"73cfc960437e814a514244ad59265304",
+    "triples":20649,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_BUR_NOGA+HCL_NOGA+2.0.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/OFS_SI_BUR_NOGA+HCL_NOGA+3.0.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_BUR_NOGA+HCL_NOGA+3.0.rdf",
+    "content_length":3010906,
+    "content_type":"application/rdf+xml",
+    "duplicates":35,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"921dfd73e5e687362688ab26c2fdb7c2",
+    "triples":30611,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_BUR_NOGA+HCL_NOGA+3.0.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_COUNTRIESGEO+1.0.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_COUNTRIESGEO+1.0.rdf",
+    "content_length":467032,
+    "content_type":"application/rdf+xml",
+    "duplicates":28,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"8837ce694dd2b95c95b42b38e014e73e",
+    "triples":4822,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_COUNTRIESGEO+1.0.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_COUNTRIESGEO+2000.1.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_COUNTRIESGEO+2000.1.rdf",
+    "content_length":350595,
+    "content_type":"application/rdf+xml",
+    "duplicates":21,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"d2a178cf67e6846aae3763e1f3271336",
+    "triples":3675,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_COUNTRIESGEO+2000.1.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_COUNTRIESGEO+2002.1.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_COUNTRIESGEO+2002.1.rdf",
+    "content_length":350699,
+    "content_type":"application/rdf+xml",
+    "duplicates":21,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"09b6ebe42742dfdac7a7730ef75bcc50",
+    "triples":3675,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_COUNTRIESGEO+2002.1.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_COUNTRIESGEO+2003.1.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_COUNTRIESGEO+2003.1.rdf",
+    "content_length":350740,
+    "content_type":"application/rdf+xml",
+    "duplicates":21,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"4328fe88c1d6e9b47654635f7d1a4ccb",
+    "triples":3675,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_COUNTRIESGEO+2003.1.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_COUNTRIESGEO+2004.1.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_COUNTRIESGEO+2004.1.rdf",
+    "content_length":350600,
+    "content_type":"application/rdf+xml",
+    "duplicates":21,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"6589d2c0ba634dfb90ea5cbdcd8a989f",
+    "triples":3675,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_COUNTRIESGEO+2004.1.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_COUNTRIESGEO+2006.1.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_COUNTRIESGEO+2006.1.rdf",
+    "content_length":351685,
+    "content_type":"application/rdf+xml",
+    "duplicates":21,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"7c40a778a306572617dfc02046de5d29",
+    "triples":3687,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_COUNTRIESGEO+2006.1.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_COUNTRIESGEO+2008.1.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_COUNTRIESGEO+2008.1.rdf",
+    "content_length":358964,
+    "content_type":"application/rdf+xml",
+    "duplicates":21,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"5db96d3eb1139481a540d14be7efd45c",
+    "triples":3760,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_COUNTRIESGEO+2008.1.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_COUNTRIESGEO+2009.1.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_COUNTRIESGEO+2009.1.rdf",
+    "content_length":369852,
+    "content_type":"application/rdf+xml",
+    "duplicates":21,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"9958adc964983caa0d4cdd9d84b1e2f5",
+    "triples":3875,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_COUNTRIESGEO+2009.1.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_COUNTRIESGEO+2010.1.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_COUNTRIESGEO+2010.1.rdf",
+    "content_length":332349,
+    "content_type":"application/rdf+xml",
+    "duplicates":7,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"dba964ccdbc4912c2218825d32eb6904",
+    "triples":3463,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_COUNTRIESGEO+2010.1.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_COUNTRIESPOL+2000.1.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_COUNTRIESPOL+2000.1.rdf",
+    "content_length":222124,
+    "content_type":"application/rdf+xml",
+    "duplicates":14,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"f28b7f2e43675dc939778fa7aa63f497",
+    "triples":2531,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_COUNTRIESPOL+2000.1.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_COUNTRIESPOL+2002.1.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_COUNTRIESPOL+2002.1.rdf",
+    "content_length":223122,
+    "content_type":"application/rdf+xml",
+    "duplicates":14,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"15d20875f83fd7a01181242b4ec0ace1",
+    "triples":2541,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_COUNTRIESPOL+2002.1.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_COUNTRIESPOL+2003.1.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_COUNTRIESPOL+2003.1.rdf",
+    "content_length":223164,
+    "content_type":"application/rdf+xml",
+    "duplicates":14,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"b7c663040d901301fd8ac9e2df41f3fd",
+    "triples":2541,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_COUNTRIESPOL+2003.1.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_COUNTRIESPOL+2004.1.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_COUNTRIESPOL+2004.1.rdf",
+    "content_length":223019,
+    "content_type":"application/rdf+xml",
+    "duplicates":14,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"d0b6a5e7b071ae3439b3da046b122e5f",
+    "triples":2541,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_COUNTRIESPOL+2004.1.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_COUNTRIESPOL+2006.1.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_COUNTRIESPOL+2006.1.rdf",
+    "content_length":223996,
+    "content_type":"application/rdf+xml",
+    "duplicates":14,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"6923ac15ea016e38b26760bd1674aa29",
+    "triples":2553,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_COUNTRIESPOL+2006.1.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_COUNTRIESPOL+2008.1.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_COUNTRIESPOL+2008.1.rdf",
+    "content_length":224903,
+    "content_type":"application/rdf+xml",
+    "duplicates":14,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"c5800c3b0008f36cc0ed8397d4193ed0",
+    "triples":2563,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_COUNTRIESPOL+2008.1.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_COUNTRIESPOL+2009.1.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_COUNTRIESPOL+2009.1.rdf",
+    "content_length":224903,
+    "content_type":"application/rdf+xml",
+    "duplicates":14,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"69898c6fb0ea1c70475e927c57263f67",
+    "triples":2563,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_COUNTRIESPOL+2009.1.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_COUNTRIESPOL+2010.1.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_COUNTRIESPOL+2010.1.rdf",
+    "content_length":224841,
+    "content_type":"application/rdf+xml",
+    "duplicates":14,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"08ca5450792df6f98cfd26daff550f3a",
+    "triples":2562,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_COUNTRIESPOL+2010.1.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2000.1.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2000.1.rdf",
+    "content_length":3623132,
+    "content_type":"application/rdf+xml",
+    "duplicates":28,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"ffa8d19532623d458cef1bbe38b5ec2f",
+    "triples":39249,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2000.1.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2000.2.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2000.2.rdf",
+    "content_length":3619374,
+    "content_type":"application/rdf+xml",
+    "duplicates":28,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"e681454a275d656caf3464af0cfb21c1",
+    "triples":39208,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2000.2.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2001.1.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2001.1.rdf",
+    "content_length":3580709,
+    "content_type":"application/rdf+xml",
+    "duplicates":28,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"3f09bdb1c329d2639e2b381f3b429412",
+    "triples":38774,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2001.1.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2001.2.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2001.2.rdf",
+    "content_length":3578230,
+    "content_type":"application/rdf+xml",
+    "duplicates":28,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"0e28396f944397f2833fa5b263321f05",
+    "triples":38747,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2001.2.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2001.3.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2001.3.rdf",
+    "content_length":3572227,
+    "content_type":"application/rdf+xml",
+    "duplicates":28,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"c64a9ce39eb2569c32ebfb607d01da37",
+    "triples":38682,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2001.3.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2002.1.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2002.1.rdf",
+    "content_length":3562384,
+    "content_type":"application/rdf+xml",
+    "duplicates":28,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"f4ab738b00c5ebf3a34c08ee7d694f33",
+    "triples":38575,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2002.1.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2003.1.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2003.1.rdf",
+    "content_length":3518925,
+    "content_type":"application/rdf+xml",
+    "duplicates":28,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"e6bbcbb3db6d24805204c07e222bf239",
+    "triples":38093,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2003.1.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2003.2.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2003.2.rdf",
+    "content_length":3516441,
+    "content_type":"application/rdf+xml",
+    "duplicates":28,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"c003c4e3402e6c4156d6b5dbd3d05291",
+    "triples":38066,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2003.2.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2004.1.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2004.1.rdf",
+    "content_length":3485141,
+    "content_type":"application/rdf+xml",
+    "duplicates":28,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"bc01e9aa585795e216f32e3a148137d7",
+    "triples":37726,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2004.1.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2004.2.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2004.2.rdf",
+    "content_length":3443976,
+    "content_type":"application/rdf+xml",
+    "duplicates":28,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"e2d8c983918173b1f4d6e68c112d69c7",
+    "triples":37279,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2004.2.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2004.3.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2004.3.rdf",
+    "content_length":3442774,
+    "content_type":"application/rdf+xml",
+    "duplicates":28,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"1a32f9a78e65d937f1ea68734b9aa2ec",
+    "triples":37266,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2004.3.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2004.4.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2004.4.rdf",
+    "content_length":3436529,
+    "content_type":"application/rdf+xml",
+    "duplicates":28,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"3b11540bb3c1d9cc329fbed09a20303f",
+    "triples":37198,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2004.4.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2005.1.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2005.1.rdf",
+    "content_length":3421386,
+    "content_type":"application/rdf+xml",
+    "duplicates":28,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"231d7a110865304909a1739339bd64b8",
+    "triples":37033,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2005.1.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2005.2.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2005.2.rdf",
+    "content_length":3415239,
+    "content_type":"application/rdf+xml",
+    "duplicates":28,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"628f94db03c985736a344ea84b6ef2a6",
+    "triples":36966,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2005.2.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2006.1.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2006.1.rdf",
+    "content_length":3392331,
+    "content_type":"application/rdf+xml",
+    "duplicates":28,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"a7bc676d4e3dc731651278db836faedc",
+    "triples":36717,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2006.1.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2006.2.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2006.2.rdf",
+    "content_length":3388650,
+    "content_type":"application/rdf+xml",
+    "duplicates":28,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"dc8fed0dde0e74440c3fd8ae5b034737",
+    "triples":36677,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2006.2.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2006.3.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2006.3.rdf",
+    "content_length":3382568,
+    "content_type":"application/rdf+xml",
+    "duplicates":28,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"a7f0e6a6b13bdb415b01be3fbff86900",
+    "triples":36611,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2006.3.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2006.4.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2006.4.rdf",
+    "content_length":3338749,
+    "content_type":"application/rdf+xml",
+    "duplicates":28,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"2102f5bda964da01e91e81646dd39c3a",
+    "triples":36102,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2006.4.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2006.5.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2006.5.rdf",
+    "content_length":3331388,
+    "content_type":"application/rdf+xml",
+    "duplicates":28,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"eb0b9bea10e0936b984a9eeed92506f4",
+    "triples":36022,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2006.5.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2006.6.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2006.6.rdf",
+    "content_length":3331306,
+    "content_type":"application/rdf+xml",
+    "duplicates":28,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"df4468c6104c1c881ffd2813af63c353",
+    "triples":36021,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2006.6.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2007.1.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2007.1.rdf",
+    "content_length":3324728,
+    "content_type":"application/rdf+xml",
+    "duplicates":28,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"41bd3cea23d7d353092f929567308e20",
+    "triples":35949,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2007.1.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2008.1.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2008.1.rdf",
+    "content_length":3317189,
+    "content_type":"application/rdf+xml",
+    "duplicates":28,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"05ca9005fa6d617f088c3c3c2dc413ad",
+    "triples":35867,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2008.1.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2008.2.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2008.2.rdf",
+    "content_length":3305980,
+    "content_type":"application/rdf+xml",
+    "duplicates":28,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"7995c9477dce5001b98f28bf90e39277",
+    "triples":35745,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2008.2.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2009.1.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2009.1.rdf",
+    "content_length":3219669,
+    "content_type":"application/rdf+xml",
+    "duplicates":28,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"d066b6779524f1791dba1f04cc3f52b9",
+    "triples":34807,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2009.1.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2009.2.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2009.2.rdf",
+    "content_length":3213596,
+    "content_type":"application/rdf+xml",
+    "duplicates":28,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"921ef8e4a53a1dd044bf0a8344cce584",
+    "triples":34741,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2009.2.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2009.3.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2009.3.rdf",
+    "content_length":3205036,
+    "content_type":"application/rdf+xml",
+    "duplicates":28,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"e24fcbd4d3df3797c58f999eed5b5e20",
+    "triples":34648,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2009.3.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2010.1.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2010.1.rdf",
+    "content_length":3116888,
+    "content_type":"application/rdf+xml",
+    "duplicates":28,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"35d2be1fb63ca1f6a64ef0b3d1db174b",
+    "triples":33650,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2010.1.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2010.2.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2010.2.rdf",
+    "content_length":3107194,
+    "content_type":"application/rdf+xml",
+    "duplicates":28,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"abfec58d9ef469a9f1ff7b2f2a751f2b",
+    "triples":33545,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2010.2.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2010.3.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2010.3.rdf",
+    "content_length":3102320,
+    "content_type":"application/rdf+xml",
+    "duplicates":28,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"58fd815114d728fd5efbfa52aa5105e2",
+    "triples":33492,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2010.3.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2011.1.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2011.1.rdf",
+    "content_length":3062216,
+    "content_type":"application/rdf+xml",
+    "duplicates":28,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"93496fbf75f68c7c99bd4eedec927f80",
+    "triples":33057,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE+2011.1.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE_HIST+1.0.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE_HIST+1.0.rdf",
+    "content_length":6628964,
+    "content_type":"application/rdf+xml",
+    "duplicates":35,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"6c09c1fbecffbde850d1b20a0661f7de",
+    "triples":72741,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_GEWO_RN+HCL_HGDE_HIST+1.0.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/OFS_SI_UNS_UDEMO+CL_SEX_V01+1.0.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_UNS_UDEMO+CL_SEX_V01+1.0.rdf",
+    "content_length":7494,
+    "content_type":"application/rdf+xml",
+    "duplicates":0,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"460962ca84d9079e7a5a30eda6f4eb0d",
+    "triples":70,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/OFS_SI_UNS_UDEMO+CL_SEX_V01+1.0.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/OFS_WISTA_SUKO_GRP+CL_NOGA_TIC+1.0.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/OFS_WISTA_SUKO_GRP+CL_NOGA_TIC+1.0.rdf",
+    "content_length":27714,
+    "content_type":"application/rdf+xml",
+    "duplicates":0,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"a1841d5c28367ae9ec9c330482daa5a8",
+    "triples":279,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/OFS_WISTA_SUKO_GRP+CL_NOGA_TIC+1.0.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/OFS_WISTA_SUKO_GRP+HCL_HS_ICT_CH+1.0.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/OFS_WISTA_SUKO_GRP+HCL_HS_ICT_CH+1.0.rdf",
+    "content_length":269391,
+    "content_type":"application/rdf+xml",
+    "duplicates":14,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"170e78d2eb5a09481c55791e4db96d22",
+    "triples":2387,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/OFS_WISTA_SUKO_GRP+HCL_HS_ICT_CH+1.0.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/OFS_WISTA_VGR_GRP+HCL_ASSETS+1.0.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/OFS_WISTA_VGR_GRP+HCL_ASSETS+1.0.rdf",
+    "content_length":122860,
+    "content_type":"application/rdf+xml",
+    "duplicates":42,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"56f08267c657791fcdd209639179827a",
+    "triples":1249,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/OFS_WISTA_VGR_GRP+HCL_ASSETS+1.0.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/OFS_WISTA_VGR_GRP+HCL_BALANCINGITEMS+1.0.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/OFS_WISTA_VGR_GRP+HCL_BALANCINGITEMS+1.0.rdf",
+    "content_length":41376,
+    "content_type":"application/rdf+xml",
+    "duplicates":21,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"a0c5099fbb3e3969b982f0ffd5b5dbdd",
+    "triples":412,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/OFS_WISTA_VGR_GRP+HCL_BALANCINGITEMS+1.0.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/OFS_WISTA_VGR_GRP+HCL_COFOG+1.0.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/OFS_WISTA_VGR_GRP+HCL_COFOG+1.0.rdf",
+    "content_length":108954,
+    "content_type":"application/rdf+xml",
+    "duplicates":14,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"7dd60af0a3e7997ead30da39996be593",
+    "triples":1072,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/OFS_WISTA_VGR_GRP+HCL_COFOG+1.0.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/OFS_WISTA_VGR_GRP+HCL_COICOP+1.0.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/OFS_WISTA_VGR_GRP+HCL_COICOP+1.0.rdf",
+    "content_length":69528,
+    "content_type":"application/rdf+xml",
+    "duplicates":14,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"0c256400ee2ec1820487d9fcde8f2240",
+    "triples":699,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/OFS_WISTA_VGR_GRP+HCL_COICOP+1.0.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/OFS_WISTA_VGR_GRP+HCL_INSTSECTORS+1.0.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/OFS_WISTA_VGR_GRP+HCL_INSTSECTORS+1.0.rdf",
+    "content_length":86038,
+    "content_type":"application/rdf+xml",
+    "duplicates":35,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"9fa58ad4484732c85917161dde216700",
+    "triples":856,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/OFS_WISTA_VGR_GRP+HCL_INSTSECTORS+1.0.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/OFS_WISTA_VGR_GRP+HCL_TRANSACTIONS+1.0.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/OFS_WISTA_VGR_GRP+HCL_TRANSACTIONS+1.0.rdf",
+    "content_length":229854,
+    "content_type":"application/rdf+xml",
+    "duplicates":42,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"8b8c7cb14d80aedac44d6c331ec427ea",
+    "triples":2261,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/OFS_WISTA_VGR_GRP+HCL_TRANSACTIONS+1.0.rdf"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/bfs.exactMatch.dbpedia.nt": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/bfs.exactMatch.dbpedia.nt",
+    "content_length":40706,
+    "content_type":"application/n-triples",
+    "duplicates":0,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"e6ce1a0fb730ac59acab4bbe64071bc7",
+    "triples":261,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/bfs.exactMatch.dbpedia.nt"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/bfs.exactMatch.ecb.nt": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/bfs.exactMatch.ecb.nt",
+    "content_length":35360,
+    "content_type":"application/n-triples",
+    "duplicates":0,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"cfc6ed15550dbf765bcbe15c5b9f3c2a",
+    "triples":221,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/bfs.exactMatch.ecb.nt"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/bfs.exactMatch.eurostat.nt": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/bfs.exactMatch.eurostat.nt",
+    "content_length":30525,
+    "content_type":"application/n-triples",
+    "duplicates":0,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"038170d352847c5d69f81a73b6af4289",
+    "triples":185,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/bfs.exactMatch.eurostat.nt"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/bfs.exactMatch.geonames.nt": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/bfs.exactMatch.geonames.nt",
+    "content_length":32723,
+    "content_type":"application/n-triples",
+    "duplicates":0,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"4d6e31d40abe21248555fab73ff1b412",
+    "triples":220,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/bfs.exactMatch.geonames.nt"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/bfs.exactMatch.hr.nt": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/bfs.exactMatch.hr.nt",
+    "content_length":38401,
+    "content_type":"application/n-triples",
+    "duplicates":0,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"5cb171aa7f9e9ffa2d35ec7c94188359",
+    "triples":211,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/bfs.exactMatch.hr.nt"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/bfs.exactMatch.imf.nt": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/bfs.exactMatch.imf.nt",
+    "content_length":3768,
+    "content_type":"application/n-triples",
+    "duplicates":0,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"aa24af1fadbe4724c4ad18c5b0d81849",
+    "triples":24,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/bfs.exactMatch.imf.nt"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/bfs.exactMatch.worldbank.nt": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/bfs.exactMatch.worldbank.nt",
+    "content_length":31265,
+    "content_type":"application/n-triples",
+    "duplicates":0,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"93678afa3d9cbbecc01603a93e2b0d9e",
+    "triples":185,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/bfs.exactMatch.worldbank.nt"
+  },
+  "http://bfs.270a.info/data/meta.tar.gz/bfs.prov.retrieval.rdf": {
+    "base_iri":"http://bfs.270a.info/data/meta.tar.gz/bfs.prov.retrieval.rdf",
+    "content_length":136696,
+    "content_type":"application/rdf+xml",
+    "duplicates":0,
+    "last_modified":"Fri, 07 Mar 2014 02:46:00 GMT",
+    "md5":"17dd40329ea14c3a1385811629cb8fba",
+    "triples":1100,
+    "url":"http://bfs.270a.info/data/meta.tar.gz/bfs.prov.retrieval.rdf"
+  },
+  "http://bibleontology.com/data/Dan?output=n3": {
+    "content_type":"text/rdf+n3;charset=utf-8",
+    "md5":"bc2901f9ff1756b162e5a17e47b6a26e",
+    "url":"http://bibleontology.com/data/Dan?output=n3"
+  },
+  "http://bibleontology.com/data/Dan?output=nt": {
+    "content_type":"text/plain",
+    "md5":"b47c155e6e1a9c847c90285050ba0ab5",
+    "url":"http://bibleontology.com/data/Dan?output=nt"
+  },
+  "http://bibleontology.com/data/Dan?output=rdfxml": {
+    "content_type":"application/rdf+xml",
+    "md5":"095b11a9bdfd4af3a8a8257473e1ebe5",
+    "url":"http://bibleontology.com/data/Dan?output=rdfxml"
+  },
+  "http://bibleontology.com/resource/Moses": {
+    "content_type":"application/rdf+xml",
+    "md5":"5c8d3461aec3980775e79040661b83d8",
+    "url":"http://bibleontology.com/resource/Moses"
+  },
+  "http://biennaledemocrazia.it/scheda-dataset-5t_fdt/": {
+    "content_type":"text/html; charset=UTF-8",
+    "md5":"c95668dec5c3f96a8526fc375d44c957",
+    "url":"http://biennaledemocrazia.it/scheda-dataset-5t_fdt/"
+  },
+  "http://bio2rdf.org/affymetrix:AF306400.1_x_at": {
+    "content_type":"text/html; charset=UTF-8",
+    "md5":"531c0106e2a3b0afe97035f41135f7eb",
+    "url":"http://bio2rdf.org/affymetrix:AF306400.1_x_at"
+  },
+  "http://bio2rdf.org/hgnc:hxk1": {
+    "content_type":"text/html; charset=UTF-8",
+    "md5":"32814bc748dd6e90244a9a2018132ea0",
+    "url":"http://bio2rdf.org/hgnc:hxk1"
+  },
+  "http://bio2rdf.org/homologene:813": {
+    "content_type":"text/html; charset=UTF-8",
+    "md5":"429de21e6e56be7fc0ec28a740dea31c",
+    "url":"http://bio2rdf.org/homologene:813"
+  },
+  "http://bio2rdf.org/interpro:IPR013315": {
+    "content_type":"text/html; charset=UTF-8",
+    "md5":"674f08039170b9f33b9451f96f89f057",
+    "url":"http://bio2rdf.org/interpro:IPR013315"
+  },
+  "http://bio2rdf.org/rdfxml/genbank:BC062795": {
+    "content_type":"application/rdf+xml",
+    "md5":"a82be05a61ae20c2999ea2d01c76392f",
+    "url":"http://bio2rdf.org/rdfxml/genbank:BC062795"
+  },
+  "http://bioimages.vanderbilt.edu/index.rdf": {
+    "content_length":3657,
+    "content_type":"application/rdf+xml",
+    "last_modified":"Sat, 11 Feb 2012 17:22:36 GMT",
+    "md5":"747f053acfb41086e289950e1be64e15",
+    "messages": ["No RDF in 'http://bioimages.vanderbilt.edu/index.rdf'" ],
+    "url":"http://bioimages.vanderbilt.edu/index.rdf"
+  },
+  "http://biolit.rkbexplorer.com/id/person-SHAKESPEARE_WILLIAM_(1564-1616)": {
+    "base_iri":"http://biolit.rkbexplorer.com/id/person-SHAKESPEARE_WILLIAM_(1564-1616)",
+    "content_length":17718,
+    "content_type":"application/rdf+xml",
+    "duplicates":0,
+    "last_modified":"Wed, 23 Apr 2014 10:00:19 GMT",
+    "md5":"6f9f9bbe935c5770582990e05451b7ee",
+    "triples":10,
+    "url":"http://biolit.rkbexplorer.com/id/person-SHAKESPEARE_WILLIAM_(1564-1616)"
+  },
+  "http://biolit.rkbexplorer.com/models/void.ttl": {
+    "base_iri":"http://biolit.rkbexplorer.com/models/void.ttl",
+    "content_length":3323,
+    "content_type":"text/turtle",
+    "duplicates":0,
+    "last_modified":"Mon, 13 Sep 2010 10:30:30 GMT",
+    "md5":"c368e5f37b7568f5cab7bf089fb71895",
+    "triples":46,
+    "url":"http://biolit.rkbexplorer.com/models/void.ttl"
+  },
+  "http://bnb.data.bl.uk/doc/resource/006893251.json": {
+    "content_length":2905,
+    "content_type":"application/json",
+    "last_modified":"Tue, 06 May 2014 14:35:00 GMT",
+    "md5":"bbf4feb4fc76b1c818149ec13cb5b1c5",
+    "messages": ["No RDF in 'http://bnb.data.bl.uk/doc/resource/006893251.json'" ],
+    "url":"http://bnb.data.bl.uk/doc/resource/006893251.json"
+  },
+  "http://bnb.data.bl.uk/doc/resource/006893251.rdf": {
+    "base_iri":"http://bnb.data.bl.uk/doc/resource/006893251.rdf",
+    "content_length":5933,
+    "content_type":"application/rdf+xml",
+    "duplicates":0,
+    "last_modified":"Tue, 06 May 2014 14:35:01 GMT",
+    "md5":"1a42f89386ad32bd4a11d343b9a8e040",
+    "triples":45,
+    "url":"http://bnb.data.bl.uk/doc/resource/006893251.rdf"
+  },
+  "http://bnb.data.bl.uk/doc/resource/006893251.ttl": {
+    "base_iri":"http://bnb.data.bl.uk/doc/resource/006893251.ttl",
+    "content_length":5786,
+    "content_type":"text/turtle",
+    "duplicates":0,
+    "last_modified":"Tue, 06 May 2014 14:35:03 GMT",
+    "md5":"969ffd47bc89744e81ab0265735135e0",
+    "triples":45,
+    "url":"http://bnb.data.bl.uk/doc/resource/006893251.ttl"
+  },
+  "http://bnb.data.bl.uk/id/agent/%C3%89ditionsdeLaMartini%C3%A8re": {
+    "content_type":"text/html",
+    "md5":"db162981a6222a934b78f68848ec9479",
+    "url":"http://bnb.data.bl.uk/id/agent/%C3%89ditionsdeLaMartini%C3%A8re"
+  },
+  "http://budapest.rkbexplorer.com/id/person-0eae26b92535edf8537257d195f5e5d3": {
+    "base_iri":"http://budapest.rkbexplorer.com/id/person-0eae26b92535edf8537257d195f5e5d3",
+    "content_length":15404,
+    "content_type":"application/rdf+xml",
+    "duplicates":0,
+    "last_modified":"Mon, 05 May 2014 21:46:43 GMT",
+    "md5":"d4eda0e7145ceae0117df69d29b24320",
+    "triples":76,
+    "url":"http://budapest.rkbexplorer.com/id/person-0eae26b92535edf8537257d195f5e5d3"
+  },
+  "http://budapest.rkbexplorer.com/models/dump.tgz/models/budapest-people.rdf": {
+    "base_iri":"http://budapest.rkbexplorer.com/models/dump.tgz/models/budapest-people.rdf",
+    "content_length":16281,
+    "content_type":"application/rdf+xml",
+    "duplicates":0,
+    "last_modified":"Tue, 03 Jul 2012 16:07:35 GMT",
+    "md5":"25910f91a8e4514a0f120c7dd69d150d",
+    "triples":183,
+    "url":"http://budapest.rkbexplorer.com/models/dump.tgz/models/budapest-people.rdf"
+  },
+  "http://budapest.rkbexplorer.com/models/dump.tgz/models/budapest-publications-1993.rdf": {
+    "base_iri":"http://budapest.rkbexplorer.com/models/dump.tgz/models/budapest-publications-1993.rdf",
+    "content_length":3511,
+    "content_type":"application/rdf+xml",
+    "duplicates":0,
+    "last_modified":"Tue, 03 Jul 2012 16:07:35 GMT",
+    "md5":"47d2a7d89ef025d0d082c45a7fda0d5a",
+    "triples":33,
+    "url":"http://budapest.rkbexplorer.com/models/dump.tgz/models/budapest-publications-1993.rdf"
+  },
+  "http://budapest.rkbexplorer.com/models/dump.tgz/models/budapest-publications-1994.rdf": {
+    "base_iri":"http://budapest.rkbexplorer.com/models/dump.tgz/models/budapest-publications-1994.rdf",
+    "content_length":7231,
+    "content_type":"application/rdf+xml",
+    "duplicates":13,
+    "last_modified":"Tue, 03 Jul 2012 16:07:35 GMT",
+    "md5":"fa78f46eac26a0c4647bbfa044284a30",
+    "triples":64,
+    "url":"http://budapest.rkbexplorer.com/models/dump.tgz/models/budapest-publications-1994.rdf"
+  },
+  "http://budapest.rkbexplorer.com/models/dump.tgz/models/budapest-publications-1995.rdf": {
+    "base_iri":"http://budapest.rkbexplorer.com/models/dump.tgz/models/budapest-publications-1995.rdf",
+    "content_length":3138,
+    "content_type":"application/rdf+xml",
+    "duplicates":0,
+    "last_modified":"Tue, 03 Jul 2012 16:07:35 GMT",
+    "md5":"aeaf2a4f0053ec9e6646152b5057b1b1",
+    "triples":28,
+    "url":"http://budapest.rkbexplorer.com/models/dump.tgz/models/budapest-publications-1995.rdf"
+  },
+  "http://budapest.rkbexplorer.com/models/dump.tgz/models/budapest-publications-1996.rdf": {
+    "base_iri":"http://budapest.rkbexplorer.com/models/dump.tgz/models/budapest-publications-1996.rdf",
+    "content_length":9899,
+    "content_type":"application/rdf+xml",
+    "duplicates":20,
+    "last_modified":"Tue, 03 Jul 2012 16:07:35 GMT",
+    "md5":"7e1c50afed603d543fb49d531952d3d5",
+    "triples":84,
+    "url":"http://budapest.rkbexplorer.com/models/dump.tgz/models/budapest-publications-1996.rdf"
+  },
+  "http://budapest.rkbexplorer.com/models/dump.tgz/models/budapest-publications-1997.rdf": {
+    "base_iri":"http://budapest.rkbexplorer.com/models/dump.tgz/models/budapest-publications-1997.rdf",
+    "content_length":3768,
+    "content_type":"application/rdf+xml",
+    "duplicates":0,
+    "last_modified":"Tue, 03 Jul 2012 16:07:35 GMT",
+    "md5":"2e0b841af9ca212d79dd8da5fe52777c",
+    "triples":37,
+    "url":"http://budapest.rkbexplorer.com/models/dump.tgz/models/budapest-publications-1997.rdf"
+  },
+  "http://budapest.rkbexplorer.com/models/dump.tgz/models/budapest-publications-1998.rdf": {
+    "base_iri":"http://budapest.rkbexplorer.com/models/dump.tgz/models/budapest-publications-1998.rdf",
+    "content_length":8009,
+    "content_type":"application/rdf+xml",
+    "duplicates":16,
+    "last_modified":"Tue, 03 Jul 2012 16:07:35 GMT",
+    "md5":"78d1e938024f387c815b5f0acd1a19c7",
+    "triples":64,
+    "url":"http://budapest.rkbexplorer.com/models/dump.tgz/models/budapest-publications-1998.rdf"
+  },
+  "http://budapest.rkbexplorer.com/models/dump.tgz/models/budapest-publications-1999.rdf": {
+    "base_iri":"http://budapest.rkbexplorer.com/models/dump.tgz/models/budapest-publications-1999.rdf",
+    "content_length":13534,
+    "content_type":"application/rdf+xml",
+    "duplicates":37,
+    "last_modified":"Tue, 03 Jul 2012 16:07:35 GMT",
+    "md5":"913e90dabb221f43061a69d4f5a06f13",
+    "triples":110,
+    "url":"http://budapest.rkbexplorer.com/models/dump.tgz/models/budapest-publications-1999.rdf"
+  },
+  "http://budapest.rkbexplorer.com/models/dump.tgz/models/budapest-publications-2000.rdf": {
+    "base_iri":"http://budapest.rkbexplorer.com/models/dump.tgz/models/budapest-publications-2000.rdf",
+    "content_length":13574,
+    "content_type":"application/rdf+xml",
+    "duplicates":29,
+    "last_modified":"Tue, 03 Jul 2012 16:07:35 GMT",
+    "md5":"a40189114df08ab4abca33a10b379911",
+    "triples":111,
+    "url":"http://budapest.rkbexplorer.com/models/dump.tgz/models/budapest-publications-2000.rdf"
+  },
+  "http://budapest.rkbexplorer.com/models/dump.tgz/models/budapest-publications-2001.rdf": {
+    "base_iri":"http://budapest.rkbexplorer.com/models/dump.tgz/models/budapest-publications-2001.rdf",
+    "content_length":13269,
+    "content_type":"application/rdf+xml",
+    "duplicates":26,
+    "last_modified":"Tue, 03 Jul 2012 16:07:35 GMT",
+    "md5":"269376d24c05d8ca889fb3e23c24375b",
+    "triples":116,
+    "url":"http://budapest.rkbexplorer.com/models/dump.tgz/models/budapest-publications-2001.rdf"
+  },
+  "http://budapest.rkbexplorer.com/models/dump.tgz/models/budapest-publications-2002.rdf": {
+    "base_iri":"http://budapest.rkbexplorer.com/models/dump.tgz/models/budapest-publications-2002.rdf",
+    "content_length":41246,
+    "content_type":"application/rdf+xml",
+    "duplicates":119,
+    "last_modified":"Tue, 03 Jul 2012 16:07:35 GMT",
+    "md5":"b495cd28807e43ab43b6f0682bac9e8d",
+    "triples":339,
+    "url":"http://budapest.rkbexplorer.com/models/dump.tgz/models/budapest-publications-2002.rdf"
+  },
+  "http://budapest.rkbexplorer.com/models/dump.tgz/models/budapest-publications-2003.rdf": {
+    "base_iri":"http://budapest.rkbexplorer.com/models/dump.tgz/models/budapest-publications-2003.rdf",
+    "content_length":37616,
+    "content_type":"application/rdf+xml",
+    "duplicates":127,
+    "last_modified":"Tue, 03 Jul 2012 16:07:35 GMT",
+    "md5":"6720fa6255d4a7f19cb998c8274f6485",
+    "triples":296,
+    "url":"http://budapest.rkbexplorer.com/models/dump.tgz/models/budapest-publications-2003.rdf"
+  },
+  "http://budapest.rkbexplorer.com/models/dump.tgz/models/budapest-publications-2004.rdf": {
+    "base_iri":"http://budapest.rkbexplorer.com/models/dump.tgz/models/budapest-publications-2004.rdf",
+    "content_length":35894,
+    "content_type":"application/rdf+xml",
+    "duplicates":114,
+    "last_modified":"Tue, 03 Jul 2012 16:07:35 GMT",
+    "md5":"e38ef4f009cc70c7e9e480c1d0f657bb",
+    "triples":278,
+    "url":"http://budapest.rkbexplorer.com/models/dump.tgz/models/budapest-publications-2004.rdf"
+  },
+  "http://budapest.rkbexplorer.com/models/dump.tgz/models/budapest-publications-2005.rdf": {
+    "base_iri":"http://budapest.rkbexplorer.com/models/dump.tgz/models/budapest-publications-2005.rdf",
+    "content_length":47684,
+    "content_type":"application/rdf+xml",
+    "duplicates":163,
+    "last_modified":"Tue, 03 Jul 2012 16:07:35 GMT",
+    "md5":"92085a4ede565aff4a593da23c1c51d9",
+    "triples":378,
+    "url":"http://budapest.rkbexplorer.com/models/dump.tgz/models/budapest-publications-2005.rdf"
+  },
+  "http://budapest.rkbexplorer.com/models/dump.tgz/models/budapest-publications-2006.rdf": {
+    "base_iri":"http://budapest.rkbexplorer.com/models/dump.tgz/models/budapest-publications-2006.rdf",
+    "content_length":36960,
+    "content_type":"application/rdf+xml",
+    "duplicates":110,
+    "last_modified":"Tue, 03 Jul 2012 16:07:35 GMT",
+    "md5":"f8f506d3ad45fa6976daaf71a5141044",
+    "triples":297,
+    "url":"http://budapest.rkbexplorer.com/models/dump.tgz/models/budapest-publications-2006.rdf"
+  },
+  "http://budapest.rkbexplorer.com/models/void.ttl": {
+    "base_iri":"http://budapest.rkbexplorer.com/models/void.ttl",
+    "content_length":10684,
+    "content_type":"text/turtle",
+    "duplicates":0,
+    "last_modified":"Mon, 13 Sep 2010 10:30:46 GMT",
+    "md5":"5fa879cf02ff6ecc3e955704d2539853",
+    "triples":249,
+    "url":"http://budapest.rkbexplorer.com/models/void.ttl"
+  },
+  "http://cau.eagle-i.net/i/00000136-5584-606a-982a-4eef80000000?format=application/xml": {
+    "content_type":"application/xml;charset=UTF-8",
+    "md5":"9a54c8b2b48842b6019b01bf3aeabc75",
+    "url":"http://cau.eagle-i.net/i/00000136-5584-606a-982a-4eef80000000?format=application/xml"
+  },
+  "http://cb.semsol.org/sparql?query=dump": {
+    "content_type":"text/html",
+    "md5":"7c4cf48fffbbd67e7d1e9cf945ce0848",
+    "url":"http://cb.semsol.org/sparql?query=dump"
+  },
+  "http://cbasewrap.ontologycentral.com/company/facebook#id": {
+    "content_type":"application/rdf+xml",
+    "md5":"9a2cbb712ab4a19988eada303c4b7064",
+    "url":"http://cbasewrap.ontologycentral.com/company/facebook#id"
+  },
+  "http://cbasewrap.ontologycentral.com/company/ibm#id": {
+    "content_type":"application/rdf+xml",
+    "md5":"307d05383a58b803e45888abb42793d4",
+    "url":"http://cbasewrap.ontologycentral.com/company/ibm#id"
+  },
+  "http://cbasewrap.ontologycentral.com/person/sheryl-sandberg#id": {
+    "content_type":"application/rdf+xml",
+    "md5":"1b103b284a6a58c3cf3a87f83dec2e3f",
+    "url":"http://cbasewrap.ontologycentral.com/person/sheryl-sandberg#id"
+  },
+  "http://ccny-cuny.eagle-i.net/i/00000137-569a-e8ff-bb24-040880000000?format=application/xml": {
+    "content_type":"application/xml;charset=UTF-8",
+    "md5":"2d90d938aaf9f7df58bfe5b527734822",
+    "url":"http://ccny-cuny.eagle-i.net/i/00000137-569a-e8ff-bb24-040880000000?format=application/xml"
+  },
+  "http://cdrewu.eagle-i.net/i/00000136-0972-1715-1a88-e81c80000000?format=application/xml": {
+    "content_type":"application/xml;charset=UTF-8",
+    "md5":"8e2341626d1b2f923d8f671996439966",
+    "url":"http://cdrewu.eagle-i.net/i/00000136-0972-1715-1a88-e81c80000000?format=application/xml"
+  },
+  "http://chem2bio2rdf.org/download": {
+    "content_length":7867,
+    "content_type":"text/html;charset=UTF-8",
+    "md5":"59e6f6d8a57584e0c4ae647f72c69a79",
+    "url":"http://chem2bio2rdf.org/download"
+  },
+  "http://chroniclingamerica.loc.gov/awardees/mohi.rdf": {
+    "content_type":"application/rdf+xml",
+    "md5":"067130a6f4a5df194d26700a6869de1d",
+    "url":"http://chroniclingamerica.loc.gov/awardees/mohi.rdf"
+  },
+  "http://chroniclingamerica.loc.gov/lccn/sn83030214/1905-01-15/ed-1/seq-25.rdf": {
+    "content_type":"application/rdf+xml",
+    "md5":"3108176d9328c5f625d75d9b6c612a7d",
+    "url":"http://chroniclingamerica.loc.gov/lccn/sn83030214/1905-01-15/ed-1/seq-25.rdf"
+  },
+  "http://chroniclingamerica.loc.gov/lccn/sn83045555/1889-11-21/ed-1.rdf": {
+    "content_type":"application/rdf+xml",
+    "md5":"6537affe0401951f733eb38d91fa384e",
+    "url":"http://chroniclingamerica.loc.gov/lccn/sn83045555/1889-11-21/ed-1.rdf"
+  },
+  "http://chroniclingamerica.loc.gov/lccn/sn85038615.rdf": {
+    "content_type":"application/rdf+xml",
+    "md5":"be526531f8ceb88778844a568e249e9b",
+    "url":"http://chroniclingamerica.loc.gov/lccn/sn85038615.rdf"
+  },
+  "http://citeseer.rkbexplorer.com/id/resource-CSP26378": {
+    "base_iri":"http://citeseer.rkbexplorer.com/id/resource-CSP26378",
+    "content_length":1125,
+    "content_type":"application/rdf+xml",
+    "duplicates":0,
+    "last_modified":"Sat, 26 Apr 2014 08:04:32 GMT",
+    "md5":"579565eea44868132494fbb1d9d560a5",
+    "triples":5,
+    "url":"http://citeseer.rkbexplorer.com/id/resource-CSP26378"
+  },
+  "http://citeseer.rkbexplorer.com/models/dump.tgz/models/cs_metadata_1.rdf": {
+    "base_iri":"http://citeseer.rkbexplorer.com/models/dump.tgz/models/cs_metadata_1.rdf",
+    "content_length":139394789,
+    "content_type":"application/rdf+xml",
+    "duplicates":882666,
+    "last_modified":"Tue, 03 Jul 2012 16:07:40 GMT",
+    "md5":"b5d0401994f6cedcf2afe64a06386fc9",
+    "triples":948574,
+    "url":"http://citeseer.rkbexplorer.com/models/dump.tgz/models/cs_metadata_1.rdf"
+  },
+  "http://citeseer.rkbexplorer.com/models/dump.tgz/models/cs_metadata_2.rdf": {
+    "base_iri":"http://citeseer.rkbexplorer.com/models/dump.tgz/models/cs_metadata_2.rdf",
+    "content_length":140078162,
+    "content_type":"application/rdf+xml",
+    "duplicates":824337,
+    "last_modified":"Tue, 03 Jul 2012 16:07:40 GMT",
+    "md5":"2781062599a42433d73bebbe12ad5f12",
+    "triples":1013225,
+    "url":"http://citeseer.rkbexplorer.com/models/dump.tgz/models/cs_metadata_2.rdf"
+  },
+  "http://citeseer.rkbexplorer.com/models/dump.tgz/models/cs_metadata_3.rdf": {
+    "base_iri":"http://citeseer.rkbexplorer.com/models/dump.tgz/models/cs_metadata_3.rdf",
+    "content_length":143755491,
+    "content_type":"application/rdf+xml",
+    "duplicates":751160,
+    "last_modified":"Tue, 03 Jul 2012 16:07:40 GMT",
+    "md5":"1f49405fe50b8d96edf4dbd2fd10002f",
+    "triples":1123354,
+    "url":"http://citeseer.rkbexplorer.com/models/dump.tgz/models/cs_metadata_3.rdf"
+  },
+  "http://citeseer.rkbexplorer.com/models/dump.tgz/models/cs_metadata_4.rdf": {
+    "base_iri":"http://citeseer.rkbexplorer.com/models/dump.tgz/models/cs_metadata_4.rdf",
+    "content_length":146305879,
+    "content_type":"application/rdf+xml",
+    "duplicates":750387,
+    "last_modified":"Tue, 03 Jul 2012 16:07:40 GMT",
+    "md5":"dead636fe61e6507f944e7218f809451",
+    "triples":1153452,
+    "url":"http://citeseer.rkbexplorer.com/models/dump.tgz/models/cs_metadata_4.rdf"
+  },
+  "http://citeseer.rkbexplorer.com/models/dump.tgz/models/cs_metadata_5.rdf": {
+    "base_iri":"http://citeseer.rkbexplorer.com/models/dump.tgz/models/cs_metadata_5.rdf",
+    "content_length":148626917,
+    "content_type":"application/rdf+xml",
+    "duplicates":742626,
+    "last_modified":"Tue, 03 Jul 2012 16:07:40 GMT",
+    "md5":"24fabf8fd2f9ecd8992c951eddae14a7",
+    "triples":1187261,
+    "url":"http://citeseer.rkbexplorer.com/models/dump.tgz/models/cs_metadata_5.rdf"
+  },
+  "http://citeseer.rkbexplorer.com/models/dump.tgz/models/cs_metadata_6.rdf": {
+    "base_iri":"http://citeseer.rkbexplorer.com/models/dump.tgz/models/cs_metadata_6.rdf",
+    "content_length":109945894,
+    "content_type":"application/rdf+xml",
+    "duplicates":571502,
+    "last_modified":"Tue, 03 Jul 2012 16:07:40 GMT",
+    "md5":"f8e4c257e61044f70421156547b8b3da",
+    "triples":856369,
+    "url":"http://citeseer.rkbexplorer.com/models/dump.tgz/models/cs_metadata_6.rdf"
+  },
+  "http://citeseer.rkbexplorer.com/models/void.ttl": {
+    "base_iri":"http://citeseer.rkbexplorer.com/models/void.ttl",
+    "content_length":14339,
+    "content_type":"text/turtle",
+    "duplicates":0,
+    "last_modified":"Sun, 01 Jul 2012 15:08:18 GMT",
+    "md5":"2c1af44fb3179ab43f12064c983ae706",
+    "triples":331,
+    "url":"http://citeseer.rkbexplorer.com/models/void.ttl"
+  },
+  "http://ckan.net/storage/f/file/12be3509-4cd1-4fc5-8c95-d0d3a7121766": {
+    "base_iri":"http://ckan.net/storage/f/file/12be3509-4cd1-4fc5-8c95-d0d3a7121766",
+    "content_length":204251,
+    "content_type":"application/trig",
+    "duplicates":1,
+    "last_modified":"Fri, 15 Jul 2011 08:48:51 GMT",
+    "md5":"2da5b9d126d828ef9fb61f86677f894a",
+    "triples":2139,
+    "url":"http://ckan.net/storage/f/file/12be3509-4cd1-4fc5-8c95-d0d3a7121766"
+  },
+  "http://ckan.net/storage/f/file/595da299-ec63-427c-8d04-5ef618e7fd71": {
+    "content_length":514585,
+    "content_type":"text/xml",
+    "last_modified":"Wed, 29 Jun 2011 14:32:40 GMT",
+    "md5":"c3c9326a217e821e963b3c8f09e4e947",
+    "messages": [
+      "No RDF in 'http://ckan.net/storage/f/file/595da299-ec63-427c-8d04-5ef618e7fd71'"
+    ],
+    "url":"http://ckan.net/storage/f/file/595da299-ec63-427c-8d04-5ef618e7fd71"
+  },
+  "http://ckan.net/storage/f/file/7385068f-e6ca-4400-a61c-d910cf188f0f": {
+    "base_iri":"http://ckan.net/storage/f/file/7385068f-e6ca-4400-a61c-d910cf188f0f",
+    "content_length":118125,
+    "content_type":"application/n-triples",
+    "duplicates":0,
+    "last_modified":"Sun, 14 Aug 2011 21:35:03 GMT",
+    "md5":"99cedac20080544471fea25d0d0a218a",
+    "triples":846,
+    "url":"http://ckan.net/storage/f/file/7385068f-e6ca-4400-a61c-d910cf188f0f"
+  },
+  "http://ckan.net/storage/f/file/80d5f096-e1ad-489f-9ff4-793e6f5f04d2": {
+    "base_iri":"http://ckan.net/storage/f/file/80d5f096-e1ad-489f-9ff4-793e6f5f04d2",
+    "content_length":2074242,
+    "content_type":"application/trig",
+    "duplicates":10,
+    "last_modified":"Fri, 15 Jul 2011 08:52:24 GMT",
+    "md5":"f1e63c35980f6666ec006f114d82417c",
+    "triples":32112,
+    "url":"http://ckan.net/storage/f/file/80d5f096-e1ad-489f-9ff4-793e6f5f04d2"
+  },
+  "http://ckan.net/storage/f/file/ac235324-8c78-4cbe-b1e5-a91574f7c570": {
+    "base_iri":"http://ckan.net/storage/f/file/ac235324-8c78-4cbe-b1e5-a91574f7c570",
+    "content_length":51297,
+    "content_type":"application/n-triples",
+    "duplicates":0,
+    "last_modified":"Sun, 14 Aug 2011 21:33:18 GMT",
+    "md5":"95a3b7c5750347e88624381e0ed9b458",
+    "triples":409,
+    "url":"http://ckan.net/storage/f/file/ac235324-8c78-4cbe-b1e5-a91574f7c570"
+  },
+  "http://ckan.net/storage/f/file/d63ff6eb-d6fd-43fb-b713-02593010ebdc": {
+    "content_length":43233,
+    "content_type":"application/octet-stream",
+    "last_modified":"Sun, 14 Aug 2011 21:36:43 GMT",
+    "md5":"411db51137d2b96e21997096bfba551a",
+    "messages": [
+      "No RDF in 'http://ckan.net/storage/f/file/d63ff6eb-d6fd-43fb-b713-02593010ebdc'"
+    ],
+    "url":"http://ckan.net/storage/f/file/d63ff6eb-d6fd-43fb-b713-02593010ebdc"
+  },
+  "http://ckan.net/storage/f/file/e25b0ab3-04cf-442e-abaf-910321e9058f/matching Triples_28062011/MAPPINGS_Agrovoc_TheSoz_v0_2.nt": {
+    "base_iri":"http://ckan.net/storage/f/file/e25b0ab3-04cf-442e-abaf-910321e9058f/matching Triples_28062011/MAPPINGS_Agrovoc_TheSoz_v0_2.nt",
+    "content_length":118125,
+    "content_type":"application/n-triples",
+    "duplicates":0,
+    "last_modified":"Wed, 29 Jun 2011 11:50:32 GMT",
+    "md5":"7bcaf811dd84e8b8c90b715f2c5d8b45",
+    "triples":846,
+    "url":"http://ckan.net/storage/f/file/e25b0ab3-04cf-442e-abaf-910321e9058f/matching Triples_28062011/MAPPINGS_Agrovoc_TheSoz_v0_2.nt"
+  },
+  "http://ckan.net/storage/f/file/e25b0ab3-04cf-442e-abaf-910321e9058f/matching Triples_28062011/dbpedia_mappings.nt": {
+    "base_iri":"http://ckan.net/storage/f/file/e25b0ab3-04cf-442e-abaf-910321e9058f/matching Triples_28062011/dbpedia_mappings.nt",
+    "content_length":133731,
+    "content_type":"application/n-triples",
+    "duplicates":0,
+    "last_modified":"Wed, 29 Jun 2011 11:50:32 GMT",
+    "md5":"ee790f29d4602846317fc5d6408f7f1a",
+    "triples":993,
+    "url":"http://ckan.net/storage/f/file/e25b0ab3-04cf-442e-abaf-910321e9058f/matching Triples_28062011/dbpedia_mappings.nt"
+  },
+  "http://ckan.net/storage/f/file/e25b0ab3-04cf-442e-abaf-910321e9058f/matching Triples_28062011/mappings.nt": {
+    "base_iri":"http://ckan.net/storage/f/file/e25b0ab3-04cf-442e-abaf-910321e9058f/matching Triples_28062011/mappings.nt",
+    "content_length":2541915,
+    "content_type":"application/n-triples",
+    "duplicates":0,
+    "last_modified":"Wed, 29 Jun 2011 11:50:32 GMT",
+    "md5":"5efedfdcb04b5e06aa63d28eac54b79a",
+    "triples":18107,
+    "url":"http://ckan.net/storage/f/file/e25b0ab3-04cf-442e-abaf-910321e9058f/matching Triples_28062011/mappings.nt"
+  },
+  "http://ckan.net/storage/f/file/e25b0ab3-04cf-442e-abaf-910321e9058f/matching Triples_28062011/rameau_mappings.nt": {
+    "base_iri":"http://ckan.net/storage/f/file/e25b0ab3-04cf-442e-abaf-910321e9058f/matching Triples_28062011/rameau_mappings.nt",
+    "content_length":110022,
+    "content_type":"application/n-triples",
+    "duplicates":0,
+    "last_modified":"Wed, 29 Jun 2011 11:50:32 GMT",
+    "md5":"09110a138b77777534d7b06468bad08e",
+    "triples":686,
+    "url":"http://ckan.net/storage/f/file/e25b0ab3-04cf-442e-abaf-910321e9058f/matching Triples_28062011/rameau_mappings.nt"
+  },
+  "http://ckan.net/storage/f/file/e25b0ab3-04cf-442e-abaf-910321e9058f/matching Triples_28062011/top_mappings.nt": {
+    "base_iri":"http://ckan.net/storage/f/file/e25b0ab3-04cf-442e-abaf-910321e9058f/matching Triples_28062011/top_mappings.nt",
+    "content_length":2913,
+    "content_type":"application/n-triples",
+    "duplicates":0,
+    "last_modified":"Wed, 29 Jun 2011 11:50:32 GMT",
+    "md5":"1e9ade9f8864532fc77a36ba96dd868c",
+    "triples":21,
+    "url":"http://ckan.net/storage/f/file/e25b0ab3-04cf-442e-abaf-910321e9058f/matching Triples_28062011/top_mappings.nt"
+  },
+  "http://ckan.net/storage/f/file/fe3073f5-9533-4f8c-90f3-2c6bc2fc6ece": {
+    "base_iri":"http://ckan.net/storage/f/file/fe3073f5-9533-4f8c-90f3-2c6bc2fc6ece",
+    "content_length":133731,
+    "content_type":"application/n-triples",
+    "duplicates":0,
+    "last_modified":"Sun, 14 Aug 2011 21:29:56 GMT",
+    "md5":"be0fc6a84c214af3d2ee80f07071af4b",
+    "triples":993,
+    "url":"http://ckan.net/storage/f/file/fe3073f5-9533-4f8c-90f3-2c6bc2fc6ece"
+  },
+  "http://ckan.net/storage/f/file/text-turtle-1374058781044-1331463886268": {
+    "base_iri":"http://ckan.net/storage/f/file/text-turtle-1374058781044-1331463886268",
+    "content_length":55492,
+    "content_type":"text/turtle",
+    "duplicates":0,
+    "last_modified":"Sun, 11 Mar 2012 11:04:48 GMT",
+    "md5":"c2304639de78c09e357c1f8809aa5d7a",
+    "triples":1002,
+    "url":"http://ckan.net/storage/f/file/text-turtle-1374058781044-1331463886268"
+  },
+  "http://ckan.net/storage/f/file/text-turtle-1374058781044-1331464131441": {
+    "base_iri":"http://ckan.net/storage/f/file/text-turtle-1374058781044-1331464131441",
+    "content_length":55492,
+    "content_type":"text/turtle",
+    "duplicates":0,
+    "last_modified":"Sun, 11 Mar 2012 11:08:59 GMT",
+    "md5":"3d376944f72ee0a7b4fc97b29b66c5b5",
+    "triples":1002,
+    "url":"http://ckan.net/storage/f/file/text-turtle-1374058781044-1331464131441"
+  },
+  "http://ckan.net/storage/f/file/text-turtle-1374058781044-1331466084006": {
+    "base_iri":"http://ckan.net/storage/f/file/text-turtle-1374058781044-1331466084006",
+    "content_length":55492,
+    "content_type":"text/turtle",
+    "duplicates":0,
+    "last_modified":"Sun, 11 Mar 2012 11:41:28 GMT",
+    "md5":"54924b569bcd7126d95387bd8a21f471",
+    "triples":1002,
+    "url":"http://ckan.net/storage/f/file/text-turtle-1374058781044-1331466084006"
+  },
+  "http://ckan.net/storage/f/file/text-turtle-1445193550325-1370390041463": {
+    "base_iri":"http://ckan.net/storage/f/file/text-turtle-1445193550325-1370390041463",
+    "content_length":262,
+    "content_type":"text/turtle",
+    "duplicates":0,
+    "last_modified":"Tue, 04 Jun 2013 23:54:01 GMT",
+    "md5":"6ae50ca43ab2b61d273ba97a21b2b36f",
+    "triples":0,
+    "url":"http://ckan.net/storage/f/file/text-turtle-1445193550325-1370390041463"
+  },
+  "http://ckan.net/storage/f/file/text-turtle-1700782342176-1331427716453": {
+    "base_iri":"http://ckan.net/storage/f/file/text-turtle-1700782342176-1331427716453",
+    "content_length":3051,
+    "content_type":"text/turtle",
+    "duplicates":0,
+    "last_modified":"Sun, 11 Mar 2012 01:01:59 GMT",
+    "md5":"256b8990bbb3b6fac140552373b69612",
+    "triples":57,
+    "url":"http://ckan.net/storage/f/file/text-turtle-1700782342176-1331427716453"
+  },
+  "http://ckan.net/storage/f/file/text-turtle-1792385128790-1335031703221": {
+    "base_iri":"http://ckan.net/storage/f/file/text-turtle-1792385128790-1335031703221",
+    "content_length":9664,
+    "content_type":"text/turtle",
+    "duplicates":0,
+    "last_modified":"Sat, 21 Apr 2012 18:08:30 GMT",
+    "md5":"de931d3efa32ca713710a82cf7a3bcdc",
+    "triples":255,
+    "url":"http://ckan.net/storage/f/file/text-turtle-1792385128790-1335031703221"
+  },
+  "http://ckan.net/storage/f/file/text-turtle-2227890001712-1370389596075": {
+    "base_iri":"http://ckan.net/storage/f/file/text-turtle-2227890001712-1370389596075",
+    "content_length":3879,
+    "content_type":"text/turtle",
+    "duplicates":0,
+    "last_modified":"Tue, 04 Jun 2013 23:46:59 GMT",
+    "md5":"90c624560720bdbce81ea998d8eb9146",
+    "triples":49,
+    "url":"http://ckan.net/storage/f/file/text-turtle-2227890001712-1370389596075"
+  },
+  "http://cldbstest.eva.mpg.de/asjp/downloads/families.rdf.zip": {
+    "base_iri":"http://cldbstest.eva.mpg.de/asjp/downloads/families.rdf.zip",
+    "content_length":151,
+    "last_modified":"Mon, 04 Oct 2004 15:04:06 GMT",
+    "md5":"ee98a9c07f4c42bf711ddf8b679d702c",
+    "status":"no_rdfa",
+    "url":"http://cldbstest.eva.mpg.de/asjp/downloads/families.rdf.zip"
+  },
+  "http://cldbstest.eva.mpg.de/asjp/downloads/languoids.rdf.zip": {
+    "base_iri":"http://cldbstest.eva.mpg.de/asjp/downloads/languoids.rdf.zip",
+    "content_length":151,
+    "last_modified":"Mon, 04 Oct 2004 15:04:06 GMT",
+    "md5":"cd3ce42f1b1dd9a917a4cfddf161525e",
+    "status":"no_rdfa",
+    "url":"http://cldbstest.eva.mpg.de/asjp/downloads/languoids.rdf.zip"
+  },
+  "http://cldbstest.eva.mpg.de/asjp/downloads/renderings.ttl.zip": {
+    "base_iri":"http://cldbstest.eva.mpg.de/asjp/downloads/renderings.ttl.zip",
+    "content_length":151,
+    "last_modified":"Mon, 04 Oct 2004 15:04:06 GMT",
+    "md5":"188915854eb1830902367a445904bc44",
+    "status":"no_rdfa",
+    "url":"http://cldbstest.eva.mpg.de/asjp/downloads/renderings.ttl.zip"
+  },
+  "http://cldbstest.eva.mpg.de/asjp/downloads/senses.rdf.zip": {
+    "base_iri":"http://cldbstest.eva.mpg.de/asjp/downloads/senses.rdf.zip",
+    "content_length":151,
+    "last_modified":"Mon, 04 Oct 2004 15:04:06 GMT",
+    "md5":"656b009db13f2a188fbf9a002e232344",
+    "status":"no_rdfa",
+    "url":"http://cldbstest.eva.mpg.de/asjp/downloads/senses.rdf.zip"
+  },
+  "http://cldbstest.eva.mpg.de/asjp/ontologies/asjp.owl": {
+    "base_iri":"http://cldbstest.eva.mpg.de/asjp/ontologies/asjp.owl",
+    "content_length":151,
+    "last_modified":"Mon, 04 Oct 2004 15:04:06 GMT",
+    "md5":"8f5251267fe36416105a6356704a8633",
+    "status":"no_rdfa",
+    "url":"http://cldbstest.eva.mpg.de/asjp/ontologies/asjp.owl"
+  },
+  "http://cldbstest.eva.mpg.de/asjp/resource/distance/id/d13-468.rdf": {
+    "base_iri":"http://cldbstest.eva.mpg.de/asjp/resource/distance/id/d13-468.rdf",
+    "content_length":151,
+    "last_modified":"Mon, 04 Oct 2004 15:04:06 GMT",
+    "md5":"5d1699bdec78d9e79973b25305d6d5a1",
+    "status":"no_rdfa",
+    "url":"http://cldbstest.eva.mpg.de/asjp/resource/distance/id/d13-468.rdf"
+  },
+  "http://cldbstest.eva.mpg.de/asjp/resource/family/id/fROMANCE.rdf": {
+    "base_iri":"http://cldbstest.eva.mpg.de/asjp/resource/family/id/fROMANCE.rdf",
+    "content_length":151,
+    "last_modified":"Mon, 04 Oct 2004 15:04:06 GMT",
+    "md5":"dec74a21d3178507d1143bcc5c936454",
+    "status":"no_rdfa",
+    "url":"http://cldbstest.eva.mpg.de/asjp/resource/family/id/fROMANCE.rdf"
+  },
+  "http://cldbstest.eva.mpg.de/asjp/resource/language/id/l99.rdf": {
+    "base_iri":"http://cldbstest.eva.mpg.de/asjp/resource/language/id/l99.rdf",
+    "content_length":151,
+    "last_modified":"Mon, 04 Oct 2004 15:04:06 GMT",
+    "md5":"1cd6ab1a3ca2db9ce4c90c17c526fe5d",
+    "status":"no_rdfa",
+    "url":"http://cldbstest.eva.mpg.de/asjp/resource/language/id/l99.rdf"
+  },
+  "http://cldbstest.eva.mpg.de/asjp/resource/rendering/id/r1234.rdf": {
+    "base_iri":"http://cldbstest.eva.mpg.de/asjp/resource/rendering/id/r1234.rdf",
+    "content_length":151,
+    "last_modified":"Mon, 04 Oct 2004 15:04:06 GMT",
+    "md5":"573761bd6e4b4b8f682fd71e26055add",
+    "status":"no_rdfa",
+    "url":"http://cldbstest.eva.mpg.de/asjp/resource/rendering/id/r1234.rdf"
+  },
+  "http://cldbstest.eva.mpg.de/asjp/resource/sense/id/s40.rdf": {
+    "base_iri":"http://cldbstest.eva.mpg.de/asjp/resource/sense/id/s40.rdf",
+    "content_length":151,
+    "last_modified":"Mon, 04 Oct 2004 15:04:06 GMT",
+    "md5":"af557998356b05e86e175d10b9964adc",
+    "status":"no_rdfa",
+    "url":"http://cldbstest.eva.mpg.de/asjp/resource/sense/id/s40.rdf"
+  },
+  "http://co2emission.psi.enakting.org/def/NUTS4Area": {
+    "content_length":62760,
+    "content_type":"text/html; charset=utf-8",
+    "md5":"1612a299e78e0692f532ffbeecf9554d",
+    "url":"http://co2emission.psi.enakting.org/def/NUTS4Area"
+  },
+  "http://co2emission.psi.enakting.org/id/void": {
+    "content_length":9866,
+    "content_type":"text/html; charset=utf-8",
+    "md5":"6189482f734b34fce7b29c35b674c7ca",
+    "url":"http://co2emission.psi.enakting.org/id/void"
+  },
+  "http://colil.dbcls.jp/sparql": {
+    "content_length":573,
+    "content_type":"text/rdf+n3; charset=UTF-8",
+    "md5":"26521247af776f39fd0c580fe10b1ab5",
+    "url":"http://colil.dbcls.jp/sparql"
+  },
+  "http://colinda.org/resource/conference/WWW/2012": {
+    "content_length":1078,
+    "content_type":"\"application/rdf+xml\"",
+    "md5":"7b2294a338a97ef9029afd45df9a636a",
+    "url":"http://colinda.org/resource/conference/WWW/2012"
+  },
+  "http://commontag.org/ns#": {
+    "base_iri":"http://commontag.org/ns#",
+    "content_length":5156,
+    "content_type":"application/rdf+xml",
+    "duplicates":0,
+    "last_modified":"Thu, 11 Jun 2009 11:37:59 GMT",
+    "md5":"08b26a00e152fec9e5db1c770917a71c",
+    "triples":55,
+    "url":"http://commontag.org/ns#"
+  },
+  "http://cordis.rkbexplorer.com/data/project-8376495": {
+    "content_type":"application/rdf+xml; charset=UTF-8",
+    "md5":"8c616768df7eefac897edd6219db17fe",
+    "url":"http://cordis.rkbexplorer.com/data/project-8376495"
+  },
+  "http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-interests.rdf": {
+    "base_iri":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-interests.rdf",
+    "content_length":18886,
+    "content_type":"application/rdf+xml",
+    "duplicates":0,
+    "last_modified":"Mon, 14 Oct 2013 11:38:33 GMT",
+    "md5":"ccede59066cfcff772261dade40b35df",
+    "triples":99,
+    "url":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-interests.rdf"
+  },
+  "http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1971.rdf": {
+    "base_iri":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1971.rdf",
+    "content_length":8846,
+    "content_type":"application/rdf+xml",
+    "duplicates":6,
+    "last_modified":"Mon, 14 Oct 2013 11:38:33 GMT",
+    "md5":"ebb98cbb4a8fc31f311a997dc8bafd05",
+    "triples":39,
+    "url":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1971.rdf"
+  },
+  "http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1972.rdf": {
+    "base_iri":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1972.rdf",
+    "content_length":23835,
+    "content_type":"application/rdf+xml",
+    "duplicates":36,
+    "last_modified":"Mon, 14 Oct 2013 11:38:33 GMT",
+    "md5":"f6bea269107824838b47df28b5fce788",
+    "triples":99,
+    "url":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1972.rdf"
+  },
+  "http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1973.rdf": {
+    "base_iri":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1973.rdf",
+    "content_length":19614,
+    "content_type":"application/rdf+xml",
+    "duplicates":10,
+    "last_modified":"Mon, 14 Oct 2013 11:38:33 GMT",
+    "md5":"85e6bb1e0a39d51d5fac07fb32ce0dc7",
+    "triples":96,
+    "url":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1973.rdf"
+  },
+  "http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1974.rdf": {
+    "base_iri":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1974.rdf",
+    "content_length":45609,
+    "content_type":"application/rdf+xml",
+    "duplicates":40,
+    "last_modified":"Mon, 14 Oct 2013 11:38:33 GMT",
+    "md5":"a0ec8432d09cbe4b037e1bc4882aa884",
+    "triples":193,
+    "url":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1974.rdf"
+  },
+  "http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1975.rdf": {
+    "base_iri":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1975.rdf",
+    "content_length":126327,
+    "content_type":"application/rdf+xml",
+    "duplicates":68,
+    "last_modified":"Mon, 14 Oct 2013 11:38:33 GMT",
+    "md5":"bae25af5ab42de2696957512eb89b8a1",
+    "triples":617,
+    "url":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1975.rdf"
+  },
+  "http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1976.rdf": {
+    "base_iri":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1976.rdf",
+    "content_length":77468,
+    "content_type":"application/rdf+xml",
+    "duplicates":6,
+    "last_modified":"Mon, 14 Oct 2013 11:38:33 GMT",
+    "md5":"1150dd65a59fef146af7f33cd7aa3f53",
+    "triples":415,
+    "url":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1976.rdf"
+  },
+  "http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1977.rdf": {
+    "base_iri":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1977.rdf",
+    "content_length":212276,
+    "content_type":"application/rdf+xml",
+    "duplicates":108,
+    "last_modified":"Mon, 14 Oct 2013 11:38:33 GMT",
+    "md5":"d842a36b0d4bd458236317e8b568b05d",
+    "triples":1024,
+    "url":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1977.rdf"
+  },
+  "http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1978.rdf": {
+    "base_iri":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1978.rdf",
+    "content_length":267706,
+    "content_type":"application/rdf+xml",
+    "duplicates":150,
+    "last_modified":"Mon, 14 Oct 2013 11:38:33 GMT",
+    "md5":"ec51e5d6cb3a4d5165c5e34b098c4c25",
+    "triples":1294,
+    "url":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1978.rdf"
+  },
+  "http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1979.rdf": {
+    "base_iri":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1979.rdf",
+    "content_length":382393,
+    "content_type":"application/rdf+xml",
+    "duplicates":262,
+    "last_modified":"Mon, 14 Oct 2013 11:38:33 GMT",
+    "md5":"6db00e144b22bd035c24167a6287d93e",
+    "triples":1789,
+    "url":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1979.rdf"
+  },
+  "http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1980.rdf": {
+    "base_iri":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1980.rdf",
+    "content_length":1006085,
+    "content_type":"application/rdf+xml",
+    "duplicates":1218,
+    "last_modified":"Mon, 14 Oct 2013 11:38:33 GMT",
+    "md5":"2bc39a2f03dfb695151224ee4a1e0240",
+    "triples":4254,
+    "url":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1980.rdf"
+  },
+  "http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1981.rdf": {
+    "base_iri":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1981.rdf",
+    "content_length":2499578,
+    "content_type":"application/rdf+xml",
+    "duplicates":4505,
+    "last_modified":"Mon, 14 Oct 2013 11:38:33 GMT",
+    "md5":"83ded2d1470c06c8680910fd1b2c36ea",
+    "triples":9187,
+    "url":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1981.rdf"
+  },
+  "http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1982.rdf": {
+    "base_iri":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1982.rdf",
+    "content_length":2259432,
+    "content_type":"application/rdf+xml",
+    "duplicates":3700,
+    "last_modified":"Mon, 14 Oct 2013 11:38:33 GMT",
+    "md5":"f5c61b6ae774b3f31f21a6a8e2b85c58",
+    "triples":8497,
+    "url":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1982.rdf"
+  },
+  "http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1983.rdf": {
+    "base_iri":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1983.rdf",
+    "content_length":4596655,
+    "content_type":"application/rdf+xml",
+    "duplicates":9093,
+    "last_modified":"Mon, 14 Oct 2013 11:38:33 GMT",
+    "md5":"99278809e456544137da1af5d5b93c29",
+    "triples":15731,
+    "url":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1983.rdf"
+  },
+  "http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1984.rdf": {
+    "base_iri":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1984.rdf",
+    "content_length":3701623,
+    "content_type":"application/rdf+xml",
+    "duplicates":6270,
+    "last_modified":"Mon, 14 Oct 2013 11:38:33 GMT",
+    "md5":"e2e1b560cd9663511428222badeacc04",
+    "triples":13347,
+    "url":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1984.rdf"
+  },
+  "http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1985.rdf": {
+    "base_iri":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1985.rdf",
+    "content_length":5304401,
+    "content_type":"application/rdf+xml",
+    "duplicates":8815,
+    "last_modified":"Mon, 14 Oct 2013 11:38:33 GMT",
+    "md5":"49be33d6f3e59b2ad7dca911d3df5108",
+    "triples":18603,
+    "url":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1985.rdf"
+  },
+  "http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1986.rdf": {
+    "base_iri":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1986.rdf",
+    "content_length":9948788,
+    "content_type":"application/rdf+xml",
+    "duplicates":16391,
+    "last_modified":"Mon, 14 Oct 2013 11:38:33 GMT",
+    "md5":"01ef9338abd12f173f9aae8491e9a547",
+    "triples":33153,
+    "url":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1986.rdf"
+  },
+  "http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1987.rdf": {
+    "base_iri":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1987.rdf",
+    "content_length":7504420,
+    "content_type":"application/rdf+xml",
+    "duplicates":12251,
+    "last_modified":"Mon, 14 Oct 2013 11:38:33 GMT",
+    "md5":"ab7c26929df9881a9ef68b786bf4ab54",
+    "triples":25856,
+    "url":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1987.rdf"
+  },
+  "http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1988.rdf": {
+    "base_iri":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1988.rdf",
+    "content_length":9059663,
+    "content_type":"application/rdf+xml",
+    "duplicates":14491,
+    "last_modified":"Mon, 14 Oct 2013 11:38:33 GMT",
+    "md5":"245c46321c618f7870a430c9cecd31d8",
+    "triples":31170,
+    "url":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1988.rdf"
+  },
+  "http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1989.rdf": {
+    "base_iri":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1989.rdf",
+    "content_length":11591548,
+    "content_type":"application/rdf+xml",
+    "duplicates":16225,
+    "last_modified":"Mon, 14 Oct 2013 11:38:33 GMT",
+    "md5":"e08ab80eea1eff04c5214d90a685f6a5",
+    "triples":40876,
+    "url":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1989.rdf"
+  },
+  "http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1990.rdf": {
+    "base_iri":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1990.rdf",
+    "content_length":12798995,
+    "content_type":"application/rdf+xml",
+    "duplicates":18011,
+    "last_modified":"Mon, 14 Oct 2013 11:38:33 GMT",
+    "md5":"333af5200abfa7bf10d4f5875716e901",
+    "triples":44330,
+    "url":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1990.rdf"
+  },
+  "http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1991.rdf": {
+    "base_iri":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1991.rdf",
+    "content_length":14864504,
+    "content_type":"application/rdf+xml",
+    "duplicates":20330,
+    "last_modified":"Mon, 14 Oct 2013 11:38:33 GMT",
+    "md5":"c0d0652b3f38f28281e74bb018348726",
+    "triples":51780,
+    "url":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1991.rdf"
+  },
+  "http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1992.rdf": {
+    "base_iri":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1992.rdf",
+    "content_length":24455358,
+    "content_type":"application/rdf+xml",
+    "duplicates":27330,
+    "last_modified":"Mon, 14 Oct 2013 11:38:33 GMT",
+    "md5":"d265bd90719552292b85ec67d825eced",
+    "triples":86816,
+    "url":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1992.rdf"
+  },
+  "http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1993.rdf": {
+    "base_iri":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1993.rdf",
+    "content_length":24357974,
+    "content_type":"application/rdf+xml",
+    "duplicates":34427,
+    "last_modified":"Mon, 14 Oct 2013 11:38:33 GMT",
+    "md5":"43fd749f0ecd6d0b79d81be5f9b2633f",
+    "triples":82346,
+    "url":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1993.rdf"
+  },
+  "http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1994.rdf": {
+    "base_iri":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1994.rdf",
+    "content_length":31359075,
+    "content_type":"application/rdf+xml",
+    "duplicates":43508,
+    "last_modified":"Mon, 14 Oct 2013 11:38:33 GMT",
+    "md5":"d073d949c7573989863fb26c69e3faf3",
+    "triples":106723,
+    "url":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1994.rdf"
+  },
+  "http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1995.rdf": {
+    "base_iri":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1995.rdf",
+    "content_length":26328354,
+    "content_type":"application/rdf+xml",
+    "duplicates":32474,
+    "last_modified":"Mon, 14 Oct 2013 11:38:33 GMT",
+    "md5":"0a9220e358d19966fe6d7657d81455c5",
+    "triples":93430,
+    "url":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1995.rdf"
+  },
+  "http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1996.rdf": {
+    "base_iri":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1996.rdf",
+    "content_length":56118561,
+    "content_type":"application/rdf+xml",
+    "duplicates":62131,
+    "last_modified":"Mon, 14 Oct 2013 11:38:33 GMT",
+    "md5":"878db0d0e2cfb735783930285616274d",
+    "triples":200608,
+    "url":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1996.rdf"
+  },
+  "http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1997.rdf": {
+    "base_iri":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1997.rdf",
+    "content_length":52530976,
+    "content_type":"application/rdf+xml",
+    "duplicates":55323,
+    "last_modified":"Mon, 14 Oct 2013 11:38:33 GMT",
+    "md5":"4bb5c99d7670424837f8ad3162692d68",
+    "triples":192355,
+    "url":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1997.rdf"
+  },
+  "http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1998.rdf": {
+    "base_iri":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1998.rdf",
+    "content_length":55050500,
+    "content_type":"application/rdf+xml",
+    "duplicates":56408,
+    "last_modified":"Mon, 14 Oct 2013 11:38:33 GMT",
+    "md5":"554705862b0c0732add0480ec139dcd2",
+    "triples":198981,
+    "url":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1998.rdf"
+  },
+  "http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1999.rdf": {
+    "base_iri":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1999.rdf",
+    "content_length":20573915,
+    "content_type":"application/rdf+xml",
+    "duplicates":15403,
+    "last_modified":"Mon, 14 Oct 2013 11:38:33 GMT",
+    "md5":"2834e453309525d3da018f017d3d4f5c",
+    "triples":77414,
+    "url":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-1999.rdf"
+  },
+  "http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-2000.rdf": {
+    "base_iri":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-2000.rdf",
+    "content_length":74457807,
+    "content_type":"application/rdf+xml",
+    "duplicates":71208,
+    "last_modified":"Mon, 14 Oct 2013 11:38:33 GMT",
+    "md5":"cfd5edb7c213c7c7a9f55f6c8250a29c",
+    "triples":257840,
+    "url":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-2000.rdf"
+  },
+  "http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-2001.rdf": {
+    "base_iri":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-2001.rdf",
+    "content_length":75159636,
+    "content_type":"application/rdf+xml",
+    "duplicates":66435,
+    "last_modified":"Mon, 14 Oct 2013 11:38:33 GMT",
+    "md5":"ccb08acb9a35834082ffb19b0b5f6e81",
+    "triples":266523,
+    "url":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-2001.rdf"
+  },
+  "http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-2002.rdf": {
+    "base_iri":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-2002.rdf",
+    "content_length":67246399,
+    "content_type":"application/rdf+xml",
+    "duplicates":66861,
+    "last_modified":"Mon, 14 Oct 2013 11:38:33 GMT",
+    "md5":"a7fbe15eebe2d38f6121c94b21041523",
+    "triples":225681,
+    "url":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-2002.rdf"
+  },
+  "http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-2003.rdf": {
+    "base_iri":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-2003.rdf",
+    "content_length":20568663,
+    "content_type":"application/rdf+xml",
+    "duplicates":14986,
+    "last_modified":"Mon, 14 Oct 2013 11:38:33 GMT",
+    "md5":"24205b19c98f8f67fd800d0022030bdc",
+    "triples":74778,
+    "url":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-2003.rdf"
+  },
+  "http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-2004.rdf": {
+    "base_iri":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-2004.rdf",
+    "content_length":48130267,
+    "content_type":"application/rdf+xml",
+    "duplicates":44001,
+    "last_modified":"Mon, 14 Oct 2013 11:38:33 GMT",
+    "md5":"2da3cbb658513ed4b26346d9894670b9",
+    "triples":160590,
+    "url":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-2004.rdf"
+  },
+  "http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-2005.rdf": {
+    "base_iri":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-2005.rdf",
+    "content_length":39426329,
+    "content_type":"application/rdf+xml",
+    "duplicates":28315,
+    "last_modified":"Mon, 14 Oct 2013 11:38:33 GMT",
+    "md5":"db109ebf128c195f8d2bde000f58d3f7",
+    "triples":135424,
+    "url":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-2005.rdf"
+  },
+  "http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-2006.rdf": {
+    "base_iri":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-2006.rdf",
+    "content_length":21306426,
+    "content_type":"application/rdf+xml",
+    "duplicates":18408,
+    "last_modified":"Mon, 14 Oct 2013 11:38:33 GMT",
+    "md5":"240861a8d173772747bc0ba8661b11d6",
+    "triples":74872,
+    "url":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-2006.rdf"
+  },
+  "http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-2007.rdf": {
+    "base_iri":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-2007.rdf",
+    "content_length":336253,
+    "content_type":"application/rdf+xml",
+    "duplicates":184,
+    "last_modified":"Mon, 14 Oct 2013 11:38:33 GMT",
+    "md5":"606ff99c5e858a25f254f7b460938025",
+    "triples":1305,
+    "url":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-2007.rdf"
+  },
+  "http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-unknown-year.rdf": {
+    "base_iri":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-unknown-year.rdf",
+    "content_length":7855039,
+    "content_type":"application/rdf+xml",
+    "duplicates":1510,
+    "last_modified":"Mon, 14 Oct 2013 11:38:33 GMT",
+    "md5":"eb4798f2a87c50bad23851505806b90b",
+    "triples":31111,
+    "url":"http://cordis.rkbexplorer.com/models/dump.tgz/models/cordis-projects-unknown-year.rdf"
+  },
+  "http://cordis.rkbexplorer.com/models/dump.tgz/models/new-cordis-interests.rdf": {
+    "base_iri":"http://cordis.rkbexplorer.com/models/dump.tgz/models/new-cordis-interests.rdf",
+    "content_length":11931,
+    "content_type":"application/rdf+xml",
+    "duplicates":0,
+    "last_modified":"Mon, 14 Oct 2013 11:38:33 GMT",
+    "md5":"bbdfd0301bac5367cec13708df79c338",
+    "triples":99,
+    "url":"http://cordis.rkbexplorer.com/models/dump.tgz/models/new-cordis-interests.rdf"
+  },
+  "http://cordis.rkbexplorer.com/models/dump.tgz/models/new-cordis-projects-1970.rdf": {
+    "base_iri":"http://cordis.rkbexplorer.com/models/dump.tgz/models/new-cordis-projects-1970.rdf",
+    "content_length":29195,
+    "content_type":"application/rdf+xml",
+    "duplicates":0,
+    "last_modified":"Mon, 14 Oct 2013 11:38:33 GMT",
+    "md5":"b7cbcf0c0dcd9a3d72ed13f436c120c9",
+    "triples":9,
+    "url":"http://cordis.rkbexplorer.com/models/dump.tgz/models/new-cordis-projects-1970.rdf"
+  },
+  "http://cordis.rkbexplorer.com/models/dump.tgz/models/new-cordis-projects-2001.rdf": {
+    "base_iri":"http://cordis.rkbexplorer.com/models/dump.tgz/models/new-cordis-projects-2001.rdf",
+    "content_length":11938,
+    "content_type":"application/rdf+xml",
+    "duplicates":0,
+    "last_modified":"Mon, 14 Oct 2013 11:38:33 GMT",
+    "md5":"7309e288396f45b16f666454092ccaf4",
+    "triples":9,
+    "url":"http://cordis.rkbexplorer.com/models/dump.tgz/models/new-cordis-projects-2001.rdf"
+  },
+  "http://cordis.rkbexplorer.com/models/dump.tgz/models/new-cordis-projects-2003.rdf": {
+    "base_iri":"http://cordis.rkbexplorer.com/models/dump.tgz/models/new-cordis-projects-2003.rdf",
+    "content_length":75220,
+    "content_type":"application/rdf+xml",
+    "duplicates":0,
+    "last_modified":"Mon, 14 Oct 2013 11:38:33 GMT",
+    "md5":"133a5035e743db071386460f6d89b498",
+    "triples":9,
+    "url":"http://cordis.rkbexplorer.com/models/dump.tgz/models/new-cordis-projects-2003.rdf"
+  },
+  "http://cordis.rkbexplorer.com/models/dump.tgz/models/new-cordis-projects-2004.rdf": {
+    "base_iri":"http://cordis.rkbexplorer.com/models/dump.tgz/models/new-cordis-projects-2004.rdf",
+    "content_length":978954,
+    "content_type":"application/rdf+xml",
+    "duplicates":0,
+    "last_modified":"Mon, 14 Oct 2013 11:38:33 GMT",
+    "md5":"3a4bcca201808545c4776a0bbda7fc00",
+    "triples":9,
+    "url":"http://cordis.rkbexplorer.com/models/dump.tgz/models/new-cordis-projects-2004.rdf"
+  },
+  "http://cordis.rkbexplorer.com/models/dump.tgz/models/new-cordis-projects-2005.rdf": {
+    "base_iri":"http://cordis.rkbexplorer.com/models/dump.tgz/models/new-cordis-projects-2005.rdf",
+    "content_length":7469194,
+    "content_type":"application/rdf+xml",
+    "duplicates":0,
+    "last_modified":"Mon, 14 Oct 2013 11:38:33 GMT",
+    "md5":"fa0d8acb43a79153eaadae71df6c31fc",
+    "triples":9,
+    "url":"http://cordis.rkbexplorer.com/models/dump.tgz/models/new-cordis-projects-2005.rdf"
+  },
+  "http://cordis.rkbexplorer.com/models/dump.tgz/models/new-cordis-projects-2006.rdf": {
+    "base_iri":"http://cordis.rkbexplorer.com/models/dump.tgz/models/new-cordis-projects-2006.rdf",
+    "content_length":16918676,
+    "content_type":"application/rdf+xml",
+    "duplicates":0,
+    "last_modified":"Mon, 14 Oct 2013 11:38:33 GMT",
+    "md5":"dc2fe32f38cd047cfe273f52efcd4d1b",
+    "triples":9,
+    "url":"http://cordis.rkbexplorer.com/models/dump.tgz/models/new-cordis-projects-2006.rdf"
+  },
+  "http://cordis.rkbexplorer.com/models/dump.tgz/models/new-cordis-projects-2007.rdf": {
+    "base_iri":"http://cordis.rkbexplorer.com/models/dump.tgz/models/new-cordis-projects-2007.rdf",
+    "content_length":2197838,
+    "content_type":"application/rdf+xml",
+    "duplicates":0,
+    "last_modified":"Mon, 14 Oct 2013 11:38:33 GMT",
+    "md5":"fa37585eef6c3427325b5387fe9e1cab",
+    "triples":9,
+    "url":"http://cordis.rkbexplorer.com/models/dump.tgz/models/new-cordis-projects-2007.rdf"
+  },
+  "http://cordis.rkbexplorer.com/models/dump.tgz/models/new-cordis-projects-2008.rdf": {
+    "base_iri":"http://cordis.rkbexplorer.com/models/dump.tgz/models/new-cordis-projects-2008.rdf",
+    "content_length":3718376,
+    "content_type":"application/rdf+xml",
+    "duplicates":0,
+    "last_modified":"Mon, 14 Oct 2013 11:38:33 GMT",
+    "md5":"85e593269ca902a2a29b608b7e25fa5f",
+    "triples":9,
+    "url":"http://cordis.rkbexplorer.com/models/dump.tgz/models/new-cordis-projects-2008.rdf"
+  },
+  "http://cordis.rkbexplorer.com/models/dump.tgz/models/new-cordis-projects-2009.rdf": {
+    "base_iri":"http://cordis.rkbexplorer.com/models/dump.tgz/models/new-cordis-projects-2009.rdf",
+    "content_length":33704,
+    "content_type":"application/rdf+xml",
+    "duplicates":0,
+    "last_modified":"Mon, 14 Oct 2013 11:38:33 GMT",
+    "md5":"873ba6e1205cc7771c0f526cb0d014e1",
+    "triples":9,
+    "url":"http://cordis.rkbexplorer.com/models/dump.tgz/models/new-cordis-projects-2009.rdf"
+  },
+  "http://cordis.rkbexplorer.com/models/dump.tgz/models/void.ttl": {
+    "base_iri":"http://cordis.rkbexplorer.com/models/dump.tgz/models/void.ttl",
+    "content_length":11772,
+    "content_type":"text/turtle",
+    "duplicates":0,
+    "last_modified":"Mon, 14 Oct 2013 11:38:33 GMT",
+    "md5":"9eaa27af22bbcd562323643c889a6bbc",
+    "triples":261,
+    "url":"http://cordis.rkbexplorer.com/models/dump.tgz/models/void.ttl"
+  },
+  "http://purl.org/allie/cgi-bin/getfile.cgi?file=allieRDF": {
+    "content_type":"text/n3; charset=UTF-8",
+    "md5":"ed3231ee34770ba9997849de8e5ab462",
+    "url":"http://purl.org/allie/cgi-bin/getfile.cgi?file=allieRDF"
+  }
+}
