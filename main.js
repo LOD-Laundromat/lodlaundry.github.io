@@ -9,12 +9,12 @@ var tweenDuration = 250;
 //OBJECTS TO BE POPULATED WITH DATA LATER
 var lines, valueLabels, nameLabels;
 var pieData = [];    
-var oldPieData = [];
-var filteredPieData = [];
+var oldPieData = null;
+var filteredPieData = null;
 
 //D3 helper function to populate pie slice parameters from array data
 var donut = d3.layout.pie().value(function(d){
-  return d.triples;
+  return d.values;
 });
 
 //D3 helper function to create colors from an ordinal scale
@@ -35,12 +35,6 @@ var arrayRange = 100000; //range of potential values for each item
 var arraySize;
 var streakerDataAdded;
 
-function fillArray() {
-  return {
-    content_type: "port",
-    triples: Math.ceil(Math.random()*(arrayRange))
-  };
-}
 
 ///////////////////////////////////////////////////////////
 // CREATE VIS & GROUPS ////////////////////////////////////
@@ -109,23 +103,42 @@ var totalUnits = center_group.append("svg:text")
 function update(data) {
 	//get values in json object as array
 	var dataValues = $.map(data, function (value, key) { return value; });
-  
-  arraySize = Math.ceil(Math.random()*10);
-  streakerDataAdded = d3.range(arraySize).map(fillArray);
+	var sum_by = "content_type";
+	var aggregatedValues = d3.nest().key(function(d) {
+		  return d[sum_by];
+		}).rollup(function(d) {
+		  return d3.sum(d, function(g) {
+		    return g.triples;
+		  });
+		}).entries(dataValues);
+	var grepped = $.grep(aggregatedValues, function( a ) {
+		  return a.values > 0;
+		});
+	function addData(index) {
+	  return grepped[index];
+	}
+
+	
+//  arraySize = Math.ceil(Math.random()*10);
+  streakerDataAdded = d3.range(grepped.length).map(addData);
 
   oldPieData = filteredPieData;
   pieData = donut(streakerDataAdded);
-
   var totalTriples = 0;
   filteredPieData = pieData.filter(filterData);
   function filterData(element, index, array) {
-    element.name = streakerDataAdded[index].content_type;
-    element.value = streakerDataAdded[index].triples;
+    element.name = streakerDataAdded[index].key;
+    element.value = streakerDataAdded[index].values;
     totalTriples += element.value;
     return (element.value > 0);
   }
   
-  if(filteredPieData.length > 0 && oldPieData.length > 0){
+  
+  if (oldPieData == null) {
+	  oldPieData = filteredPieData;
+	  $.each(oldPieData, function(d) { d.endAngle = 0; d.startAngle=0;});
+  }
+  if(filteredPieData.length > 0 &&  oldPieData.length > 0){
 
     //REMOVE PLACEHOLDER CIRCLE
     arc_group.selectAll("circle").remove();
