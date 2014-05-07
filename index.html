@@ -82,11 +82,10 @@
 	<div class="row">
 	<div class="col-md-6">
 	
-	<div id="pie-chart"></div>
+	<div id="pieChartTripleSerializations"></div>
 	</div>
 	<div class="col-md-6">
-	
-<!-- 	<div id="barchart"></div> -->
+	<div id="pieChartDatasetSerializations"></div>
 	</div>
 	
 	
@@ -112,5 +111,22 @@
     <script src="bower_components/d3-tip/index.js"></script>
     <script src="piechart.js"></script>
     <script src="barchart.js"></script>
+    <script type="text/javascript">
+    drawPieChart({
+    	rootId: "pieChartTripleSerializations",
+    	sumBy: "content_type",
+    	aggregate: "triples",
+    	totalUnit: "triples",
+    	totalLabel: "TOTAL"
+    });
+    drawPieChart({
+    	rootId: "pieChartDatasetSerializations",
+    	sumBy: "content_type",
+    	aggregate: function(){return 1;},
+    	totalUnit: "triples",
+    	totalLabel: "TOTAL"
+    });
+    
+    </script>
   </body>
 </html>
