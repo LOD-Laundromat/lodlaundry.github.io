@@ -1,7 +1,19 @@
 body {
-  padding-top: 70px;
+/*   padding-top: 70px; */
 }
 
+.largeLogo{
+	max-width: 300px;
+	max-height:  300px;
+}
+.clickable {
+	cursor: pointer;
+}
+.backButton: {
+	position: fixed;
+	top: 0px;
+	left: 0px;
+}
 #pie-chart {
   background-color: #ffffff;
   border: 1px solid gray;

@@ -344,7 +344,7 @@ var drawPieChart = function(config) {
 	  };
 	}
 	
-	$.get("testInput.json", function(data) {
+	$.get(api.url.all, function(data) {
 		update(data);
 	});
 };

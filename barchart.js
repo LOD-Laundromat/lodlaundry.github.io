@@ -37,7 +37,7 @@ var svg = d3.select("#barchart").append("svg")
 
 svg.call(tip);
 
-d3.json("testInput.json", function(error, data) {
+d3.json(api.url.all, function(error, data) {
 	console.log(dataValues);
 //d3.tsv("data.tsv", type, function(error, data) {
 	var dataValues = $.map(data, function (value, key) { return value; });
