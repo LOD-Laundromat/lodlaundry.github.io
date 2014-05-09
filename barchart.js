@@ -4,174 +4,123 @@ var drawBarChartWithData = function(config, data) {
 //		console.log(a);
 		  return a.triples && a.triples > 0;
 		});
-	dataValues.sort(function(a, b){
-	  return ((a.triples > b.triples) ? -1 : ((a.triples < b.triples) ? 1 : 0));
-	});
 
-	var margins = {
-		    top: 12,
-		    left: 48,
-		    right: 24,
-		    bottom: 24
-		},
-		legendPanel = {
-		    width: 180
-		},
-		width = 500 - margins.left - margins.right - legendPanel.width,
-		    height = 100 - margins.top - margins.bottom,
-		    dataset = [{
-		        data: [{
-		            month: 'Aug',
-		            count: 123
-		        }, {
-		            month: 'Sep',
-		            count: 234
-		        }, {
-		            month: 'Oct',
-		            count: 345
-		        }],
-		        name: 'Series #1'
-		    }, {
-		        data: [{
-		            month: 'Aug',
-		            count: 235
-		        }, {
-		            month: 'Sep',
-		            count: 267
-		        }, {
-		            month: 'Oct',
-		            count: 573
-		        }],
-		        name: 'Series #2'
-		    }
+	var margin = {top: 20, right: 20, bottom: 30, left: 40},
+    width = 960 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
 
-		    ],
-		    series = dataset.map(function (d) {
-		        return d.name;
-		    }),
-		    dataset = dataset.map(function (d) {
-		        return d.data.map(function (o, i) {
-		            // Structure it so that your numeric
-		            // axis (the stacked amount) is y
-		            return {
-		                y: o.count,
-		                x: o.month
-		            };
-		        });
-		    }),
-		    stack = d3.layout.stack();
+var x = d3.scale.ordinal()
+    .rangeRoundBands([0, width], .1);
 
-		stack(dataset);
+var y = d3.scale.linear()
+    .rangeRound([height, 0]);
 
-		var dataset = dataset.map(function (group) {
-		    return group.map(function (d) {
-		        // Invert the x and y values, and y0 becomes x0
-		        return {
-		            x: d.y,
-		            y: d.x,
-		            x0: d.y0
-		        };
-		    });
-		}),
-		    svg = d3.select('#' + config.rootId)
-		        .append('svg')
-		        .attr('width', width + margins.left + margins.right + legendPanel.width)
-		        .attr('height', height + margins.top + margins.bottom)
-		        .append('g')
-		        .attr('transform', 'translate(' + margins.left + ',' + margins.top + ')'),
-		    xMax = d3.max(dataset, function (group) {
-		        return d3.max(group, function (d) {
-		            return d.x + d.x0;
-		        });
-		    }),
-		    xScale = d3.scale.linear()
-		        .domain([0, xMax])
-		        .range([0, width]),
-		    months = dataset[0].map(function (d) {
-		        return d.y;
-		    }),
-		    yScale = d3.scale.ordinal()
-		        .domain(months)
-		        .rangeRoundBands([0, height], .1),
-		    xAxis = d3.svg.axis()
-		        .scale(xScale)
-		        .orient('bottom'),
-		    yAxis = d3.svg.axis()
-		        .scale(yScale)
-		        .orient('left'),
-		    colours = d3.scale.category10(),
-		    groups = svg.selectAll('g')
-		        .data(dataset)
-		        .enter()
-		        .append('g')
-		        .style('fill', function (d, i) {
-		        return colours(i);
-		    }),
-		    rects = groups.selectAll('rect')
-		        .data(function (d) {
-		        return d;
-		    })
-		        .enter()
-		        .append('rect')
-		        .attr('x', function (d) {
-		        return xScale(d.x0);
-		    })
-		        .attr('y', function (d, i) {
-		        return yScale(d.y);
-		    })
-		        .attr('height', function (d) {
-		        return yScale.rangeBand();
-		    })
-		        .attr('width', function (d) {
-		        return xScale(d.x);
-		    })
-		        .on('mouseover', function (d) {
-		        var xPos = parseFloat(d3.select(this).attr('x')) / 2 + width / 2;
-		        var yPos = parseFloat(d3.select(this).attr('y')) + yScale.rangeBand() / 2;
+var color = d3.scale.ordinal()
+    .range([ "#ff8c00", "#98abc5"]);
 
-		        d3.select('#tooltip')
-		            .style('left', xPos + 'px')
-		            .style('top', yPos + 'px')
-		            .select('#value')
-		            .text(d.x);
+var xAxis = d3.svg.axis()
+    .scale(x)
+    .tickFormat("")
+    .orient("bottom");
 
-		        d3.select('#tooltip').classed('hidden', false);
-		    })
-		        .on('mouseout', function () {
-		        d3.select('#tooltip').classed('hidden', true);
-		    });
+var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left")
+    .tickFormat(d3.format(".2s"));
+var tip = d3.tip()
+.attr('class', 'd3-tip')
+.offset([-10, 0])
+.html(function(d) {
+  return "<i>" + d.base_iri + " (<span style='color:red'>" + d.total + " </span>";
+});
 
-		    svg.append('g')
-		        .attr('class', 'axis')
-		        .attr('transform', 'translate(0,' + height + ')')
-		        .call(xAxis);
+var svg = d3.select("body").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+svg.call(tip);
+  color.domain(["# uniq triples", "# duplicate triples"]);
 
-		svg.append('g')
-		    .attr('class', 'axis')
-		    .call(yAxis);
 
-		svg.append('rect')
-		    .attr('fill', 'yellow')
-		    .attr('width', 160)
-		    .attr('height', 30 * dataset.length)
-		    .attr('x', width + margins.left)
-		    .attr('y', 0);
+  dataValues.forEach(function(d) {
+    d.counts = [
+       {
+    	   name: "# uniq triples",
+    	   y0: 0,
+    	   y1: d.triples
+       },
+       {
+    	   name: "# duplicate triples",
+    	   y0: d.triples,
+    	   y1: d.triples + d.duplicates
+       }
+    ];
+    d.total = d.triples + d.duplicates;
+    $.extend(d.counts[0], d);
+    $.extend(d.counts[1], d);
+  });
+  
+  dataValues.sort(function(a, b) { return b.total - a.total; });
 
-		series.forEach(function (s, i) {
-		    svg.append('text')
-		        .attr('fill', 'black')
-		        .attr('x', width + margins.left + 8)
-		        .attr('y', i * 24 + 24)
-		        .text(s);
-		    svg.append('rect')
-		        .attr('fill', colours(i))
-		        .attr('width', 60)
-		        .attr('height', 20)
-		        .attr('x', width + margins.left + 90)
-		        .attr('y', i * 24 + 6);
-		});
+  x.domain(dataValues.map(function(d) { return d.base_iri; }));
+  y.domain([0, d3.max(dataValues, function(d) { return d.total; })]);
 
-	
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis);
+
+  svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+    .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text("#triples");
+
+  var state = svg.selectAll(".state")
+      .data(dataValues)
+    .enter().append("g")
+      .attr("class", "g")
+      .attr("transform", function(d) { return "translate(" + x(d.base_iri) + ",0)"; });
+
+  
+  state.selectAll(".bar")
+      .data(function(d) { return d.counts; })
+    .enter().append("rect")
+    .attr("class", "bar")
+      .attr("width", x.rangeBand())
+      .attr("y", function(d) { return y(d.y1); })
+      .attr("height", function(d) { return y(d.y0) - y(d.y1); })
+      .style("fill", function(d) { return color(d.name); })
+      .on('mouseover', tip.show)
+      .on('mouseout', tip.hide);
+
+  
+  
+  var legend = svg.selectAll(".legend")
+      .data(color.domain().slice().reverse())
+    .enter().append("g")
+      .attr("class", "legend")
+      .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+
+  legend.append("rect")
+      .attr("x", width - 18)
+      .attr("width", 18)
+      .attr("height", 18)
+      .style("fill", color);
+
+  legend.append("text")
+      .attr("x", width - 24)
+      .attr("y", 9)
+      .attr("dy", ".35em")
+      .style("text-anchor", "end")
+      .text(function(d) { return d; });
+
+ 
 	
 };
 

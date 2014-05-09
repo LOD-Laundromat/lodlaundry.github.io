@@ -35,3 +35,11 @@
     font-size: 16px;
     line-height: 20px;
 }
+
+/* .bar { */
+/*   fill: orange; */
+/* } */
+
+.bar:hover {
+  fill: orangered !important;
+}

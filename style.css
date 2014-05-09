@@ -35,13 +35,6 @@ body {
   shape-rendering: crispEdges;
 }
 
-.bar {
-  fill: orange;
-}
-
-.bar:hover {
-  fill: orangered ;
-}
 
 .x.axis path {
   display: none;
