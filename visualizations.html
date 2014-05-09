@@ -9,7 +9,7 @@
     <meta name="author" content="">
     <link rel="shortcut icon" href="imgs/laundry.ico">
 
-    <title>LOD Laundry</title>
+    <title>Laundromat Visualizations</title>
 
     <!-- Bootstrap core CSS -->
     <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -55,12 +55,6 @@
     </div> <!-- /container -->
 
 
-
-<div class="github-fork-ribbon-wrapper left-bottom">
-        <div class="github-fork-ribbon">
-            <a href="https://github.com/LODLaundry/">Find us on GitHub</a>
-        </div>
-    </div>
     
     
     <!-- Bootstrap core JavaScript
@@ -70,24 +64,9 @@
     <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="bower_components/d3js/build/d3.v3.min.js"></script>
     <script src="bower_components/d3-tip/index.js"></script>
+    <script src="main.js"></script>
     <script src="piechart.js"></script>
     <script src="barchart.js"></script>
-    <script type="text/javascript">
-    drawPieChart({
-    	rootId: "pieChartTripleSerializations",
-    	sumBy: "content_type",
-    	aggregate: "triples",
-    	totalUnit: "triples",
-    	totalLabel: "TOTAL"
-    });
-    drawPieChart({
-    	rootId: "pieChartDatasetSerializations",
-    	sumBy: "content_type",
-    	aggregate: function(){return 1;},
-    	totalUnit: "datasets",
-    	totalLabel: "TOTAL"
-    });
-    
-    </script>
+    <script src="visualizations.js"></script>
   </body>
 </html>
