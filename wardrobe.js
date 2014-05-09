@@ -16,7 +16,7 @@
 
 
 $( document ).ready(function() {
-	$.get(api.url.all, function(data) {
+	$.get(api.wardrobe.all, function(data) {
 		drawTable(data);
 	});
 });

@@ -1,0 +1,93 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="imgs/laundry.ico">
+
+    <title>LOD Laundry</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="bower_components/github-fork-ribbon-css/gh-fork-ribbon.css" rel="stylesheet">
+
+    <link href="style.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+      <link rel="stylesheet" href="bower_components/github-fork-ribbon-css/gh-fork-ribbon.ie.css">
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="container">
+
+      <!-- Main component for a primary marketing message or call to action -->
+      <div class="jumbotron">
+      	
+        <img style="display:inline-block;" src="imgs/laundry.png"></img><div style="text-align: center;vertical-align: middle;width: 600px;;display:inline-block;"><h1>Your Linked Data Laundry Machine!</h1></div>
+        <p style="padding-top:20px;">We provide a method for crawling the Linked Data cloud, as well access to a large set of uniformly formatted datasets</p>
+<!--         <p> -->
+<!--           <a class="btn btn-lg btn-primary" href="../../components/#navbar" role="button">View navbar docs &raquo;</a> -->
+<!--         </p> -->
+      </div>
+
+
+	<div class="row">
+	<div class="col-md-6">
+	
+	<div id="pieChartTripleSerializations"></div>
+	</div>
+	<div class="col-md-6">
+	<div id="pieChartDatasetSerializations"></div>
+	</div>
+	
+	
+	</div><!-- row -->
+	<div id="barchart"></div>
+    </div> <!-- /container -->
+
+
+
+<div class="github-fork-ribbon-wrapper left-bottom">
+        <div class="github-fork-ribbon">
+            <a href="https://github.com/LODLaundry/">Find us on GitHub</a>
+        </div>
+    </div>
+    
+    
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="bower_components/d3js/build/d3.v3.min.js"></script>
+    <script src="bower_components/d3-tip/index.js"></script>
+    <script src="piechart.js"></script>
+    <script src="barchart.js"></script>
+    <script type="text/javascript">
+    drawPieChart({
+    	rootId: "pieChartTripleSerializations",
+    	sumBy: "content_type",
+    	aggregate: "triples",
+    	totalUnit: "triples",
+    	totalLabel: "TOTAL"
+    });
+    drawPieChart({
+    	rootId: "pieChartDatasetSerializations",
+    	sumBy: "content_type",
+    	aggregate: function(){return 1;},
+    	totalUnit: "datasets",
+    	totalLabel: "TOTAL"
+    });
+    
+    </script>
+  </body>
+</html>

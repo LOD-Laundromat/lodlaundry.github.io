@@ -9,7 +9,7 @@
     <meta name="author" content="">
     <link rel="shortcut icon" href="imgs/laundry.ico">
 
-    <title>LOD Wardrobe</title>
+    <title>LOD Laundry Basket</title>
 
     <!-- Bootstrap core CSS -->
     <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -29,15 +29,25 @@
 
   
   <div class="container">
+  
+  
+  
   <div class="jumbotron" style="height:100%;">
-  <img style="display:inline-block;max-height: 200px;max-width: 200px;" src="imgs/wardrobe.png"></img><div style="text-align: center;vertical-align: middle;width: 600px;;display:inline-block;"><h1>Your Linked Data Laundry Machine!</h1></div>
-        <p style="padding-top:20px;">All the data is cleaned, ironed, and folded. You want something, take it!</p>
-  </div>
+  <img style="display:inline-block;max-height: 200px;max-width: 200px;" src="imgs/basket.png"></img><div style="text-align: center;vertical-align: middle;width: 600px;;display:inline-block;"><h1>Your Linked Data Laundry Machine!</h1></div>
+        <p style="padding-top:20px;">Check what LOD data we wash clean. If you have any dirty laundry, feel free to drop them in the basket here</p>
   </div>
 	
+	<div class="row">
+	<h3>List of seed points for picking up the dirty laundry</h3>
+    <pre id="dirtyLaundry"></pre>
+</div>
 
-    <div id="tableWrapper"></div>
-
+	<div class="row">
+	<h3>Have some dirty laundry of your own? Let us know, and we'll wash it (automatically)! <small><br>It may take some days to wash, dry, and iron though.</small></h3>
+    <textarea id='newDirtyLaundry' style="width: 100%; height: 300px;" placeholder="Either paste a list of URLs pointing to dump files or VOID descriptions, or paste VoID description directly"></textarea>
+    <p><button type="button" class="submitDirtyLaundryLink btn btn-info btn-lg"><span class="glyphicon glyphicon-send"></span>&nbsp;&nbsp;Send</button></p>
+</div>
+  </div><!-- container -->
 
 
     
@@ -47,10 +57,8 @@
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-    <script src="//cdn.datatables.net/1.10.0/js/jquery.dataTables.js"></script>
-<!--     <script src="//cdn.datatables.net/plug-ins/e9421181788/sorting/formatted-numbers.js"></script> -->
     <script src="main.js"></script>
-    <script src="wardrobe.js"></script>
+    <script src="laundryBasket.js"></script>
     <script type="text/javascript">drawBackButton();</script>
   </body>
 </html>

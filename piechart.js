@@ -344,7 +344,7 @@ var drawPieChart = function(config) {
 	  };
 	}
 	
-	$.get(api.url.all, function(data) {
+	$.get(api.wardrobe.all, function(data) {
 		update(data);
 	});
 };

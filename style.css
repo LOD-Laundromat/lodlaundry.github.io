@@ -9,7 +9,17 @@ body {
 .clickable {
 	cursor: pointer;
 }
-.backButton: {
+#loader {
+	display: none;
+	position:fixed;
+	top: 5px;
+	right: 5px;
+}
+#loader img {
+	width: 32px;
+	height: 32px;
+}
+.backButton {
 	position: fixed;
 	top: 0px;
 	left: 0px;
