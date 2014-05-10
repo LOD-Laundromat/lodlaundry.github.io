@@ -22,7 +22,7 @@ var xAxis = d3.svg.axis()
     .scale(x)
     .tickFormat("")
     .orient("bottom");
-
+var formatPercentage = d3.format("%");
 var yAxis = d3.svg.axis()
     .scale(y)
     .orient("left")
@@ -31,7 +31,7 @@ var tip = d3.tip()
 .attr('class', 'd3-tip')
 .offset([-10, 0])
 .html(function(d) {
-  return "<i>" + d.base_iri + " (<span style='color:red'>" + d.total + " </span>";
+  return "<i>" + d.base_iri + ":<br> <strong>#total</strong>" + d.total + "<br><Strong>#unique:</strong>" + d.triples + "(" + formatPercentage(d.triples / d.total) + ")<br><Strong>#duplicates:</strong>" + d.duplicates + "(" + formatPercentage(d.duplicates / d.total) + ")";
 });
 
 var svg = d3.select("body").append("svg")
