@@ -9,13 +9,13 @@ var drawBarChartWithData = function(config, data) {
 		    d.counts = [
 		       {
 		    	   name: "# uniq triples",
-		    	   y0: +1,
-		    	   y1: +d.triples
+		    	   x0: +1,
+		    	   x1: +d.triples
 		       },
 		       {
 		    	   name: "# duplicate triples",
-		    	   y0: +d.triples,
-		    	   y1: +(d.triples + d.duplicates)
+		    	   x0: +d.triples,
+		    	   x1: +(d.triples + d.duplicates)
 		       }
 		    ];
 		    d.total = +(d.triples + d.duplicates);
@@ -27,29 +27,44 @@ var drawBarChartWithData = function(config, data) {
 
 	var margin = {top: 20, right: 20, bottom: 30, left: 40},
     width = 960 - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom;
+    height = 900 - margin.top - margin.bottom;
 
-var x = d3.scale.ordinal()
-    .rangeRoundBands([0, width], .1)
-    .domain(dataValues.map(function(d) { return d.base_iri; }));
-var y = d3.scale.log()
-	.range([height, 0]);
-y
-	.domain([1, d3.max(dataValues, function(val){
-		return val.total;
-	})]);
+//var x = d3.scale.ordinal()
+//    .rangeRoundBands([0, width], .1)
+//    .domain(dataValues.map(function(d) { return d.base_iri; }));
+//var y = d3.scale.log()
+//	.range([height, 0]);
+//y
+//	.domain([1, d3.max(dataValues, function(val){
+//		return val.total;
+//	})]);
+
+var x = d3.scale.log()
+.range([0, width])
+.domain([1, d3.max(dataValues, function(val){
+	return val.total;
+})]);
+
+//.rangeRoundBands([0, width], .1)
+//.domain(dataValues.map(function(d) { return d.base_iri; }));
+var y = d3.scale.ordinal()
+.rangeRoundBands([0, height], .1)
+
+//rangeRoundBands([0, height], .1),
 
 
+//.range([height, 0]);
+//y
+.domain(dataValues.map(function(d) { return d.base_iri; }));
 
 
 
 var color = d3.scale.ordinal()
     .range([ "#ff8c00", "#98abc5"]);
 
-var xAxis = d3.svg.axis()
-    .scale(x)
-    .tickFormat("")
-    .orient("bottom");
+
+
+
 var formatPercentage = d3.format("%");
 var formatThousands = d3.format(",g");
 
@@ -68,11 +83,15 @@ function logFormat(d) {
 var yAxis = d3.svg.axis()
     .scale(y)
     .orient("left")
+    .tickFormat("");
 //    .ticks(10)
 //    .tickFormat(d3.format(".1s"));
-    .tickFormat(logFormat);
+    
 
-
+var xAxis = d3.svg.axis()
+.scale(x)
+.tickFormat(logFormat)
+.orient("bottom");
 
 
 
@@ -88,18 +107,19 @@ var svg = d3.select("body").append("svg")
     .attr("height", height + margin.top + margin.bottom)
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+
+
 svg.call(tip);
   color.domain(["# uniq triples", "# duplicate triples"]);
-
-
- 
-
 
 
   svg.append("g")
       .attr("class", "x axis")
       .attr("transform", "translate(0," + height + ")")
-      .call(xAxis);
+      .call(xAxis)
+      .style("text-anchor", "end")
+      .text("#triples");
 
   svg.append("g")
       .attr("class", "y axis")
@@ -107,25 +127,45 @@ svg.call(tip);
     .append("text")
       .attr("transform", "rotate(-90)")
       .attr("y", 6)
-      .attr("dy", ".71em")
-      .style("text-anchor", "end")
-      .text("#triples");
+      .attr("dy", ".71em");
 
+//  var state = svg.selectAll(".state")
+//      .data(dataValues)
+//    .enter().append("g")
+//      .attr("class", "g")
+//      .attr("transform", function(d) { return "translate(" + x(d.base_iri) + ",0)"; });
+//
+//  
+//  state.selectAll(".bar")
+//      .data(function(d) { return d.counts; })
+//    .enter().append("rect")
+//    .attr("class", "bar")
+//      .attr("width", x.rangeBand())
+//      .attr("y", function(d) {return y(+(d.y1)); })
+//      .attr("height", function(d) {
+//    	  return y(d.y0) - y(d.y1); })
+//      .style("fill", function(d) { return color(d.name); })
+//      .on('mouseover', tip.show)
+//      .on('mouseout', tip.hide);
   var state = svg.selectAll(".state")
       .data(dataValues)
     .enter().append("g")
       .attr("class", "g")
-      .attr("transform", function(d) { return "translate(" + x(d.base_iri) + ",0)"; });
+      .attr("transform", function(d) { return "translate(0," +  + y(d.base_iri) + ")"; });
 
-  
+//  console.log(y.rangeBand());
   state.selectAll(".bar")
       .data(function(d) { return d.counts; })
     .enter().append("rect")
     .attr("class", "bar")
-      .attr("width", x.rangeBand())
-      .attr("y", function(d) {return y(+(d.y1)); })
-      .attr("height", function(d) {
-    	  return y(d.y0) - y(d.y1); })
+      .attr("height", y.rangeBand())
+      .attr("x", function(d) {
+    	  return 0;
+//    	  return x(+(d.x1)); 
+      })
+      .attr("width", function(d) {
+    	  return x(d.x1) - x(d.x0); 
+       })
       .style("fill", function(d) { return color(d.name); })
       .on('mouseover', tip.show)
       .on('mouseout', tip.hide);
