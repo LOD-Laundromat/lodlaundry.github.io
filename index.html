@@ -82,15 +82,25 @@
 	</div>
 	</div>
     
-
-
-
-<!-- <div class="github-fork-ribbon-wrapper left-bottom"> -->
-<!--         <div class="github-fork-ribbon"> -->
-<!--             <a href="https://github.com/LODLaundry/">Find us on GitHub</a> -->
-<!--         </div> -->
-<!--     </div> -->
+	<div class="jumbotron" style="height:100%;">
+	<div class="container">
+	<div class="row">
+	
+	
+		<div class="col-md-8">
+		  <h1>Inventory</h1>
+		  <p>How much data did we wash clean, how many socks did we lose in the washing Machine, and what types of data do we actually have in our wardrobe? Check it out!</p>
+		  <p><button type="button" class="wardrobeLink btn btn-info btn-lg"><span class="glyphicon glyphicon-chevron-right"></span></button></p>
+		</div>
+		<div class="col-md-4" style="vertical-align:middle;">
+		<img class="clickable largeLogo analysisLink" src="imgs/analysis.png">
+		</div>
+	</div>
+	</div>
+	</div>
     
+
+
     
     <!-- Bootstrap core JavaScript
     ================================================== -->
@@ -109,6 +119,10 @@
    });
    $(".laundryBasketLink").click(function() {
 	   window.location = "laundryBasket.html";
+   });
+   
+   $(".analysisLink").click(function() {
+	   window.location = "visualizations.html";
    });
    
    </script>
