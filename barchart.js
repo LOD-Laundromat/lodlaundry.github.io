@@ -51,15 +51,36 @@ var xAxis = d3.svg.axis()
     .tickFormat("")
     .orient("bottom");
 var formatPercentage = d3.format("%");
+var formatThousands = d3.format(",g");
+
+var numberFormat = d3.format(".1s");
+//d3.format(".1s")
+/**
+ * we want to keep the ticks, but not all the labels (as they'll start to overlap).
+ * Use this function instead
+ */
+function logFormat(d) {
+  var x = Math.log(d) / Math.log(10) + 1e-6;
+  return Math.abs(x - Math.floor(x)) < .5 ? numberFormat(d) : "";
+}
+
+
 var yAxis = d3.svg.axis()
     .scale(y)
     .orient("left")
-    .tickFormat(d3.format(".2s"));
+//    .ticks(10)
+//    .tickFormat(d3.format(".1s"));
+    .tickFormat(logFormat);
+
+
+
+
+
 var tip = d3.tip()
 .attr('class', 'd3-tip')
 .offset([-10, 0])
 .html(function(d) {
-  return "<i>" + d.base_iri + ":<br> <strong>#total</strong>" + d.total + "<br><Strong>#unique:</strong>" + d.triples + "(" + formatPercentage(d.triples / d.total) + ")<br><Strong>#duplicates:</strong>" + d.duplicates + "(" + formatPercentage(d.duplicates / d.total) + ")";
+  return "<i>" + d.base_iri + ":<br> <strong>total triples: </strong>" + formatThousands(d.total) + "<br><Strong>unique: </strong>" + formatThousands(d.triples) + "(" + formatPercentage(d.triples / d.total) + ")<br><Strong>duplicates: </strong>" + formatThousands(d.duplicates) + "(" + formatPercentage(d.duplicates / d.total) + ")";
 });
 
 var svg = d3.select("body").append("svg")
