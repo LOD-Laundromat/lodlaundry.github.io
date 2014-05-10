@@ -1,4 +1,5 @@
-var drawBarChartWithData = function(config, data) {
+var drawBarChart = function(config) {
+	var data = config.data;
 	var dataValues = $.map(data, function (value, key) { return value; });
 	dataValues = $.grep(dataValues, function( a ) {
 //		console.log(a);
@@ -25,9 +26,9 @@ var drawBarChartWithData = function(config, data) {
 		  
 		  dataValues.sort(function(a, b) { return b.total - a.total; });
 
-	var margin = {top: 20, right: 20, bottom: 30, left: 40},
+	var margin = {top: 40, right: 20, bottom: 30, left: 40},
     width = 960 - margin.left - margin.right,
-    height = 900 - margin.top - margin.bottom;
+    height = 1500 - margin.top - margin.bottom;
 
 //var x = d3.scale.ordinal()
 //    .rangeRoundBands([0, width], .1)
@@ -92,7 +93,7 @@ var tip = d3.tip()
   return "<i>" + d.base_iri + ":<br> <strong>total triples: </strong>" + formatThousands(d.total) + "<br><Strong>unique: </strong>" + formatThousands(d.triples) + " (" + formatPercentage(d.triples / d.total) + ")<br><Strong>duplicates: </strong>" + formatThousands(d.duplicates) + " (" + formatPercentage(d.duplicates / d.total) + ")";
 })
 .direction("e");
-var svg = d3.select("body").append("svg")
+var svg = d3.select("#" + config.rootId).append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
   .append("g")
@@ -106,13 +107,17 @@ svg.call(tip);
 
   svg.append("g")
       .attr("class", "x axis")
-//      .attr("transform", "translate(0," + height + ")")
+//      .attr("transform", "translate(" + width + ",0)")
       .call(xAxis)
       .style("text-anchor", "end")
       .append("text")
-	      .attr("transform", "rotate(-90)")
-	      .attr("y", 6)
-	      .attr("dy", ".71em");
+//	      .attr("transform", "rotate(-90)")
+      	  .attr("x", (width /2)-20)
+	      .attr("y", -25)
+	      .attr("dx", ".71em")
+	      .style("text-anchor", "middle")
+	      .style("font-size", "14px")
+	      .text("Number of triples (log)");
 
   svg.append("g")
       .attr("class", "y axis")
@@ -172,11 +177,4 @@ svg.call(tip);
 };
 
 
-
-var drawBarChart = function(config) {
-	$.get(api.wardrobe.all, function(data) {
-		drawBarChartWithData(config, data);
-	});
-	
-};
 

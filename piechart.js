@@ -5,6 +5,7 @@ var drawPieChart = function(config) {
 	var ir = 45;
 	var textOffset = 14;
 	var tweenDuration = 250;
+	var data = config.data;
 	
 	//OBJECTS TO BE POPULATED WITH DATA LATER
 	var lines, valueLabels, nameLabels;
@@ -95,13 +96,7 @@ var drawPieChart = function(config) {
 	  .text(config.totalUnit);
 	
 	
-	///////////////////////////////////////////////////////////
-	// STREAKER CONNECTION ////////////////////////////////////
-	///////////////////////////////////////////////////////////
 	
-	// to run each time data is generated
-	function update(data) {
-		//get values in json object as array
 		var dataValues = $.map(data, function (value, key) { return value; });
 		var sum_by = config.sumBy;
 		var aggregatedValues = d3.nest().key(function(d) {
@@ -284,7 +279,6 @@ var drawPieChart = function(config) {
 	
 	    nameLabels.exit().remove();
 	  }  
-	}
 	
 	///////////////////////////////////////////////////////////
 	// FUNCTIONS //////////////////////////////////////////////
@@ -344,7 +338,4 @@ var drawPieChart = function(config) {
 	  };
 	}
 	
-	$.get(api.wardrobe.all, function(data) {
-		update(data);
-	});
 };
