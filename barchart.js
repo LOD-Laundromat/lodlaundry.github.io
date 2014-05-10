@@ -4,16 +4,44 @@ var drawBarChartWithData = function(config, data) {
 //		console.log(a);
 		  return a.triples && a.triples > 0;
 		});
+	
+	 dataValues.forEach(function(d) {
+		    d.counts = [
+		       {
+		    	   name: "# uniq triples",
+		    	   y0: +1,
+		    	   y1: +d.triples
+		       },
+		       {
+		    	   name: "# duplicate triples",
+		    	   y0: +d.triples,
+		    	   y1: +(d.triples + d.duplicates)
+		       }
+		    ];
+		    d.total = +(d.triples + d.duplicates);
+		    $.extend(d.counts[0], d);
+		    $.extend(d.counts[1], d);
+		  });
+		  
+		  dataValues.sort(function(a, b) { return b.total - a.total; });
 
 	var margin = {top: 20, right: 20, bottom: 30, left: 40},
     width = 960 - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
 
 var x = d3.scale.ordinal()
-    .rangeRoundBands([0, width], .1);
+    .rangeRoundBands([0, width], .1)
+    .domain(dataValues.map(function(d) { return d.base_iri; }));
+var y = d3.scale.log()
+	.range([height, 0]);
+y
+	.domain([1, d3.max(dataValues, function(val){
+		return val.total;
+	})]);
 
-var y = d3.scale.linear()
-    .rangeRound([height, 0]);
+
+
+
 
 var color = d3.scale.ordinal()
     .range([ "#ff8c00", "#98abc5"]);
@@ -43,28 +71,9 @@ svg.call(tip);
   color.domain(["# uniq triples", "# duplicate triples"]);
 
 
-  dataValues.forEach(function(d) {
-    d.counts = [
-       {
-    	   name: "# uniq triples",
-    	   y0: 0,
-    	   y1: d.triples
-       },
-       {
-    	   name: "# duplicate triples",
-    	   y0: d.triples,
-    	   y1: d.triples + d.duplicates
-       }
-    ];
-    d.total = d.triples + d.duplicates;
-    $.extend(d.counts[0], d);
-    $.extend(d.counts[1], d);
-  });
-  
-  dataValues.sort(function(a, b) { return b.total - a.total; });
+ 
 
-  x.domain(dataValues.map(function(d) { return d.base_iri; }));
-  y.domain([0, d3.max(dataValues, function(d) { return d.total; })]);
+
 
   svg.append("g")
       .attr("class", "x axis")
@@ -93,8 +102,9 @@ svg.call(tip);
     .enter().append("rect")
     .attr("class", "bar")
       .attr("width", x.rangeBand())
-      .attr("y", function(d) { return y(d.y1); })
-      .attr("height", function(d) { return y(d.y0) - y(d.y1); })
+      .attr("y", function(d) {return y(+(d.y1)); })
+      .attr("height", function(d) {
+    	  return y(d.y0) - y(d.y1); })
       .style("fill", function(d) { return color(d.name); })
       .on('mouseover', tip.show)
       .on('mouseout', tip.hide);
