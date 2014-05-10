@@ -45,16 +45,8 @@ var x = d3.scale.log()
 	return val.total;
 })]);
 
-//.rangeRoundBands([0, width], .1)
-//.domain(dataValues.map(function(d) { return d.base_iri; }));
 var y = d3.scale.ordinal()
-.rangeRoundBands([0, height], .1)
-
-//rangeRoundBands([0, height], .1),
-
-
-//.range([height, 0]);
-//y
+.rangeBands([0, height], .1)
 .domain(dataValues.map(function(d) { return d.base_iri; }));
 
 
@@ -87,21 +79,19 @@ var yAxis = d3.svg.axis()
 //    .ticks(10)
 //    .tickFormat(d3.format(".1s"));
     
-
 var xAxis = d3.svg.axis()
 .scale(x)
 .tickFormat(logFormat)
-.orient("bottom");
-
+.orient("top");
 
 
 var tip = d3.tip()
 .attr('class', 'd3-tip')
 .offset([-10, 0])
 .html(function(d) {
-  return "<i>" + d.base_iri + ":<br> <strong>total triples: </strong>" + formatThousands(d.total) + "<br><Strong>unique: </strong>" + formatThousands(d.triples) + "(" + formatPercentage(d.triples / d.total) + ")<br><Strong>duplicates: </strong>" + formatThousands(d.duplicates) + "(" + formatPercentage(d.duplicates / d.total) + ")";
-});
-
+  return "<i>" + d.base_iri + ":<br> <strong>total triples: </strong>" + formatThousands(d.total) + "<br><Strong>unique: </strong>" + formatThousands(d.triples) + " (" + formatPercentage(d.triples / d.total) + ")<br><Strong>duplicates: </strong>" + formatThousands(d.duplicates) + " (" + formatPercentage(d.duplicates / d.total) + ")";
+})
+.direction("e");
 var svg = d3.select("body").append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
@@ -116,37 +106,23 @@ svg.call(tip);
 
   svg.append("g")
       .attr("class", "x axis")
-      .attr("transform", "translate(0," + height + ")")
+//      .attr("transform", "translate(0," + height + ")")
       .call(xAxis)
       .style("text-anchor", "end")
-      .text("#triples");
+      .append("text")
+	      .attr("transform", "rotate(-90)")
+	      .attr("y", 6)
+	      .attr("dy", ".71em");
 
   svg.append("g")
       .attr("class", "y axis")
       .call(yAxis)
-    .append("text")
-      .attr("transform", "rotate(-90)")
-      .attr("y", 6)
-      .attr("dy", ".71em");
+//    .append("text")
+//      .attr("transform", "rotate(-90)")
+//      .attr("y", 6)
+//      .attr("dy", ".71em")
+      ;
 
-//  var state = svg.selectAll(".state")
-//      .data(dataValues)
-//    .enter().append("g")
-//      .attr("class", "g")
-//      .attr("transform", function(d) { return "translate(" + x(d.base_iri) + ",0)"; });
-//
-//  
-//  state.selectAll(".bar")
-//      .data(function(d) { return d.counts; })
-//    .enter().append("rect")
-//    .attr("class", "bar")
-//      .attr("width", x.rangeBand())
-//      .attr("y", function(d) {return y(+(d.y1)); })
-//      .attr("height", function(d) {
-//    	  return y(d.y0) - y(d.y1); })
-//      .style("fill", function(d) { return color(d.name); })
-//      .on('mouseover', tip.show)
-//      .on('mouseout', tip.hide);
   var state = svg.selectAll(".state")
       .data(dataValues)
     .enter().append("g")
@@ -160,8 +136,8 @@ svg.call(tip);
     .attr("class", "bar")
       .attr("height", y.rangeBand())
       .attr("x", function(d) {
-    	  return 0;
-//    	  return x(+(d.x1)); 
+//    	  return 0;
+    	  return x(+(d.x0)); 
       })
       .attr("width", function(d) {
     	  return x(d.x1) - x(d.x0); 
@@ -176,7 +152,7 @@ svg.call(tip);
       .data(color.domain().slice().reverse())
     .enter().append("g")
       .attr("class", "legend")
-      .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+      .attr("transform", function(d, i) { return "translate(0," + (height - (i * 20)) + ")"; });
 
   legend.append("rect")
       .attr("x", width - 18)
