@@ -31,6 +31,17 @@ var drawPieChart = function(config) {
 	  .innerRadius(ir)
 	  .outerRadius(r);
 	
+	var tip = d3.tip()
+	.attr('class', 'd3-tip')
+	.direction("e")
+//	.offset([0, -20])
+	.html(function(d) {
+		console.log(d);
+//		return "blaaaaaaaaat";
+	  return d.name + " (" + formatThousands(d.value) + ")";
+	});
+//	arc.call(tip);
+	
 	///////////////////////////////////////////////////////////
 	// GENERATE FAKE DATA /////////////////////////////////////
 	///////////////////////////////////////////////////////////
@@ -47,6 +58,7 @@ var drawPieChart = function(config) {
 	var vis = d3.select("#" + config.rootId).append("svg:svg")
 	  .attr("width", w)
 	  .attr("height", h);
+	vis.call(tip);
 	
 	//GROUP FOR ARCS/PATHS
 	var arc_group = vis.append("svg:g")
@@ -150,11 +162,13 @@ var drawPieChart = function(config) {
 //	    });
 	
 	    //DRAW ARC PATHS
-	    paths = arc_group.selectAll("path").data(filteredPieData);
-	    paths.enter().append("svg:path")
+	    paths = arc_group.selectAll(".pieSlice").data(filteredPieData);
+	    paths.enter().append("svg:path").attr("class", "pieSlice")
 	      .attr("stroke", "white")
 	      .attr("stroke-width", 0.5)
 	      .attr("fill", function(d, i) { return color(i); })
+	      .on('mouseover', tip.show)
+	      .on('mouseout', tip.hide)
 	      .transition()
 	        .duration(tweenDuration)
 	        .attrTween("d", pieTween);
@@ -175,7 +189,12 @@ var drawPieChart = function(config) {
 	      .attr("x2", 0)
 	      .attr("y1", -r-3)
 	      .attr("y2", -r-8)
-	      .attr("stroke", "gray")
+	      .attr("stroke", function(d) {
+	    	  if ((d.value/totalTriples) > config.hideLabelsBelow) {
+	    		  return "gray";
+	    	  } 
+	    	  return "";
+	      })
 	      .attr("transform", function(d) {
 	        return "rotate(" + (d.startAngle+d.endAngle)/2 * (180/Math.PI) + ")";
 	      });
