@@ -40,9 +40,15 @@
 	    drawPieChart({
 	    	rootId: "pieChartExceptions",
 	    	sumBy: function(d) {
+	    		var exceptionConcat;
 				  for (var exception in d.exceptions) {
-					  return exception;
+					  if (!exceptionConcat) {
+						  exceptionConcat = exception; 
+					  } else {
+						  exceptionConcat += "/" + exception;
+					  }
 				  }
+				  if (exceptionConcat) return exceptionConcat;
 				  var syntaxError = d.rdf && d.rdf.syntaxErrors && d.rdf.syntaxErrors.length;
 				  var hasTriples = d.rdf && d.rdf.triples > 0;
 				  if (hasTriples && !syntaxError) return "valid";
