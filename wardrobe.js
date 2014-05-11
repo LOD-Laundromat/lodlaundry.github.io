@@ -12,14 +12,31 @@
 //        return b - a;
 //    }
 //} );
+var hoverDiv;
+var initHoverIcons = function() {
+	hoverDiv = $("<div align='right' class='tableHoverImgs'></div>").hide();
+	$("<img src='imgs/download.png' class='tableHoverImg'></img>")
+		.click(function(){
+			window.open($(this).closest("td").text(), "_blank");
+		})
+		.appendTo(hoverDiv);
+	$("<img src='imgs/info.png' class='tableHoverImg'></img>")
+	.click(function(){
+		window.open($(this).closest("td").text(), "_blank");
+	})
+	.appendTo(hoverDiv);
+	$("body").append(hoverDiv);
+};
+initHoverIcons();
+var showIcons = function() {
+	hoverDiv.show();
+	$(this).find('td:eq(1)').append(hoverDiv);
+};
+var hideIcons = function() {
+	hoverDiv.hide();
+};
 
 
-
-$( document ).ready(function() {
-	$.get(api.wardrobe.all, function(data) {
-		drawTable(data.results);
-	});
-});
 
 var formatInt = function(origValue) {
 	 var rx=  /(\d+)(\d{3})/;
@@ -42,11 +59,11 @@ var drawTable = function(data) {
 		if (!dataObj.url) continue;
 //		console.log(dataObj.base_iri);
 		row.push("");//this is where the row index comes automatically
-		row.push(dataObj.url);
-		row.push(dataObj.httpRepsonse && dataObj.httpRepsonse.contentType? dataObj.httpRepsonse.contentType: "unknown");
-		row.push(dataObj.httpRepsonse && dataObj.httpRepsonse.contentLength? dataObj.httpRepsonse.contentLength: "unknown");
+		row.push("<a title='Download from original location' href='" + dataObj.url + "' target='_blank'>" + dataObj.url + "</a>");
+		row.push(dataObj.rdf && dataObj.rdf.serializationFormat? dataObj.rdf.serializationFormat: "unknown");
+//		row.push(dataObj.httpRepsonse && dataObj.httpRepsonse.contentLength? dataObj.httpRepsonse.contentLength: "unknown");
 		row.push(dataObj.httpRepsonse && dataObj.httpRepsonse.lastModified? dataObj.httpRepsonse.lastModified: "unknown");
-		row.push(dataObj.rdf && dataObj.rdf.duplicates ? dataObj.rdf.duplicates : "unknown");
+		row.push(dataObj.rdf && dataObj.rdf.duplicates ? dataObj.rdf.duplicates : 0);
 		row.push(dataObj.rdf && dataObj.rdf.triples ? dataObj.rdf.triples: null);
 		rows.push(row);
 	}
@@ -55,24 +72,40 @@ var drawTable = function(data) {
 	dataTable = table.dataTable( {
 		
         "data": rows,
-        "bAutoWidth": false,
+        "sScrollX": "100%",
+        "bAutoWidth": true,
         "iDisplayLength": 20,
-//        "aoColumns": [{"sWidth":"30px"},{"sWidth":"200px"},{"sWidth":"100px"},{"sWidth":"100px"},{"sWidth":"100px"},{"sWidth":"100px"},{"sWidth":"100px"}],
         "columns": [
             { "title": "index" },//
             { "title": "URL" },//1
-            { "title": "Content Type" },//2
-            { "title": "Content Length" },//3
-            { "title": "Last Modified"},//4
-            { "title": "Duplicates"},//5
-            { "title": "Triples"}//6
+            { "title": "Format" },//2
+//            { "title": "Content Length" },//3
+            { "title": "Last Modified"},//3
+            { "title": "Duplicates"},//4
+            { "title": "Triples"}//5
         ],
-//        columnDefs: [
-//         { type: 'formatted-num', targets: 5 }
-//       ],
         "language": {
             "decimal": ",",
             "thousands": "."
+        },
+        "createdRow": function ( row, data, index ) {
+        	$(row).mouseover(showIcons);
+        	$(row).mouseout(hideIcons);
+        },
+        "drawCallback" : function(settings){
+        	var api = this.api();
+            var rows = api.rows( {page:'current'} ).nodes();
+            var last=null;
+ 
+            api.column(2, {page:'current'} ).data().each( function ( group, i ) {
+                if ( last !== group ) {
+                    $(rows).eq( i ).before(
+                        '<tr class="group"><td colspan="5">'+group+'</td></tr>'
+                    );
+ 
+                    last = group;
+                }
+            } );
         },
         "fnDrawCallback": function ( oSettings ) {
     		/* Need to redo the counters if filtered or sorted */
@@ -87,15 +120,22 @@ var drawTable = function(data) {
     	"aoColumnDefs": [
     		{ "bSortable": false, "aTargets": [ 0 ] },
     		{ "sType": "numeric","aTargets": [ 5 ] },
-//    		{ "sWidth": "100px", "aTargets": [ 2,3,4,5,6 ] },
     		{ "sWidth": "30px", "aTargets": [ 0 ] },
-    		{ "sWidth": "160px", "aTargets": [ 2] },
     		{ "sWidth": "130px", "aTargets": [ 3 ] },
-    		{ "sWidth": "210px", "aTargets": [ 4 ] },
-    		{ "sWidth": "110px", "aTargets": [ 5,6 ] },
     	],
-    	"aaSorting": [[ 6, 'desc' ]]
+    	"aaSorting": [[ 5, 'desc' ]]
     }); 
 	console.log(data);
 };
 
+
+$( document ).ready(function() {
+	$.get(api.wardrobe.all, function(data) {
+		drawTable(data.results);
+	});
+});
+
+
+$(window).on('resize', function () {
+  dataTable.fnAdjustColumnSizing();
+} );

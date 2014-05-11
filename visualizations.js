@@ -30,7 +30,7 @@
 			},
 	    	aggregate: function(){return 1;},
 			filter: function(d) {
-				return d.rdf && d.rdf.triples > 0;
+				return d.rdf && d.rdf.serializationFormat;
 			},
 	    	totalUnit: "datasets",
 	    	totalLabel: "TOTAL",
@@ -40,6 +40,7 @@
 	    drawPieChart({
 	    	rootId: "pieChartExceptions",
 	    	sumBy: function(d) {
+	    		
 	    		var exceptionConcat;
 				  for (var exception in d.exceptions) {
 					  if (!exceptionConcat) {
@@ -60,6 +61,9 @@
 	    	totalUnit: "datasets",
 	    	totalLabel: "TOTAL",
 	    	hideLabelsBelow: 0.03,
+	    	filter: function(d) {
+				return !d.hasArchiveEntry;
+			},
 	    	data: $.extend({}, data.results)
 	    });
 	    drawBarChart({

@@ -1,0 +1,18 @@
+.tableHoverImg {
+	margin-left:5px;
+	cursor:pointer;
+	size: 25px;
+	height: 25px;
+}
+.tableHoverImgs {
+	float:right;
+/* 	position:absolute; */
+}
+.cellWrapper {
+	position: relative;
+	width: 100%;
+	height: 100%;
+}
+td {
+/* 	position:relative; */
+}
