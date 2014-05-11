@@ -3,25 +3,27 @@ var drawBarChart = function(config) {
 	var dataValues = $.map(data, function (value, key) { return value; });
 	dataValues = $.grep(dataValues, function( a ) {
 //		console.log(a);
-		  return a.triples && a.triples > 0;
+		  return a.rdf && a.rdf.triples && a.rdf.triples > 0;
 		});
 	
 	 dataValues.forEach(function(d) {
+		 d.total = +(d.rdf.triples + d.rdf.duplicates);
+		 var origObject = $.extend({}, d);
 		    d.counts = [
 		       {
 		    	   name: "# uniq triples",
 		    	   x0: +1,
-		    	   x1: +d.triples
+		    	   x1: +d.rdf.triples
 		       },
 		       {
 		    	   name: "# duplicate triples",
-		    	   x0: +d.triples,
-		    	   x1: +(d.triples + d.duplicates)
+		    	   x0: +d.rdf.triples,
+		    	   x1: +(d.rdf.triples + d.rdf.duplicates)
 		       }
 		    ];
-		    d.total = +(d.triples + d.duplicates);
-		    $.extend(d.counts[0], d);
-		    $.extend(d.counts[1], d);
+		    
+		    $.extend(d.counts[0], origObject);
+		    $.extend(d.counts[1], origObject);
 		  });
 		  
 		  dataValues.sort(function(a, b) { return b.total - a.total; });
@@ -30,15 +32,6 @@ var drawBarChart = function(config) {
     width = 960 - margin.left - margin.right,
     height = 1500 - margin.top - margin.bottom;
 
-//var x = d3.scale.ordinal()
-//    .rangeRoundBands([0, width], .1)
-//    .domain(dataValues.map(function(d) { return d.base_iri; }));
-//var y = d3.scale.log()
-//	.range([height, 0]);
-//y
-//	.domain([1, d3.max(dataValues, function(val){
-//		return val.total;
-//	})]);
 
 var x = d3.scale.log()
 .range([0, width])
@@ -48,7 +41,7 @@ var x = d3.scale.log()
 
 var y = d3.scale.ordinal()
 .rangeBands([0, height], .1)
-.domain(dataValues.map(function(d) { return d.base_iri; }));
+.domain(dataValues.map(function(d) { return d.url; }));
 
 
 
@@ -90,7 +83,8 @@ var tip = d3.tip()
 .attr('class', 'd3-tip')
 .offset([-10, 0])
 .html(function(d) {
-  return "<i>" + d.base_iri + ":<br> <strong>total triples: </strong>" + formatThousands(d.total) + "<br><Strong>unique: </strong>" + formatThousands(d.triples) + " (" + formatPercentage(d.triples / d.total) + ")<br><Strong>duplicates: </strong>" + formatThousands(d.duplicates) + " (" + formatPercentage(d.duplicates / d.total) + ")";
+	
+  return "<i>" + d.url + ":<br> <strong>total triples: </strong>" + formatThousands(d.total) + "<br><Strong>unique: </strong>" + formatThousands(d.rdf.triples) + " (" + formatPercentage(d.rdf.triples / d.total) + ")<br><Strong>duplicates: </strong>" + formatThousands(d.rdf.duplicates) + " (" + formatPercentage(d.rdf.duplicates / d.total) + ")";
 })
 .direction("e");
 var svg = d3.select("#" + config.rootId).append("svg")
@@ -132,7 +126,7 @@ svg.call(tip);
       .data(dataValues)
     .enter().append("g")
       .attr("class", "g")
-      .attr("transform", function(d) { return "translate(0," +  + y(d.base_iri) + ")"; });
+      .attr("transform", function(d) { return "translate(0," +  + y(d.url) + ")"; });
 
 //  console.log(y.rangeBand());
   state.selectAll(".bar")

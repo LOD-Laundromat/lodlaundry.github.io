@@ -98,29 +98,27 @@ var drawPieChart = function(config) {
 	
 	
 		var dataValues = $.map(data, function (value, key) { return value; });
-		var sum_by = config.sumBy;
-		var aggregatedValues = d3.nest().key(function(d) {
-			  return d[sum_by];
-			}).rollup(function(d) {
-			  return d3.sum(d, function(g) {
-				  if (typeof config.aggregate == "function") {
-					  return config.aggregate(g);
-				  } else {
-					  return g[config.aggregate];
-				  }
-			    
-			  });
-			}).entries(dataValues);
-		var grepped = $.grep(aggregatedValues, function( a ) {
-			  return a.values > 0;
+		dataValues = $.grep(dataValues, function( a ) {
+			  return a.rdf && a.rdf.triples > 0;
 			});
+//		var sum_by = config.sumBy;
+		var aggregatedValues = d3.nest().key(
+//				function(d) {
+//			  return d[sum_by];
+//			}
+				config.sumBy
+			)
+			.rollup(function(d) {
+			  return d3.sum(d, config.aggregate);
+			}).entries(dataValues);
+		
 		function addData(index) {
-		  return grepped[index];
+		  return aggregatedValues[index];
 		}
 	
 		
 	//  arraySize = Math.ceil(Math.random()*10);
-	  streakerDataAdded = d3.range(grepped.length).map(addData);
+	  streakerDataAdded = d3.range(aggregatedValues.length).map(addData);
 	
 	  oldPieData = filteredPieData;
 	  pieData = donut(streakerDataAdded);

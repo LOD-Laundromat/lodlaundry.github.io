@@ -10,15 +10,21 @@
 	$.get(api.wardrobe.all, function(data) {
 		  drawPieChart({
 		    	rootId: "pieChartTripleSerializations",
-	    	sumBy: "content_type",
-	    	aggregate: "triples",
+	    	sumBy: function(d) {
+				  return d.rdf.serialization_format;
+				},
+	    	aggregate: function(d) {
+				  return d.rdf.triples;
+			},
 	    	totalUnit: "triples",
 	    	totalLabel: "TOTAL",
 	    	data: data
 	    });
 	    drawPieChart({
 	    	rootId: "pieChartDatasetSerializations",
-	    	sumBy: "content_type",
+	    	sumBy: function(d) {
+				  return d.rdf.serialization_format;
+			},
 	    	aggregate: function(){return 1;},
 	    	totalUnit: "datasets",
 	    	totalLabel: "TOTAL",

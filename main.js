@@ -1,5 +1,6 @@
 var api = {
 	wardrobe: {
+//		all: "http://lodlaundry.wbeek.ops.few.vu.nl/ll/all.json"
 		all: "testInput.json"
 	},
 	laundryBasket: {
@@ -30,10 +31,10 @@ $.ajaxSetup({
 });
 
 
-$( document ).ready(function() {
+//$( document ).ready(function() {
 	//add loader stuff to html
 	$("<div id='loader'><img src='imgs/loader.gif'></div>").appendTo($("body"));
-});
+//});
 //
 //var drawDocumentInfo = function(parent, info) {
 //	info = {
