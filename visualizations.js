@@ -11,28 +11,30 @@
 		  drawPieChart({
 		    	rootId: "pieChartTripleSerializations",
 	    	sumBy: function(d) {
-				  return d.rdf.serialization_format;
+				  return d.rdf.serializationFormat;
 				},
 	    	aggregate: function(d) {
 				  return d.rdf.triples;
 			},
 	    	totalUnit: "triples",
 	    	totalLabel: "TOTAL",
-	    	data: data
+	    	hideLabelsBelow: 0.05,
+	    	data: data.results
 	    });
 	    drawPieChart({
 	    	rootId: "pieChartDatasetSerializations",
 	    	sumBy: function(d) {
-				  return d.rdf.serialization_format;
+				  return d.rdf.serializationFormat;
 			},
 	    	aggregate: function(){return 1;},
 	    	totalUnit: "datasets",
 	    	totalLabel: "TOTAL",
-	    	data:data
+	    	hideLabelsBelow: 0.05,
+	    	data:data.results
 	    });
 	    drawBarChart({
 	    	rootId: "barChartDatasets",
-	    	data:data
+	    	data:data.results
 	    });
 	    
 	    

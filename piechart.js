@@ -6,7 +6,10 @@ var drawPieChart = function(config) {
 	var textOffset = 14;
 	var tweenDuration = 250;
 	var data = config.data;
-	
+	var pieChartPercentage = d3.format(".1%");
+    var getAngle = function (d) {
+        return (180 / Math.PI * (d.startAngle + d.endAngle) / 2 - 90);
+    };
 	//OBJECTS TO BE POPULATED WITH DATA LATER
 	var lines, valueLabels, nameLabels;
 	var pieData = [];    
@@ -112,13 +115,13 @@ var drawPieChart = function(config) {
 			  return d3.sum(d, config.aggregate);
 			}).entries(dataValues);
 		
-		function addData(index) {
-		  return aggregatedValues[index];
-		}
-	
+		
 		
 	//  arraySize = Math.ceil(Math.random()*10);
-	  streakerDataAdded = d3.range(aggregatedValues.length).map(addData);
+	  streakerDataAdded = d3.range(aggregatedValues.length).map(function(index) {
+		  return aggregatedValues[index];
+		}
+	);
 	
 	  oldPieData = filteredPieData;
 	  pieData = donut(streakerDataAdded);
@@ -140,11 +143,11 @@ var drawPieChart = function(config) {
 	
 	    //REMOVE PLACEHOLDER CIRCLE
 	    arc_group.selectAll("circle").remove();
-	
-	    totalValue.text(function(){
-	      var kb = totalTriples/1024;
-	      return kb.toFixed(1);
-	    });
+	    totalValue.text(formatLargeShortForm(totalTriples));
+//	    totalValue.text(function(){
+//	      var kb = totalTriples/1024;
+//	      return kb.toFixed(1);
+//	    });
 	
 	    //DRAW ARC PATHS
 	    paths = arc_group.selectAll("path").data(filteredPieData);
@@ -183,54 +186,6 @@ var drawPieChart = function(config) {
 	      });
 	    lines.exit().remove();
 	
-	    //DRAW LABELS WITH PERCENTAGE VALUES
-	    valueLabels = label_group.selectAll("text.value").data(filteredPieData)
-	      .attr("dy", function(d){
-	        if ((d.startAngle+d.endAngle)/2 > Math.PI/2 && (d.startAngle+d.endAngle)/2 < Math.PI*1.5 ) {
-	          return 5;
-	        } else {
-	          return -7;
-	        }
-	      })
-	      .attr("text-anchor", function(d){
-	        if ( (d.startAngle+d.endAngle)/2 < Math.PI ){
-	          return "beginning";
-	        } else {
-	          return "end";
-	        }
-	      })
-	      .text(function(d){
-	        var percentage = (d.value/totalTriples)*100;
-	        return percentage.toFixed(1) + "%";
-	      });
-	
-	    valueLabels.enter().append("svg:text")
-	      .attr("class", "value")
-	      .attr("transform", function(d) {
-	        return "translate(" + Math.cos(((d.startAngle+d.endAngle - Math.PI)/2)) * (r+textOffset) + "," + Math.sin((d.startAngle+d.endAngle - Math.PI)/2) * (r+textOffset) + ")";
-	      })
-	      .attr("dy", function(d){
-	        if ((d.startAngle+d.endAngle)/2 > Math.PI/2 && (d.startAngle+d.endAngle)/2 < Math.PI*1.5 ) {
-	          return 5;
-	        } else {
-	          return -7;
-	        }
-	      })
-	      .attr("text-anchor", function(d){
-	        if ( (d.startAngle+d.endAngle)/2 < Math.PI ){
-	          return "beginning";
-	        } else {
-	          return "end";
-	        }
-	      }).text(function(d){
-	        var percentage = (d.value/totalTriples)*100;
-	        return percentage.toFixed(1) + "%";
-	      });
-	
-	    valueLabels.transition().duration(tweenDuration).attrTween("transform", textTween);
-	
-	    valueLabels.exit().remove();
-	
 	
 	    //DRAW LABELS WITH ENTITY NAMES
 	    nameLabels = label_group.selectAll("text.units").data(filteredPieData)
@@ -253,16 +208,6 @@ var drawPieChart = function(config) {
 	
 	    nameLabels.enter().append("svg:text")
 	      .attr("class", "units")
-	      .attr("transform", function(d) {
-	        return "translate(" + Math.cos(((d.startAngle+d.endAngle - Math.PI)/2)) * (r+textOffset) + "," + Math.sin((d.startAngle+d.endAngle - Math.PI)/2) * (r+textOffset) + ")";
-	      })
-	      .attr("dy", function(d){
-	        if ((d.startAngle+d.endAngle)/2 > Math.PI/2 && (d.startAngle+d.endAngle)/2 < Math.PI*1.5 ) {
-	          return 17;
-	        } else {
-	          return 5;
-	        }
-	      })
 	      .attr("text-anchor", function(d){
 	        if ((d.startAngle+d.endAngle)/2 < Math.PI ) {
 	          return "beginning";
@@ -270,7 +215,12 @@ var drawPieChart = function(config) {
 	          return "end";
 	        }
 	      }).text(function(d){
-	        return d.name;
+	    	  if ((d.value/totalTriples) > config.hideLabelsBelow) {
+	    		  return d.name + " (" + pieChartPercentage((d.value/totalTriples)) + ")";
+	    	  } else {
+	    		  return "";
+	    	  }
+	        
 	      });
 	
 	    nameLabels.transition().duration(tweenDuration).attrTween("transform", textTween);

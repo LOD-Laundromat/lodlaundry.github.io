@@ -51,11 +51,9 @@ var color = d3.scale.ordinal()
 
 
 
-var formatPercentage = d3.format("%");
-var formatThousands = d3.format(",g");
+
 
 var numberFormat = d3.format(".1s");
-//d3.format(".1s")
 /**
  * we want to keep the ticks, but not all the labels (as they'll start to overlap).
  * Use this function instead
