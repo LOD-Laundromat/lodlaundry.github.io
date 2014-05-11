@@ -36,18 +36,11 @@ var drawPieChart = function(config) {
 	.direction("e")
 //	.offset([0, -20])
 	.html(function(d) {
-		console.log(d);
-//		return "blaaaaaaaaat";
 	  return d.name + " (" + formatThousands(d.value) + ")";
 	});
 //	arc.call(tip);
 	
-	///////////////////////////////////////////////////////////
-	// GENERATE FAKE DATA /////////////////////////////////////
-	///////////////////////////////////////////////////////////
-	
-	var arrayRange = 100000; //range of potential values for each item
-	var arraySize;
+
 	var streakerDataAdded;
 	
 	
@@ -113,9 +106,9 @@ var drawPieChart = function(config) {
 	
 	
 		var dataValues = $.map(data, function (value, key) { return value; });
-		dataValues = $.grep(dataValues, function( a ) {
-			  return a.rdf && a.rdf.triples > 0;
-			});
+		if (config.filter) {
+			dataValues = $.grep(dataValues, config.filter);
+		}
 //		var sum_by = config.sumBy;
 		var aggregatedValues = d3.nest().key(
 //				function(d) {
