@@ -17,7 +17,7 @@
 
 $( document ).ready(function() {
 	$.get(api.wardrobe.all, function(data) {
-		drawTable(data);
+		drawTable(data.results);
 	});
 });
 
@@ -39,15 +39,15 @@ var drawTable = function(data) {
 	for (var dataKey in data) {
 		var dataObj = data[dataKey];
 		var row = [];
-		if (!dataObj.base_iri) continue;
-		console.log(dataObj.base_iri);
+		if (!dataObj.url) continue;
+//		console.log(dataObj.base_iri);
 		row.push("");//this is where the row index comes automatically
-		row.push(dataObj.base_iri);
-		row.push(dataObj.content_type? dataObj.content_type: "unknown");
-		row.push(dataObj.content_length? dataObj.content_length: "unknown");
-		row.push(dataObj.last_modified? dataObj.last_modified: "unknown");
-		row.push(dataObj.duplicates ? dataObj.duplicates : "unknown");
-		row.push(dataObj.triples ? dataObj.triples: null);
+		row.push(dataObj.url);
+		row.push(dataObj.httpRepsonse && dataObj.httpRepsonse.contentType? dataObj.httpRepsonse.contentType: "unknown");
+		row.push(dataObj.httpRepsonse && dataObj.httpRepsonse.contentLength? dataObj.httpRepsonse.contentLength: "unknown");
+		row.push(dataObj.httpRepsonse && dataObj.httpRepsonse.lastModified? dataObj.httpRepsonse.lastModified: "unknown");
+		row.push(dataObj.rdf && dataObj.rdf.duplicates ? dataObj.rdf.duplicates : "unknown");
+		row.push(dataObj.rdf && dataObj.rdf.triples ? dataObj.rdf.triples: null);
 		rows.push(row);
 	}
 	
