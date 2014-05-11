@@ -20,7 +20,7 @@
 			},
 	    	totalUnit: "triples",
 	    	totalLabel: "TOTAL",
-	    	hideLabelsBelow: 0.05,
+	    	hideLabelsBelow: 0.02,
 	    	data: $.extend({}, data.results)
 	    });
 	    drawPieChart({
@@ -34,7 +34,7 @@
 			},
 	    	totalUnit: "datasets",
 	    	totalLabel: "TOTAL",
-	    	hideLabelsBelow: 0.05,
+	    	hideLabelsBelow: 0.02,
 	    	data: $.extend({}, data.results)
 	    });
 	    drawPieChart({
@@ -52,20 +52,22 @@
 				  var syntaxError = d.rdf && d.rdf.syntaxErrors && d.rdf.syntaxErrors.length;
 				  var hasTriples = d.rdf && d.rdf.triples > 0;
 				  if (hasTriples && !syntaxError) return "valid";
-				  if (hasTriples && syntaxError) return "has triples (with syntax errors)";
+				  if (hasTriples && syntaxError) return "Some syntax errors";
 				  if (!syntaxError && !hasTriples) console.log("no error, not triples. he??", d);
 				  return "syntax";
 			},
 	    	aggregate: function(){return 1;},
 	    	totalUnit: "datasets",
 	    	totalLabel: "TOTAL",
-	    	hideLabelsBelow: 0.05,
+	    	hideLabelsBelow: 0.03,
 	    	data: $.extend({}, data.results)
 	    });
 	    drawBarChart({
 	    	rootId: "barChartDatasets",
 	    	data: $.extend({}, data.results)
 	    });
+	    
+	    goToHash();
 });
 
 $("#getJsonAllBtn").attr("href", api.wardrobe.all);

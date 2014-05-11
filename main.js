@@ -42,9 +42,21 @@ var formatPercentage = d3.format("%");
 var formatThousands = d3.format(",g");
 var formatLargeShortForm = d3.format(".2s");
 
+var goToHash = function(){
+	if(window.location.hash) {
+		
+		$.scrollTo($(window.location.hash), { duration: 500});
+	}
+};
+$(document).ready(function(){ 
+	
+});
 
 var deleteEveryDivExcept = function(divId) {
 	$("div").hide();
+	$("h1").hide();
+	$("h2").hide();
+	$("h3").hide();
 	var targetDiv = $("#" + divId);
 	targetDiv.parents().show();
 	targetDiv.show();
