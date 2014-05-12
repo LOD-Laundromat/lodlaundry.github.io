@@ -61,6 +61,29 @@
 	    	data: $.extend({}, data.results)
 	    });
 	    drawPieChart({
+	    	rootId: "pieChartContentTypesVsSer",
+	    	dimensions: {
+	    		width: 600
+	    	},
+	    	sumBy: function(d) {
+	    		if (d.httpRepsonse.contentType.indexOf(d.rdf.serializationFormat) > -1) return "matches";
+	    		return "does not match";
+	    	},
+	    	aggregate: function(){return 1;},
+	    	filter: function(d) {
+	    		if (d.hasArchiveEntry) return false;
+	    		if (d.fromArchive) return false;
+	    		if (!d.httpRepsonse) return false;
+	    		if (!d.httpRepsonse.contentType) return false;
+	    		if (d.httpRepsonse.contentType.indexOf("zip") > -1) return false;
+	    		return d.rdf && d.rdf.serializationFormat;
+	    	},
+	    	totalUnit: "documents",
+	    	totalLabel: "TOTAL",
+	    	hideLabelsBelow: 0.05,
+	    	data: $.extend({}, data.results)
+	    });
+	    drawPieChart({
 	    	rootId: "pieChartExceptions",
 	    	dimensions: {
 	    		width: 600
