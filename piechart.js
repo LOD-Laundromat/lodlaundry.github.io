@@ -1,8 +1,17 @@
 var drawPieChart = function(config) {
-	var w = 450;
-	var h = 300;
-	var r = 100;
-	var ir = 45;
+
+	
+	var dimensions = {
+		width: 450,
+		height: 300,
+		radius: 100,
+		innerRadius: 45,
+	};
+	if (config.dimensions) $.extend(dimensions,config.dimensions);
+//	var w = 450;
+//	var h = 300;
+//	var r = 100;
+//	var ir = 45;
 	var textOffset = 14;
 	var tweenDuration = 250;
 	var data = config.data;
@@ -28,8 +37,8 @@ var drawPieChart = function(config) {
 	var arc = d3.svg.arc()
 	  .startAngle(function(d){ return d.startAngle; })
 	  .endAngle(function(d){ return d.endAngle; })
-	  .innerRadius(ir)
-	  .outerRadius(r);
+	  .innerRadius(dimensions.innerRadius)
+	  .outerRadius(dimensions.radius);
 	
 	var tip = d3.tip()
 	.attr('class', 'd3-tip')
@@ -49,29 +58,29 @@ var drawPieChart = function(config) {
 	///////////////////////////////////////////////////////////
 	
 	var vis = d3.select("#" + config.rootId).append("svg:svg")
-	  .attr("width", w)
-	  .attr("height", h);
+	  .attr("width", dimensions.width)
+	  .attr("height", dimensions.height);
 	vis.call(tip);
 	
 	//GROUP FOR ARCS/PATHS
 	var arc_group = vis.append("svg:g")
 	  .attr("class", "arc")
-	  .attr("transform", "translate(" + (w/2) + "," + (h/2) + ")");
+	  .attr("transform", "translate(" + (dimensions.width/2) + "," + (dimensions.height/2) + ")");
 	
 	//GROUP FOR LABELS
 	var label_group = vis.append("svg:g")
 	  .attr("class", "label_group")
-	  .attr("transform", "translate(" + (w/2) + "," + (h/2) + ")");
+	  .attr("transform", "translate(" + (dimensions.width/2) + "," + (dimensions.height/2) + ")");
 	
 	//GROUP FOR CENTER TEXT  
 	var center_group = vis.append("svg:g")
 	  .attr("class", "center_group")
-	  .attr("transform", "translate(" + (w/2) + "," + (h/2) + ")");
+	  .attr("transform", "translate(" + (dimensions.width/2) + "," + (dimensions.height/2) + ")");
 	
 	//PLACEHOLDER GRAY CIRCLE
 	var paths = arc_group.append("svg:circle")
 	    .attr("fill", "#EFEFEF")
-	    .attr("r", r);
+	    .attr("r", dimensions.radius);
 	
 	///////////////////////////////////////////////////////////
 	// CENTER TEXT ////////////////////////////////////////////
@@ -80,7 +89,7 @@ var drawPieChart = function(config) {
 	//WHITE CIRCLE BEHIND LABELS
 	var whiteCircle = center_group.append("svg:circle")
 	  .attr("fill", "white")
-	  .attr("r", ir);
+	  .attr("r", dimensions.innerRadius);
 	
 	// "TOTAL" LABEL
 	var totalLabel = center_group.append("svg:text")
@@ -180,8 +189,8 @@ var drawPieChart = function(config) {
 	    lines.enter().append("svg:line")
 	      .attr("x1", 0)
 	      .attr("x2", 0)
-	      .attr("y1", -r-3)
-	      .attr("y2", -r-8)
+	      .attr("y1", -dimensions.radius-3)
+	      .attr("y2", -dimensions.radius-8)
 	      .attr("stroke", function(d) {
 	    	  if ((d.value/totalTriples) > config.hideLabelsBelow) {
 	    		  return "gray";
@@ -294,7 +303,7 @@ var drawPieChart = function(config) {
 	  var fn = d3.interpolateNumber(a, b);
 	  return function(t) {
 	    var val = fn(t);
-	    return "translate(" + Math.cos(val) * (r+textOffset) + "," + Math.sin(val) * (r+textOffset) + ")";
+	    return "translate(" + Math.cos(val) * (dimensions.radius+textOffset) + "," + Math.sin(val) * (dimensions.radius+textOffset) + ")";
 	  };
 	}
 	

@@ -38,10 +38,36 @@
 	    	data: $.extend({}, data.results)
 	    });
 	    drawPieChart({
+	    	rootId: "pieChartContentTypes",
+	    	dimensions: {
+	    		width: 600
+	    	},
+	    	sumBy: function(d) {
+	    		var semiColonIndex = d.httpRepsonse.contentType.indexOf(';');
+	    		var formattedContentType = d.httpRepsonse.contentType;
+	    		if (semiColonIndex > 0) formattedContentType = formattedContentType.substring(0, semiColonIndex);
+	    		if (formattedContentType == "application/x-bzip2") console.log(d);
+	    		return formattedContentType;
+	    	},
+	    	aggregate: function(){return 1;},
+	    	filter: function(d) {
+	    		if (d.hasArchiveEntry) return false;
+	    		if (d.fromArchive) return false;
+	    		return d.httpRepsonse && d.httpRepsonse.contentType;
+	    	},
+	    	totalUnit: "documents",
+	    	totalLabel: "TOTAL",
+	    	hideLabelsBelow: 0.05,
+	    	data: $.extend({}, data.results)
+	    });
+	    drawPieChart({
 	    	rootId: "pieChartExceptions",
+	    	dimensions: {
+	    		width: 600
+	    	},
 	    	sumBy: function(d) {
 	    		
-	    		var exceptionConcat;
+	    		var exceptionConcat = "";
 				  for (var exception in d.exceptions) {
 					  if (!exceptionConcat) {
 						  exceptionConcat = exception; 
@@ -49,16 +75,18 @@
 						  exceptionConcat += "/" + exception;
 					  }
 				  }
-				  if (exceptionConcat) return exceptionConcat;
+				  if (exceptionConcat.length > 0) {
+					  return exceptionConcat.charAt(0).toUpperCase() + exceptionConcat.slice(1) + " Exception";
+				  }
 				  var syntaxError = d.rdf && d.rdf.syntaxErrors && d.rdf.syntaxErrors.length;
 				  var hasTriples = d.rdf && d.rdf.triples > 0;
-				  if (hasTriples && !syntaxError) return "valid";
-				  if (hasTriples && syntaxError) return "Some syntax errors";
-				  if (!syntaxError && !hasTriples) console.log("no error, not triples. he??", d);
-				  return "syntax";
+				  if (hasTriples && !syntaxError) return "Valid";
+				  if (hasTriples && syntaxError) return "Triples, but with syntax errors";
+//				  if (!syntaxError && !hasTriples) console.log("no error, not triples. he??", d);
+				  return "No Triples, syntax errors";
 			},
 	    	aggregate: function(){return 1;},
-	    	totalUnit: "datasets",
+	    	totalUnit: "documents",
 	    	totalLabel: "TOTAL",
 	    	hideLabelsBelow: 0.03,
 	    	filter: function(d) {
