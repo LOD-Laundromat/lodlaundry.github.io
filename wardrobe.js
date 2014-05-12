@@ -125,7 +125,6 @@ var drawTable = function(data) {
     	],
     	"aaSorting": [[ 5, 'desc' ]]
     }); 
-	console.log(data);
 };
 
 

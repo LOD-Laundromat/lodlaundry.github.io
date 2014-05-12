@@ -32,7 +32,7 @@
 			filter: function(d) {
 				return d.rdf && d.rdf.serializationFormat;
 			},
-	    	totalUnit: "datasets",
+	    	totalUnit: "documents",
 	    	totalLabel: "TOTAL",
 	    	hideLabelsBelow: 0.02,
 	    	data: $.extend({}, data.results)
