@@ -56,7 +56,7 @@ var drawBarChart = function(config) {
 	 */
 	function logFormat(d) {
 		var x = Math.log(d) / Math.log(10) + 1e-6;
-		return Math.abs(x - Math.floor(x)) < .5 ? numberFormat(d) : "";
+		return Math.abs(x - Math.floor(x)) < .4 ? numberFormat(d) : "";
 	}
 
 	var yAxis = d3.svg.axis().scale(y).orient("left").tickFormat("");
