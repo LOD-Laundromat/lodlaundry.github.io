@@ -46,7 +46,7 @@
 	    		var semiColonIndex = d.httpRepsonse.contentType.indexOf(';');
 	    		var formattedContentType = d.httpRepsonse.contentType;
 	    		if (semiColonIndex > 0) formattedContentType = formattedContentType.substring(0, semiColonIndex);
-	    		if (formattedContentType == "application/x-bzip2") console.log(d);
+//	    		if (formattedContentType == "application/x-bzip2") console.log(d);
 	    		return formattedContentType;
 	    	},
 	    	aggregate: function(){return 1;},
@@ -119,6 +119,10 @@
 	    });
 	    drawBarChart({
 	    	rootId: "barChartDatasets",
+	    	data: $.extend({}, data.results)
+	    });
+	    drawContentLengthBarChart({
+	    	rootId: "barChartContentLength",
 	    	data: $.extend({}, data.results)
 	    });
 	    
