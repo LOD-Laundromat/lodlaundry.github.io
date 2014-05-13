@@ -7,8 +7,8 @@ var drawContentLengthBarChart = function(config) {
 		var hasResponse = a.httpRepsonse;
 		var hasContentLength = hasResponse && a.httpRepsonse.contentLength >= 0;
 		var hasByteCount = a.stream && a.stream.byteCount >= 0;
-		
-		return hasContentLength && hasByteCount;
+		var isZip = a.hasArchiveEntry || a.fromArchive;//no zipped files! the bytecount is the -rdf- byte count, not the zip byte count
+		return !isZip && hasContentLength && hasByteCount;
 	});
 
 	var formatOrdinalVal = d3.format(".2s");
