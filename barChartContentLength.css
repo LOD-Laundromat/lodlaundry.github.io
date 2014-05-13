@@ -1,4 +1,12 @@
 .bar {
-  fill: orange;
+  fill: orange !important;
 }
 
+.bar:hover {
+  fill: orangered !important;
+}
+
+.axis text {
+    font-family: sans-serif;
+    font-size: 11px;
+}

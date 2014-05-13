@@ -2,12 +2,12 @@
 	position:relative;
 }
 
-.axis path, .axis line {
-    fill: none;
-    stroke: black;
-    shape-rendering: crispEdges;
-}
-.axis text {
+/* .axis path, .axis line { */
+/*     fill: none; */
+/*     stroke: black; */
+/*     shape-rendering: crispEdges; */
+/* } */
+#barChartDatasets .axis text {
     font-family: sans-serif;
     font-size: 11px;
 }
@@ -41,6 +41,6 @@
 /*   fill: orange; */
 /* } */
 
-.bar:hover {
+#barChartDatasets .bar:hover {
   fill: orangered !important;
 }

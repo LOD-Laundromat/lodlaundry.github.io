@@ -84,10 +84,11 @@ var drawContentLengthBarChart = function(config) {
 	  x.domain(nestedData.map(function(d) { return d.key; }));
 	  y.domain([0, d3.max(nestedData, function(d) { return d.relVal; })]);
 	
-  svg.append("g")
+  var xAxisSvg = svg.append("g")
       .attr("class", "x axis")
-      .attr("transform", "translate(0," + height + ")")
-      .call(xAxis)
+      .attr("transform", "translate(0," + height + ")");
+      
+  xAxisSvg.call(xAxis)
 	  .selectAll("text")  
 	  .style("text-anchor", "end")
 	  .attr("dx", "-.8em")
@@ -95,18 +96,30 @@ var drawContentLengthBarChart = function(config) {
 	  .attr("transform", function(d) {
 	      return "rotate(-65)" ;
 	      });
+  svg.append("text")      // text label for the x axis
+  .attr("x", width/2  )
+  .attr("y",  height + 60 )
+  .style("text-anchor", "middle")
+  .html("&Delta; content length (in bytes)");
+//  xAxisSvg
+//      .append("text")
+//      .attr("transform", "translate(200,200) ")
+//      .attr("y", 6)
+//      .attr("dy", ".71em")
+//      .style("text-anchor", "end")
+////      .text("&Delta;")
+//      .text("bklaaaat");
   
-  
-  
+//  &Delta;
   svg.append("g")
       .attr("class", "y axis")
       .call(yAxis)
     .append("text")
-      .attr("transform", "rotate(-90)")
+      .attr("transform", "translate(-50,0) rotate(-90) ")
       .attr("y", 6)
       .attr("dy", ".71em")
       .style("text-anchor", "end")
-      .text("Frequency");
+      .text("% datasets");
 
   
   
