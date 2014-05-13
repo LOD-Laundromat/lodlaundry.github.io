@@ -12,7 +12,7 @@ var drawBarChart = function(config) {
 		d.total = +(d.rdf.triples + d.rdf.duplicates);
 		var origObject = $.extend({}, d);
 		d.counts = [ {
-			name : "# uniq triples",
+			name : "# unique triples",
 			x0 : +1,
 			x1 : +d.rdf.triples
 		}, {
@@ -83,7 +83,7 @@ var drawBarChart = function(config) {
 			"translate(" + margin.left + "," + margin.top + ")");
 
 	svg.call(tip);
-	color.domain([ "# uniq triples", "# duplicate triples" ]);
+	color.domain([ "# unique triples", "# duplicate triples" ]);
 
 	svg.append("g").attr("class", "x axis")
 	// .attr("transform", "translate(" + width + ",0)")
