@@ -45,7 +45,7 @@ var drawPieChart = function(config) {
 	.direction("e")
 //	.offset([0, -20])
 	.html(function(d) {
-	  return d.name + " (" + formatThousands(d.value) + ")";
+	  return d.name + " (" + formatNumber(d.value) + ")";
 	});
 //	arc.call(tip);
 	
@@ -157,7 +157,7 @@ var drawPieChart = function(config) {
 	
 	    //REMOVE PLACEHOLDER CIRCLE
 	    arc_group.selectAll("circle").remove();
-	    totalValue.text(formatLargeShortForm(totalTriples));
+	    totalValue.text(formatNumber(totalTriples));
 //	    totalValue.text(function(){
 //	      var kb = totalTriples/1024;
 //	      return kb.toFixed(1);

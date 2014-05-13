@@ -41,6 +41,7 @@ $("<div id='loader'><img src='imgs/loader.gif'></div>").appendTo($("body"));
 var formatPercentage = d3.format("%");
 var formatThousands = d3.format(",g");
 var formatLargeShortForm = d3.format(".2s");
+var formatNumber = d3.format(",n");
 
 var goToHash = function(){
 	if(window.location.hash) {

@@ -110,15 +110,15 @@
 				  }
 				  var syntaxError = d.rdf && d.rdf.syntaxErrors && d.rdf.syntaxErrors.length;
 				  var hasTriples = d.rdf && d.rdf.triples > 0;
-				  if (hasTriples && !syntaxError) return "Valid";
-				  if (hasTriples && syntaxError) return "Triples, but with syntax errors";
+				  if (hasTriples && !syntaxError) return "No errors";
+				  if (hasTriples && syntaxError) return "Some syntax errors";
 //				  if (!syntaxError && !hasTriples) console.log("no error, not triples. he??", d);
-				  return "No Triples, syntax errors";
+				  return "Only syntax errors";
 			},
 	    	aggregate: function(){return 1;},
 	    	totalUnit: "documents",
 	    	totalLabel: "TOTAL",
-	    	hideLabelsBelow: 0.03,
+	    	hideLabelsBelow: 0.04,
 	    	filter: function(d) {
 				return !d.hasArchiveEntry;
 			},
