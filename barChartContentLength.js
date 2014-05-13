@@ -101,16 +101,6 @@ var drawContentLengthBarChart = function(config) {
   .attr("y",  height + 60 )
   .style("text-anchor", "middle")
   .html("&Delta; content length (in bytes)");
-//  xAxisSvg
-//      .append("text")
-//      .attr("transform", "translate(200,200) ")
-//      .attr("y", 6)
-//      .attr("dy", ".71em")
-//      .style("text-anchor", "end")
-////      .text("&Delta;")
-//      .text("bklaaaat");
-  
-//  &Delta;
   svg.append("g")
       .attr("class", "y axis")
       .call(yAxis)

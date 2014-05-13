@@ -4,13 +4,20 @@
   var tooltip = $('<div id="tooltip" class="hidden"><p><span id="value">100</span> </p></div>');
   $("#barChartDatasets").append(tooltip);
   
-  
+  var formatSerialization = function(serialization) {
+	if (serialization == "xml") return "XML";
+	if (serialization == "ntriples") return "N-Triples";
+	if (serialization == "rdfa") return "RDFa";
+	if (serialization == "turtle") return "Turtle";
+	if (serialization == "trig") return "TriG";
+	return serialization
+  };
   
 	$.get(api.wardrobe.all, function(data) {
 		  drawPieChart({
 		    	rootId: "pieChartTripleSerializations",
 	    	sumBy: function(d) {
-				  return d.rdf.serializationFormat;
+				  return formatSerialization(d.rdf.serializationFormat);
 				},
 	    	aggregate: function(d) {
 				  return d.rdf.triples;
@@ -26,7 +33,7 @@
 	    drawPieChart({
 	    	rootId: "pieChartDatasetSerializations",
 	    	sumBy: function(d) {
-				  return d.rdf.serializationFormat;
+				  return formatSerialization(d.rdf.serializationFormat);
 			},
 	    	aggregate: function(){return 1;},
 			filter: function(d) {
