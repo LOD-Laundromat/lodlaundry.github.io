@@ -37,9 +37,9 @@
     line-height: 20px;
 }
 
-/* .bar { */
-/*   fill: orange; */
-/* } */
+.bar {
+  cursor:pointer;
+}
 
 #barChartDatasets .bar:hover {
   fill: orangered !important;

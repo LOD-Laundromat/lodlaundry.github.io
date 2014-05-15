@@ -86,18 +86,12 @@ var drawBarChart = function(config) {
 	color.domain([ "# unique triples", "# duplicate triples" ]);
 
 	svg.append("g").attr("class", "x axis")
-	// .attr("transform", "translate(" + width + ",0)")
 	.call(xAxis).style("text-anchor", "end").append("text")
-	// .attr("transform", "rotate(-90)")
 	.attr("x", (width / 2) - 20).attr("y", -25).attr("dx", ".71em").style(
 			"text-anchor", "middle").style("font-size", "14px").text(
 			"Number of triples (log)");
 
 	svg.append("g").attr("class", "y axis").call(yAxis)
-	// .append("text")
-	// .attr("transform", "rotate(-90)")
-	// .attr("y", 6)
-	// .attr("dy", ".71em")
 	;
 
 	var state = svg.selectAll(".state").data(dataValues).enter().append("g")
@@ -105,18 +99,18 @@ var drawBarChart = function(config) {
 				return "translate(0," + +y(d.url) + ")";
 			});
 
-	// console.log(y.rangeBand());
 	state.selectAll(".bar").data(function(d) {
 		return d.counts;
 	}).enter().append("rect").attr("class", "bar")
 			.attr("height", y.rangeBand()).attr("x", function(d) {
-				// return 0;
 				return x(+(d.x0));
 			}).attr("width", function(d) {
 				return x(d.x1) - x(d.x0);
 			}).style("fill", function(d) {
 				return color(d.name);
-			}).on('mouseover', tip.show).on('mouseout', tip.hide);
+			}).on('mouseover', tip.show)
+			.on('mouseout', tip.hide)
+			.on('click', drawDataset);
 
 	var legend = svg.selectAll(".legend")
 			.data(color.domain().slice().reverse()).enter().append("g").attr(
