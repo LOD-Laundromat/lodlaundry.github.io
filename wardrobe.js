@@ -14,27 +14,27 @@
 //} );
 var hoverDiv;
 var wardrobeData = null;
-var initHoverIcons = function() {
-	hoverDiv = $("<div align='right' class='tableHoverImgs'></div>").hide();
-	$("<a download='output.nt.gz'  class='tableHoverItem' id='downloadItem' target='_blank'><img src='imgs/download.png'></img></a>")
-		.appendTo(hoverDiv);
-	$("<a  class='tableHoverItem'><img src='imgs/info.png' ></img></a>")
-	.click(function(){
-		var url = $(this).closest("td").text();
-		drawDataset(wardrobeData[url]);
-	})
-	.appendTo(hoverDiv);
-	$("body").append(hoverDiv);
-};
-initHoverIcons();
-var showIcons = function() {
-	hoverDiv.show();
-	$(this).find('td:eq(1)').append(hoverDiv);
-	
-	var url = hoverDiv.closest("td").text();
-	var md5 = wardrobeData[url].md5;
-	hoverDiv.find("#downloadItem").attr("href", api.wardrobe.download(md5));
-};
+//var initHoverIcons = function() {
+//	hoverDiv = $("<div align='right' class='tableHoverImgs'></div>").hide();
+//	$("<a download='output.nt.gz'  class='tableHoverItem' id='downloadItem' target='_blank'><img src='imgs/download.png'></img></a>")
+//		.appendTo(hoverDiv);
+//	$("<a  class='tableHoverItem'><img src='imgs/info.png' ></img></a>")
+//	.click(function(){
+//		var url = $(this).closest("td").text();
+//		drawDataset(wardrobeData[url]);
+//	})
+//	.appendTo(hoverDiv);
+//	$("body").append(hoverDiv);
+//};
+//initHoverIcons();
+//var showIcons = function() {
+//	hoverDiv.show();
+//	$(this).find('td:eq(1)').append(hoverDiv);
+//	
+//	var url = hoverDiv.closest("td").text();
+//	var md5 = wardrobeData[url].md5;
+//	hoverDiv.find("#downloadItem").attr("href", api.wardrobe.download(md5));
+//};
 var hideIcons = function() {
 	hoverDiv.hide();
 };
@@ -58,11 +58,15 @@ var drawTable = function() {
 		var dataObj = wardrobeData[dataKey];
 		var row = [];
 		if (!dataObj.url) continue;
-//		console.log(dataObj.base_iri);
 		row.push("");//this is where the row index comes automatically
-		row.push("<a title='Download from original location' href='" + dataObj.url + "' target='_blank'>" + dataObj.url + "</a>");
+		var urlCol = dataObj.url + "<div align='right'></div>";
+		
+		
+		row.push(urlCol);
+		
+		
+		
 		row.push(dataObj.rdf && dataObj.rdf.serializationFormat? dataObj.rdf.serializationFormat: "unknown");
-//		row.push(dataObj.httpresponse && dataObj.httpresponse.contentLength? dataObj.httpresponse.contentLength: "unknown");
 		row.push(dataObj.httpresponse && dataObj.httpresponse.lastModified? dataObj.httpresponse.lastModified: "unknown");
 		row.push(dataObj.rdf && dataObj.rdf.duplicates ? dataObj.rdf.duplicates : 0);
 		row.push(dataObj.rdf && dataObj.rdf.triples ? dataObj.rdf.triples: null);
@@ -76,21 +80,21 @@ var drawTable = function() {
 	        "bAutoWidth": true,
 	        "iDisplayLength": 20,
 	        "columns": [
-	            { "title": "index" },//
-	            { "title": "URL" },//1
-	            { "title": "Format" },//2
+	            {  "title": "index", "targets": 0 },//
+	            { "title": "URL<br><input type='text' placeholder='Search />", "targets": 1 },//1
+	            { "title": "Format", "targets": 2 },//2
 //	            { "title": "Content Length" },//3
-	            { "title": "Last Modified"},//3
-	            { "title": "Duplicates"},//4
-	            { "title": "Triples"}//5
+	            {  "title": "Last Modified", "targets": 3},//3
+	            {  "title": "Duplicates", "targets": 4},//4
+	            {  "title": "Triples", "targets": 5}//5
 	        ],
 	        "language": {
 	            "decimal": ",",
 	            "thousands": "."
 	        },
 	        "createdRow": function ( row, data, index ) {
-	        	$(row).mouseover(showIcons);
-	        	$(row).mouseout(hideIcons);
+//	        	$(row).mouseover(showIcons);
+//	        	$(row).mouseout(hideIcons);
 	        },
 	        "drawCallback" : function(settings){
 	        	var api = this.api();
@@ -117,15 +121,17 @@ var drawTable = function() {
 	    			}
 	    		}
 	    	},
+
 	    	"aoColumnDefs": [
-	    		{ "bSortable": false, "aTargets": [ 0 ] },
-	    		{ "sType": "numeric","aTargets": [ 5 ] },
-	    		{ "sWidth": "30px", "aTargets": [ 0 ] },
-	    		{ "sWidth": "130px", "aTargets": [ 3 ] },
+	    	    { "bSearchable": true, "aTargets": [ 1,2,3,4,5 ] },
+	    		{ "bSortable": false, "aTargets": [ "index" ] },
+	    		{ "sType": "numeric","aTargets": [ 4,5 ] },
+	    		{ "sWidth": "30px", "aTargets": [0] },
+	    		{ "sWidth": "130px", "aTargets": [3 ] },
 	    	],
 	    	"aaSorting": [[ 5, 'desc' ]]
 	    };
-	dataTable = table.dataTable(dTableConfig); 
+	dataTable = table.dataTable(dTableConfig);
 };
 
 
