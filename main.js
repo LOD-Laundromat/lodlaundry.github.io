@@ -121,11 +121,13 @@ var drawModal = function(config) {
 var drawDataset = function(d) {
 	var table = $("<table class='table'></table>");
 	var addRow = function(config) {
-		//unlimited args. possible first arg: boolean (this is a header row)
 		var row = $("<tr></tr>").appendTo(table);
+		if (config.rowClass) row.addClass(config.rowClass);
+		if (config.midHeader) row.css("font-weight", "bold");
 		for (var i = 0; i < config.values.length; i++) {
 			var col = $("<td></td>");
 			if (config.isHeader) col = $("<th></th>");
+			if (config.midHeader) col.attr("colspan", "2");
 			row.append(col);
 			var arg = config.values[i];
 			if (typeof arg == "string") {
@@ -133,11 +135,73 @@ var drawDataset = function(d) {
 			} else {
 				col.append(arg);
 			}
+			if (i == 0 && config.indentFirstCol) col.css("padding-left", "15px");
 		}
 	};
 	
-	addRow({isHeader: true, values: ["URL" , "<a href='" + d.url + "' target='_blank'>" + d.url + "</a>"]});
+	addRow({values: ["URL" , "<a href='" + d.url + "' target='_blank'>" + d.url + "</a>"]});
 	addRow({values:["MD5" , d.md5]}); 
+	if (d.hasArchiveEntry) {
+		addRow({midHeader: true,values:["Archive entries" ]});
+		for (var i = 0; i < d.hasArchiveEntry.length; i++) {
+			var colContent = $("<a href='" + d.hasArchiveEntry[i] + "' target='_blank'>" + d.hasArchiveEntry[i] + "</a>");
+			addRow({values:["", colContent ]});
+		}
+	}
+	if (d.fromArchive) {
+		var colContent = $("<a href='" + d.fromArchive + "' target='_blank'>" + d.fromArchive + "</a>");
+		addRow({values:["Unpacked from archive" , colContent]}); 
+	}
+	if (d.archiveEntrySize) {
+		addRow({values:["Size of archive entry" , d.archiveEntrySize]}); 
+	}
+	if (d.fileExtension) {
+		addRow({values:["File extension" , d.fileExtension]}); 
+	}
+	if (d.rdf) {
+		addRow({midHeader: true,values:["Parsed RDF info" ]});
+		addRow({indentFirstCol: true, values:["<i>#triples</i>", d.rdf.triples ]});
+		addRow({indentFirstCol: true, values:["<i>#Duplicates</i>", d.rdf.duplicates ]});
+		addRow({indentFirstCol: true, values:["<i>Serialization Format</i>", d.rdf.serializationFormat ]});
+		if (d.rdf.syntaxErrors) {
+			var firstCol = "<i>Syntax errors</i>";
+			for (var i = 0; i < d.rdf.syntaxErrors.length; i++) {
+				addRow({indentFirstCol: true, rowClass: "warning", values:[firstCol, d.rdf.syntaxErrors[i]]});
+				firstCol = "";
+			}
+		}
+	}
+	if (d.httpRepsonse) {
+		addRow({midHeader: true, values:["HTTP Response" ]}); 
+		var contentLength = d.httpRepsonse.contentLength || "unknown";
+		addRow({indentFirstCol: true, values:["<i>Content Length</i>", contentLength ]});
+		var contentType = d.httpRepsonse.contentType || "unknown";
+		addRow({indentFirstCol: true, values:["<i>Content Type</i>", contentType ]});
+		var lastModified = d.httpRepsonse.lastModified || "unknown";
+		addRow({indentFirstCol: true, values:["<i>Last Modified</i>", lastModified ]});
+	}
+	
+	if (d.stream) {
+		addRow({midHeader: true,values:["File stream info (unpacked)" ]});
+		addRow({indentFirstCol: true, values:["<i>Byte Count</i>", d.stream.byteCount ]});
+		addRow({indentFirstCol: true, values:["<i>Char Count</i>", d.stream.charCount ]});
+		addRow({indentFirstCol: true, values:["<i>Line Count</i>", d.stream.lineCount ]});
+	}
+	
+	if (d.exceptions) {
+		addRow({midHeader: true, rowClass: "danger", values: ["<strong>Exceptions</strong>"]});
+		for (var exception in  d.exceptions) {
+			var exceptionContent = d.exceptions[exception];
+			if (typeof exceptionContent == "array") {
+				for (var i = 0; i < exceptionContent.length; i++) {
+					addRow({indentFirstCol: true, rowClass: "danger", values: ["<i>" + exeption + "</i>", exceptionContent[i]]});
+				}
+			} else {
+				addRow({indentFirstCol: true, rowClass: "danger", values: ["<i>" + exception + "</i>", exceptionContent]});
+			}
+			
+		}
+	}
 //    "exceptions": {"tcp": ["Host not found" ]},
 //    "md5":"5af93b73d12ecfa254941d49855c6bff",
 //    "url":"http://%20http://commondatastorage.googleapis.com/m-lab/"
