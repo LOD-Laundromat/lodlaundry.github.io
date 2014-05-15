@@ -13,6 +13,7 @@
 //    }
 //} );
 var hoverDiv;
+var wardrobeData = null;
 var initHoverIcons = function() {
 	hoverDiv = $("<div align='right' class='tableHoverImgs'></div>").hide();
 	$("<img src='imgs/download.png' class='tableHoverImg'></img>")
@@ -22,7 +23,8 @@ var initHoverIcons = function() {
 		.appendTo(hoverDiv);
 	$("<img src='imgs/info.png' class='tableHoverImg'></img>")
 	.click(function(){
-		window.open($(this).closest("td").text(), "_blank");
+		var url = $(this).closest("td").text();
+		drawDataset(wardrobeData[url]);
 	})
 	.appendTo(hoverDiv);
 	$("body").append(hoverDiv);
@@ -48,13 +50,13 @@ var formatInt = function(origValue) {
 	    });
 };
 var dataTable;
-var drawTable = function(data) {
+var drawTable = function() {
 	var table = $('<table cellpadding="0" cellspacing="0" border="0" class="display" id="wardrobeTable"></table>');
 	$('#tableWrapper').html(table);
 	 
 	var rows = [];
-	for (var dataKey in data) {
-		var dataObj = data[dataKey];
+	for (var dataKey in wardrobeData) {
+		var dataObj = wardrobeData[dataKey];
 		var row = [];
 		if (!dataObj.url) continue;
 //		console.log(dataObj.base_iri);
@@ -130,7 +132,8 @@ var drawTable = function(data) {
 
 $( document ).ready(function() {
 	$.get(api.wardrobe.all, function(data) {
-		drawTable(data.results);
+		wardrobeData = data.results;
+		drawTable();
 	});
 });
 
