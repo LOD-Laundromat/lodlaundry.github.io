@@ -50,8 +50,8 @@
 	    		width: 600
 	    	},
 	    	sumBy: function(d) {
-	    		var semiColonIndex = d.httpRepsonse.contentType.indexOf(';');
-	    		var formattedContentType = d.httpRepsonse.contentType;
+	    		var semiColonIndex = d.httpresponse.contentType.indexOf(';');
+	    		var formattedContentType = d.httpresponse.contentType;
 	    		if (semiColonIndex > 0) formattedContentType = formattedContentType.substring(0, semiColonIndex);
 //	    		if (formattedContentType == "application/x-bzip2") console.log(d);
 	    		return formattedContentType;
@@ -60,7 +60,7 @@
 	    	filter: function(d) {
 	    		if (d.hasArchiveEntry) return false;
 	    		if (d.fromArchive) return false;
-	    		return d.httpRepsonse && d.httpRepsonse.contentType;
+	    		return d.httpresponse && d.httpresponse.contentType;
 	    	},
 	    	totalUnit: "documents",
 	    	totalLabel: "TOTAL",
@@ -73,16 +73,19 @@
 	    		width: 600
 	    	},
 	    	sumBy: function(d) {
-	    		if (d.httpRepsonse.contentType.indexOf(d.rdf.serializationFormat) > -1) return "matches";
+	    		if (d.httpresponse.contentType.indexOf(d.rdf.serializationFormat) > -1) return "matches";
 	    		return "does not match";
+	    	},
+	    	clickSlice: function(d) {
+	    		
 	    	},
 	    	aggregate: function(){return 1;},
 	    	filter: function(d) {
 	    		if (d.hasArchiveEntry) return false;
 	    		if (d.fromArchive) return false;
-	    		if (!d.httpRepsonse) return false;
-	    		if (!d.httpRepsonse.contentType) return false;
-	    		if (d.httpRepsonse.contentType.indexOf("zip") > -1) return false;
+	    		if (!d.httpresponse) return false;
+	    		if (!d.httpresponse.contentType) return false;
+	    		if (d.httpresponse.contentType.indexOf("zip") > -1) return false;
 	    		return d.rdf && d.rdf.serializationFormat;
 	    	},
 	    	totalUnit: "documents",

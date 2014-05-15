@@ -1,9 +1,10 @@
-.bar {
+#barChartContentLength .bar {
   fill: orange;
+  cursor:default;
 }
 
-.bar:hover {
-  fill: orangered !important;
+#barChartContentLength .bar:hover {
+  fill: orangered ;
 }
 
 .axis text {

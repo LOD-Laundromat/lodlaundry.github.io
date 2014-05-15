@@ -172,13 +172,13 @@ var drawDataset = function(d) {
 			}
 		}
 	}
-	if (d.httpRepsonse) {
+	if (d.httpresponse) {
 		addRow({midHeader: true, values:["HTTP Response" ]}); 
-		var contentLength = d.httpRepsonse.contentLength || "unknown";
+		var contentLength = d.httpresponse.contentLength || "unknown";
 		addRow({indentFirstCol: true, values:["<i>Content Length</i>", contentLength ]});
-		var contentType = d.httpRepsonse.contentType || "unknown";
+		var contentType = d.httpresponse.contentType || "unknown";
 		addRow({indentFirstCol: true, values:["<i>Content Type</i>", contentType ]});
-		var lastModified = d.httpRepsonse.lastModified || "unknown";
+		var lastModified = d.httpresponse.lastModified || "unknown";
 		addRow({indentFirstCol: true, values:["<i>Last Modified</i>", lastModified ]});
 	}
 	

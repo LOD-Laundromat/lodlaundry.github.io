@@ -118,11 +118,7 @@ var drawPieChart = function(config) {
 		if (config.filter) {
 			dataValues = $.grep(dataValues, config.filter);
 		}
-//		var sum_by = config.sumBy;
 		var aggregatedValues = d3.nest().key(
-//				function(d) {
-//			  return d[sum_by];
-//			}
 				config.sumBy
 			)
 			.rollup(function(d) {
