@@ -16,12 +16,9 @@ var hoverDiv;
 var wardrobeData = null;
 var initHoverIcons = function() {
 	hoverDiv = $("<div align='right' class='tableHoverImgs'></div>").hide();
-	$("<img src='imgs/download.png' class='tableHoverImg'></img>")
-		.click(function(){
-			window.open($(this).closest("td").text(), "_blank");
-		})
+	$("<a download='output.nt.gz'  class='tableHoverItem' id='downloadItem' target='_blank'><img src='imgs/download.png'></img></a>")
 		.appendTo(hoverDiv);
-	$("<img src='imgs/info.png' class='tableHoverImg'></img>")
+	$("<a  class='tableHoverItem'><img src='imgs/info.png' ></img></a>")
 	.click(function(){
 		var url = $(this).closest("td").text();
 		drawDataset(wardrobeData[url]);
@@ -33,12 +30,14 @@ initHoverIcons();
 var showIcons = function() {
 	hoverDiv.show();
 	$(this).find('td:eq(1)').append(hoverDiv);
+	
+	var url = hoverDiv.closest("td").text();
+	var md5 = wardrobeData[url].md5;
+	hoverDiv.find("#downloadItem").attr("href", api.wardrobe.download(md5));
 };
 var hideIcons = function() {
 	hoverDiv.hide();
 };
-
-
 
 var formatInt = function(origValue) {
 	 var rx=  /(\d+)(\d{3})/;

@@ -1,7 +1,7 @@
-.tableHoverImg {
+.tableHoverItem img {
 	margin-left:5px;
 	cursor:pointer;
-	size: 20px;
+	width: 18px;
 	height: 18px;
 }
 .tableHoverImgs {

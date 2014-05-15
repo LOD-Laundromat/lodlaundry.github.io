@@ -1,7 +1,8 @@
 var api = {
 	wardrobe: {
 //		all: "http://lodlaundry.wbeek.ops.few.vu.nl/ll/all.json"
-		all: "testInput.json"
+		all: "testInput.json",
+		download: function(md5) {return "http://lodlaundry.wbeek.ops.few.vu.nl/ll/datadocs/" + md5 + "/input.nt.gz";}
 	},
 	laundryBasket: {
 		all: "testLaundryBasket.txt",
