@@ -28,15 +28,14 @@ var drawBarChart = function(config) {
 	dataValues.sort(function(a, b) {
 		return b.total - a.total;
 	});
-
+//	console.log(dataValues.length);
 	var margin = {
 		top : 40,
 		right : 20,
 		bottom : 30,
 		left : 40
-	}, width = 960 - margin.left - margin.right, height = 1500 - margin.top
+	}, width = 960 - margin.left - margin.right, height = (dataValues.length * 3) - margin.top
 			- margin.bottom;
-
 	var x = d3.scale.log().range([ 0, width ]).domain(
 			[ 1, d3.max(dataValues, function(val) {
 				return val.total;
