@@ -10,7 +10,7 @@
 	if (serialization == "rdfa") return "RDFa";
 	if (serialization == "turtle") return "Turtle";
 	if (serialization == "trig") return "TriG";
-	return serialization
+	return serialization;
   };
   
 	$.get(api.wardrobe.all, function(data) {

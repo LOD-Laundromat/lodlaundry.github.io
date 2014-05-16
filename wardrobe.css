@@ -16,3 +16,9 @@
 td {
 /* 	position:relative; */
 }
+
+#tableWrapper .dataTables_length {
+	float: right;
+	margin-left: 5px;
+	margin-right: 5px;
+}

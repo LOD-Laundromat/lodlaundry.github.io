@@ -59,6 +59,32 @@ var getDownloadName = function(url) {
     
    return url + "_clean.nt.gz";
 };
+
+var downloadSelectedCleaned = function() {
+	$("#wardrobeTable tr.selected .downloadClean").each(function(){
+		this.click();
+	});
+};
+var downloadSelectedDirty = function() {
+	$("#wardrobeTable tr.selected .downloadDirty").each(function(){
+		this.click();
+	});
+};
+
+var multiButtons;
+var updateMultiSelectDownloads = function(url) {
+	if ($("#wardrobeTable tr.selected").length > 0) {
+		if (!multiButtons.is(':visible')) {
+			multiButtons.slideDown();
+//			multiButtons.slideDown(400, "swing", function(){$(this).remove;});
+//			multiButtons.show("slow");
+		}
+	} else {
+//		multiButtons.hide("slow", function(){$(this).remove;});
+		if (multiButtons.is(':visible')) multiButtons.slideUp();
+	}
+	
+};
 var dataTable;
 var drawTable = function() {
 	var table = $('<table cellpadding="0" cellspacing="0" border="0" class="display" id="wardrobeTable"></table>');
@@ -132,6 +158,12 @@ var drawTable = function() {
 	        		var url = $(this).closest("tr").find("td:nth-child(2)").text().trim();
 	        		drawDataset(wardrobeData[url]);
 	        	});
+	        	
+	        	$(row).find("a").click(function(event){event.stopPropagation();});
+	        	$(row).find("button").click(function(event){event.stopPropagation();});
+	        	
+	        	$(this).toggleClass('selected');
+	        	$(row).click(function(){$(this).toggleClass('selected');updateMultiSelectDownloads();});
 	        },
 	        "drawCallback" : function(settings){
 //	        	var api = this.api();
@@ -158,14 +190,8 @@ var drawTable = function() {
 	    			}
 	    		}
 	    	},
-	    
+
 	    	"aoColumnDefs": [
-//	    	    { 
-//	    	    	fnRender: function (o, v) {   // o, v contains the object and value for the column
-//		    	        return '<input type="checkbox" id="someCheckbox" name="someCheckbox" />';
-//		    	    },
-//		    	    aTargets: [0]
-//	    	    },
 	    	    { "bSearchable": true, "aTargets": [ 1,2,3,4,5 ] },
 	    		{ "bSortable": false, "aTargets": [ 0, 6, 7 ] },
 	    		{ "sType": "numeric","aTargets": [ 4,5 ] },
@@ -178,6 +204,27 @@ var drawTable = function() {
 	    	"aaSorting": [[ 5, 'desc' ]]
 	    };
 	dataTable = table.dataTable(dTableConfig);
+	
+	
+	 multiButtons =  $("<div id='multiButtons' style='float:left; display:none'></div>");
+	 $("#wardrobeTable_wrapper").prepend(multiButtons);
+	 console.log(multiButtons);
+	 $("<button style='margin-left: 10px;' class='btn btn-primary' title='Download the selected washed and cleaned data'><span class='glyphicon glyphicon-download'></span> Download selected cleaned data</button>")
+	 	.appendTo(multiButtons)
+	 	.click(downloadSelectedCleaned);
+	 $("<button style='margin-left: 10px;' class='btn btn-primary' title='Download the selected dirty data'><span class='glyphicon glyphicon-download'></span> Download selected dirty data</button>")
+	 	.appendTo(multiButtons)
+	 	.click(downloadSelectedDirty);
+
+	 
+	 
+	dataTable.on( 'draw.dt', function () {
+		updateMultiSelectDownloads();
+	} );
+	 
+//    $('#button').click( function () {
+//        alert( table.rows('.selected').data().length +' row(s) selected' );
+//    } );
 };
 
 
