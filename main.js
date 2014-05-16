@@ -5,7 +5,7 @@ var api = {
 		download: function(md5) {return "http://lodlaundry.wbeek.ops.few.vu.nl/ll/datadocs/" + md5 + "/input.nt.gz";}
 	},
 	laundryBasket: {
-		all: "testLaundryBasket.txt",
+		all: "lod_basket.txt",
 		send: "lodlaundry.wbeek.ops.few.vu.nl/ll/newLaundry"
 	}
 };
