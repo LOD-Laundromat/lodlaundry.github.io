@@ -124,7 +124,7 @@ var drawTable = function() {
 	                    
 	            { "title": "index"},//
 	            { "title": "URL"},//1
-	            { "title": "Format" },//2
+	            { "title": "Original Format" },//2
 	            {  "title": "Last Modified"},//3
 	            {  "title": "Duplicates"},//4
 	            {  "title": "Triples"},//5

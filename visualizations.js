@@ -1,4 +1,3 @@
-  drawBackButton();
   
   //add tooltip to dom, which we'll use in this barchart
   var tooltip = $('<div id="tooltip" class="hidden"><p><span id="value">100</span> </p></div>');

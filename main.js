@@ -10,13 +10,13 @@ var api = {
 	}
 };
 
-
-drawBackButton = function() {
-	$('  <div class="backButton"><button type="button" class="wardrobeLink btn btn-primary btn-lg"><span class="glyphicon glyphicon-arrow-left"></span></button></div>')
-		.click(function(){
-			window.location = "index.html";
-		}).appendTo($("body"));
-};
+//
+//drawBackButton = function() {
+//	$('  <div class="backButton"><button type="button" class="wardrobeLink btn btn-primary btn-lg"><span class="glyphicon glyphicon-arrow-left"></span></button></div>')
+//		.click(function(){
+//			window.location = "index.html";
+//		}).appendTo($("body"));
+//};
 
 
 
@@ -218,6 +218,61 @@ var deleteEveryDivExcept = function(divId) {
 	targetDiv.parents().show();
 	targetDiv.show();
 };
+
+
+/**
+ * draw header
+ */
+var drawHeader = function() {
+	var header = $("<div id='pageHeader' class='navbar navbar-default navbar-fixed-top'></div>").appendTo($("body"));
+	var container = $('<div class="container"></div>').appendTo(header);
+	var menuList = $('<ul class="nav navbar-nav"></ul>').appendTo(container);
+	var addItem = function(config) {
+		var item = $("<li></li>").appendTo(menuList);
+		if (config.active) item.addClass("active");
+		var anchor = $("<a></a>").attr("href", config.href).appendTo(item);
+		if (config.newWindow) anchor.attr("target", "_blank");
+		$("<img/>").attr("src", config.img).appendTo(anchor);
+		$("<span></span>").text(config.title).appendTo(anchor);
+	};
+	var items = [
+	     {href: "index.html", img: "imgs/laundry.png", title: "Main Page"},
+	     {href: "laundryBasket.html", img: "imgs/basket.png", title: "Laundry Basket"},
+	     {href: "https://github.com/LODLaundry/LOD-Washing-Machine", newWindow: true, img: "imgs/washingMachine.png", title: "Washing Machine"},
+	     {href: "wardrobe.html", img: "imgs/wardrobe.png", title: "Wardrobe"},
+	     {href: "visualizations.html", img: "imgs/analysis.png", title: "Inventory"},
+	     
+     ];
+	var lastIndexOf = document.URL.lastIndexOf("/");
+	var basename = "";
+	if (lastIndexOf < document.URL.length) {
+		basename = document.URL.substring(lastIndexOf + 1);
+	}
+	var hashTagIndex = basename.indexOf("#");
+	if (hashTagIndex == 0) {
+		basename == "";
+	} else if (hashTagIndex > 0) {
+		basename = basename.substring(0, hashTagIndex-1);
+	}
+	
+	if (basename.length == 0) basename = "index.html";
+	for (var i = 0; i < items.length; i++) {
+		if (basename == items[i].href) items[i].active = true;
+		addItem(items[i]);
+	}
+//	addItem(true, "index.html", "imgs/laundry.png", "Main Page");
+//	addItem(true, "index.html", "imgs/laundry.png", "Main Page");
+	
+	
+//	header.html('<div class="container"><ul class="nav navbar-nav">'+
+//          '<li><a href="index.html"><img src="imgs/laundry.png" style="width: 60px; height: 60px;"> Main page</a></li>'+
+//          '<li><a href="index.html"><img src="imgs/laundry.png" style="width: 60px; height: 60px;"> Main page</a></li>'+
+//          '<li><a href="#">About</a></li>'+
+//          '<li><a href="#">Contact</a></li>'+
+//        '</ul></div>');
+};
+drawHeader();
+
 
 /**
  * draw google analytics
