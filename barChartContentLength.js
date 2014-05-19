@@ -4,8 +4,8 @@ var drawContentLengthBarChart = function(config) {
 		return value;
 	});
 	dataValues = $.grep(dataValues, function(a) {
-		var hasResponse = a.httpresponse;
-		var hasContentLength = hasResponse && a.httpresponse.contentLength >= 0;
+		var hasResponse = a.httpResponse;
+		var hasContentLength = hasResponse && a.httpResponse.contentLength >= 0;
 		var hasByteCount = a.stream && a.stream.byteCount >= 0;
 		var isZip = a.hasArchiveEntry || a.fromArchive;//no zipped files! the bytecount is the -rdf- byte count, not the zip byte count
 		return !isZip && hasContentLength && hasByteCount;
@@ -25,7 +25,7 @@ var drawContentLengthBarChart = function(config) {
 	var totalDatasets = 0;
 	dataValues.forEach(function(d) {
 		totalDatasets++;
-		d.diff = Math.abs(d.httpresponse.contentLength - d.stream.byteCount);
+		d.diff = Math.abs(d.httpResponse.contentLength - d.stream.byteCount);
 		if (d.diff == 0) {
 			d.diffOrdinal = "0";
 		} else {
