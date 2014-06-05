@@ -12,131 +12,178 @@
 	return serialization;
   };
   
-	$.get(api.wardrobe.all, function(data) {
-		  drawPieChart({
-		    	rootId: "pieChartTripleSerializations",
-	    	sumBy: function(d) {
-				  return formatSerialization(d.rdf.serializationFormat);
-				},
-	    	aggregate: function(d) {
-				  return d.rdf.triples;
-			},
-			filter: function(d) {
-				return d.rdf && d.rdf.triples > 0;
-			},
-	    	totalUnit: "triples",
-	    	totalLabel: "TOTAL",
-	    	hideLabelsBelow: 0.02,
-	    	data: $.extend({}, data.results)
-	    });
-	    drawPieChart({
+  
+  
+  
+$.ajax({
+	url: sparql.url,
+	data: {query:sparql.queries.serializationsPerDoc,"default-graph-uri": sparql.mainGraph},
+	success: function(data) {
+		drawPieChart({
 	    	rootId: "pieChartDatasetSerializations",
-	    	sumBy: function(d) {
-				  return formatSerialization(d.rdf.serializationFormat);
+			totalUnit: "documents",
+			totalLabel: "TOTAL",
+			hideLabelsBelow: 0.02,
+			data: data.results.bindings,
+			isArray: true,
+			sumBy: function(bindings) {
+			  return formatSerialization(bindings.serializationFormat.value);
 			},
-	    	aggregate: function(){return 1;},
-			filter: function(d) {
-				return d.rdf && d.rdf.serializationFormat;
+			aggregate: function(bindings) {
+				return bindings.count.value;
 			},
-	    	totalUnit: "documents",
-	    	totalLabel: "TOTAL",
-	    	hideLabelsBelow: 0.02,
-	    	data: $.extend({}, data.results)
-	    });
-	    drawPieChart({
-	    	rootId: "pieChartContentTypes",
-	    	dimensions: {
-	    		width: 600
-	    	},
-	    	sumBy: function(d) {
-	    		var semiColonIndex = d.httpResponse.contentType.indexOf(';');
-	    		var formattedContentType = d.httpResponse.contentType;
-	    		if (semiColonIndex > 0) formattedContentType = formattedContentType.substring(0, semiColonIndex);
-//	    		if (formattedContentType == "application/x-bzip2") console.log(d);
-	    		return formattedContentType;
-	    	},
-	    	aggregate: function(){return 1;},
-	    	filter: function(d) {
-	    		if (d.hasArchiveEntry) return false;
-	    		if (d.fromArchive) return false;
-	    		return d.httpResponse && d.httpResponse.contentType;
-	    	},
-	    	totalUnit: "documents",
-	    	totalLabel: "TOTAL",
-	    	hideLabelsBelow: 0.05,
-	    	data: $.extend({}, data.results)
-	    });
-	    drawPieChart({
-	    	rootId: "pieChartContentTypesVsSer",
-	    	dimensions: {
-	    		width: 600
-	    	},
-	    	sumBy: function(d) {
-	    		if (d.httpResponse.contentType.indexOf(d.rdf.serializationFormat) > -1) return "matches";
-	    		return "does not match";
-	    	},
-	    	clickSlice: function(d) {
-	    		
-	    	},
-	    	aggregate: function(){return 1;},
-	    	filter: function(d) {
-	    		if (d.hasArchiveEntry) return false;
-	    		if (d.fromArchive) return false;
-	    		if (!d.httpResponse) return false;
-	    		if (!d.httpResponse.contentType) return false;
-	    		if (d.httpResponse.contentType.indexOf("zip") > -1) return false;
-	    		return d.rdf && d.rdf.serializationFormat;
-	    	},
-	    	totalUnit: "documents",
-	    	totalLabel: "TOTAL",
-	    	hideLabelsBelow: 0.05,
-	    	data: $.extend({}, data.results)
-	    });
-	    drawPieChart({
-	    	rootId: "pieChartExceptions",
-	    	dimensions: {
-	    		width: 600
-	    	},
-	    	sumBy: function(d) {
-	    		
-	    		var exceptionConcat = "";
-				  for (var exception in d.exceptions) {
-					  if (!exceptionConcat) {
-						  exceptionConcat = exception; 
-					  } else {
-						  exceptionConcat += "/" + exception;
-					  }
-				  }
-				  if (exceptionConcat.length > 0) {
-					  return exceptionConcat.charAt(0).toUpperCase() + exceptionConcat.slice(1) + " Exception";
-				  }
-				  var syntaxError = d.rdf && d.rdf.syntaxErrors && d.rdf.syntaxErrors.length;
-				  var hasTriples = d.rdf && d.rdf.triples > 0;
-				  if (hasTriples && !syntaxError) return "No errors";
-				  if (hasTriples && syntaxError) return "Some syntax errors";
-//				  if (!syntaxError && !hasTriples) console.log("no error, not triples. he??", d);
-				  return "Only syntax errors";
-			},
-	    	aggregate: function(){return 1;},
-	    	totalUnit: "documents",
-	    	totalLabel: "TOTAL",
-	    	hideLabelsBelow: 0.04,
-	    	filter: function(d) {
-				return !d.hasArchiveEntry;
-			},
-	    	data: $.extend({}, data.results)
-	    });
-	    drawBarChart({
-	    	rootId: "barChartDatasets",
-	    	data: $.extend({}, data.results)
-	    });
-	    drawContentLengthBarChart({
-	    	rootId: "barChartContentLength",
-	    	data: $.extend({}, data.results)
-	    });
-	    
-	    goToHash();
+		});
+	},
+	
+	headers: {
+		"Accept": "application/sparql-results+json,*/*;q=0.9"
+	}
 });
+$.ajax({
+	url: sparql.url,
+	data: {query:sparql.queries.serializationsPerTriple,"default-graph-uri": sparql.mainGraph},
+	success: function(data) {
+		drawPieChart({
+			rootId: "pieChartTripleSerializations",
+			totalUnit: "triples",
+			totalLabel: "TOTAL",
+			hideLabelsBelow: 0.02,
+			data: data.results.bindings,
+			isArray: true,
+			sumBy: function(bindings) {
+				return formatSerialization(bindings.serializationFormat.value);
+			},
+			aggregate: function(bindings) {
+				return bindings.count.value;
+			},
+		});
+	},
+	headers: {
+		"Accept": "application/sparql-results+json,*/*;q=0.9"
+	}
+});
+$.ajax({
+	url: sparql.url,
+	data: {query:sparql.queries.contentTypesPerDoc,"default-graph-uri": sparql.mainGraph},
+	success: function(data) {
+		drawPieChart({
+			rootId: "pieChartContentTypes",
+			dimensions: {
+				width: 600
+			},
+			totalUnit: "documents",
+			totalLabel: "TOTAL",
+			hideLabelsBelow: 0.05,
+			data: data.results.bindings,
+			isArray: true,
+			sumBy: function(bindings) {
+				return formatSerialization(bindings.contentType.value);
+			},
+			aggregate: function(bindings){return bindings.count.value;},
+		});
+	},
+	headers: {
+		"Accept": "application/sparql-results+json,*/*;q=0.9"
+	}
+});
+$.ajax({
+	url: sparql.url,
+	data: {query:sparql.queries.contentTypesVsSerializationFormats,"default-graph-uri": sparql.mainGraph},
+	success: function(data) {
+		drawPieChart({
+			rootId: "pieChartContentTypesVsSer",
+			dimensions: {
+				width: 600
+			},
+			totalUnit: "documents",
+			totalLabel: "TOTAL",
+			hideLabelsBelow: 0.05,
+			data: data.results.bindings,
+			isArray: true,
+			sumBy: function(bindings) {
+				return bindings.matchType.value;
+			},
+			aggregate: function(bindings){return bindings.count.value;},
+		});
+	},
+	headers: {
+		"Accept": "application/sparql-results+json,*/*;q=0.9"
+	}
+});
+$.ajax({
+	url: sparql.url,
+	data: {query:sparql.queries.parseExceptions,"default-graph-uri": sparql.mainGraph},
+	success: function(data) {
+		drawPieChart({
+			rootId: "pieChartExceptions",
+			dimensions: {
+				width: 600
+			},
+			totalUnit: "documents",
+			totalLabel: "TOTAL",
+			hideLabelsBelow: 0.04,
+			data: data.results.bindings,
+			isArray: true,
+			sumBy: function(bindings) {
+				
+				var hasTriples = bindings.triples && bindings.triples.value > 0;
+				var hasException = bindings.exception && bindings.exception.value == 1;
+				var hasSyntaxErrors = bindings.message && bindings.message.value == 1;
+				
+				var returnVal = null;
+				if (hasException) {
+					returnVal = "Exception";
+				} else if (hasSyntaxErrors) {
+					if (hasTriples) {
+						returnVal = "Some syntax errors";
+					} else {
+						returnVal = "Only syntax errors";
+					}
+				} else {
+					returnVal = "No errors";
+				}
+				return returnVal;
+				
+			},
+			aggregate: function(bindings){return 1;},
+		});
+	},
+	headers: {
+		"Accept": "application/sparql-results+json,*/*;q=0.9"
+	}
+});
+  
+$.ajax({
+	url: sparql.url,
+	data: {query:sparql.queries.contentLengths,"default-graph-uri": sparql.mainGraph},
+	success: function(data) {
+		drawContentLengthBarChart({
+			rootId: "barChartContentLength",
+			data: data.results.bindings,
+		});
+	},
+	headers: {
+		"Accept": "application/sparql-results+json,*/*;q=0.9"
+	}
+});
+
+$.ajax({
+	url: sparql.url,
+	data: {query:sparql.queries.datasetsWithCounts,"default-graph-uri": sparql.mainGraph},
+	success: function(data) {
+		drawDatasetsBarChart({
+			rootId: "barChartDatasets",
+			data: data.results.bindings,
+		});
+	},
+	headers: {
+		"Accept": "application/sparql-results+json,*/*;q=0.9"
+	}
+});
+
+
+
+
 
 $("#getJsonAllBtn").attr("href", api.wardrobe.all);
 	

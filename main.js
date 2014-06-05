@@ -26,18 +26,71 @@ var sparql = {
 			  OPTIONAL {?doc wbeek:duplicates ?duplicates}\
 			  OPTIONAL {?doc wbeek:triples ?triples}\
 			 OPTIONAL {?parentArchive wbeek:archive_contains ?doc}\
-			} "
-		
+			} ",
+		serializationsPerDoc: "PREFIX wbeek: <http://www.wouterbeek.com/ap.owl#>\
+			SELECT ?serializationFormat (COUNT(?doc) AS ?count) WHERE {\
+			 ?doc wbeek:serialization_format ?serializationFormat\
+			} GROUP BY ?serializationFormat ",
+		serializationsPerTriple: "PREFIX wbeek: <http://www.wouterbeek.com/ap.owl#>\
+			SELECT ?serializationFormat (SUM(?triples) AS ?count) WHERE {\
+			  [] wbeek:serialization_format ?serializationFormat ;\
+			    wbeek:triples ?triples.\
+			} GROUP BY ?serializationFormat ",
+		contentTypesPerDoc: "PREFIX wbeek: <http://www.wouterbeek.com/ap.owl#>\
+			SELECT ?contentType (COUNT(?doc) AS ?count) WHERE {\
+			  ?doc wbeek:http_content_type ?contentTypeString\
+			   BIND(REPLACE(?contentTypeString, \";.*\", \"\", \"i\") AS ?contentType)\
+			} GROUP BY ?contentType ",
+			
+		/**
+		 * some explanations
+		 * - we do not include documents with serialization format rdfa, as these should not be transferred with their own content type (but part of e.g. an http page)
+		 * - we replace the 'n3' content type string with 'turtle', to make our matching function easier
+		 */
+		contentTypesVsSerializationFormats: "PREFIX wbeek: <http://www.wouterbeek.com/ap.owl#>\
+			SELECT ?matchType (COUNT(?doc) AS ?count) WHERE {\
+			  ?doc wbeek:http_content_type ?contentType;\
+			    wbeek:serialization_format ?serializationFormat .\
+			  FILTER(str(?serializationFormat) != \"rdfa\")\
+			  FILTER(!contains(str(?contentType), \"zip\"))\
+			  BIND(if(contains(str(?contentType), \"n3\"), \"turtle\", ?contentType) AS ?contentType)\
+			  BIND(if (contains(str(?contentType), str(?serializationFormat)), \"matches\", \"does not match\") AS ?matchType)\
+			} GROUP BY ?matchType ",
+		parseExceptions: "PREFIX wbeek: <http://www.wouterbeek.com/ap.owl#>\
+			SELECT ?exception ?message ?triples WHERE {\
+			  ?doc  a wbeek:LOD-URL .\
+			  BIND(EXISTS{?doc wbeek:exception []} AS ?exception)\
+			  BIND(EXISTS{?doc wbeek:message []} AS ?message)\
+			  OPTIONAL {?doc wbeek:triples ?triples}\
+			} ",
+		contentLengths: "PREFIX wbeek: <http://www.wouterbeek.com/ap.owl#>\
+			SELECT ?clength ?bcount WHERE {\
+			  ?doc wbeek:http_content_length ?clength ;\
+			    wbeek:stream_byte_count ?bcount.\
+			  MINUS {\
+			    ?doc wbeek:archive_contains []\
+			  }\
+			  MINUS {[] wbeek:archive_contains ?doc}\
+			  FILTER(!STRENDS(str(?doc), \".bz2\"))\
+			  FILTER(!STRENDS(str(?doc), \".gz\"))\
+			} ",
+		datasetsWithCounts: "PREFIX wbeek: <http://www.wouterbeek.com/ap.owl#>\
+			SELECT ?doc ?triples ?duplicates {\
+			  ?doc  a wbeek:LOD-URL ;\
+			    wbeek:triples ?triples;\
+			    wbeek:duplicates ?duplicates .\
+			  FILTER(?triples > 0)\
+			}",
+		datasetInfo: function(doc) {
+			return "PREFIX wbeek: <http://www.wouterbeek.com/ap.owl#>\
+				SELECT ?sub ?pred ?obj {\
+				  {<" + doc + "> ?pred ?obj}\
+				  UNION\
+				  {?sub ?pred <" + doc + ">}\
+				}";
+		}
 	}
 };
-//
-//drawBackButton = function() {
-//	$('  <div class="backButton"><button type="button" class="wardrobeLink btn btn-primary btn-lg"><span class="glyphicon glyphicon-arrow-left"></span></button></div>')
-//		.click(function(){
-//			window.location = "index.html";
-//		}).appendTo($("body"));
-//};
-
 
 
 //init loader
@@ -47,6 +100,7 @@ $.ajaxSetup({
   },
   complete: function(){
      $('#loader').hide();
+     if (goToHash) goToHash();
   },
   success: function() {}
 });
@@ -77,8 +131,8 @@ $(document).ready(function(){
 
 
 
-var modalDiv = $("<div class='modal fade'  tabindex='-1' role='dialog' aria-hidden='true'></div>")
-.html('<div class="modal-dialog">' +
+var modalDiv = $("<div class='modal  fade'  tabindex='-1' role='dialog' aria-hidden='true'></div>")
+.html('<div class="modal-dialog modal-lg ">' +
 '  <div class="modal-content">' +
 '    <div class="modal-header">' +
 '    </div>' +
@@ -139,95 +193,114 @@ var drawModal = function(config) {
 };
 
 
-var drawDataset = function(d) {
-	var table = $("<table class='table'></table>");
-	var addRow = function(config) {
-		var row = $("<tr></tr>").appendTo(table);
-		if (config.rowClass) row.addClass(config.rowClass);
-		if (config.midHeader) row.css("font-weight", "bold");
-		for (var i = 0; i < config.values.length; i++) {
-			var col = $("<td></td>");
-			if (config.isHeader) col = $("<th></th>");
-			if (config.midHeader) col.attr("colspan", "2");
-			row.append(col);
-			var arg = config.values[i];
-			if (typeof arg == "string") {
-				col.html(arg);
-			} else {
-				col.append(arg);
-			}
-			if (i == 0 && config.indentFirstCol) col.css("padding-left", "15px");
-		}
-	};
-	
-	addRow({values: ["URL" , "<a href='" + d.url + "' target='_blank'>" + d.url + "</a>"]});
-	addRow({values:["MD5" , d.md5]}); 
-	if (d.hasArchiveEntry) {
-		addRow({midHeader: true,values:["Archive entries" ]});
-		for (var i = 0; i < d.hasArchiveEntry.length; i++) {
-			var colContent = $("<a href='" + d.hasArchiveEntry[i] + "' target='_blank'>" + d.hasArchiveEntry[i] + "</a>");
-			addRow({values:["", colContent ]});
-		}
-	}
-	if (d.fromArchive) {
-		var colContent = $("<a href='" + d.fromArchive + "' target='_blank'>" + d.fromArchive + "</a>");
-		addRow({values:["Unpacked from archive" , colContent]}); 
-	}
-	if (d.archiveEntrySize) {
-		addRow({values:["Size of archive entry" , d.archiveEntrySize]}); 
-	}
-	if (d.fileExtension) {
-		addRow({values:["File extension" , d.fileExtension]}); 
-	}
-	if (d.rdf) {
-		addRow({midHeader: true,values:["Parsed RDF info" ]});
-		addRow({indentFirstCol: true, values:["<i>#triples</i>", d.rdf.triples ]});
-		addRow({indentFirstCol: true, values:["<i>#Duplicates</i>", d.rdf.duplicates ]});
-		addRow({indentFirstCol: true, values:["<i>Serialization Format</i>", d.rdf.serializationFormat ]});
-		if (d.rdf.syntaxErrors) {
-			var firstCol = "<i>Syntax errors</i>";
-			for (var i = 0; i < d.rdf.syntaxErrors.length; i++) {
-				addRow({indentFirstCol: true, rowClass: "warning", values:[firstCol, d.rdf.syntaxErrors[i]]});
-				firstCol = "";
-			}
-		}
-	}
-	if (d.httpresponse) {
-		addRow({midHeader: true, values:["HTTP Response" ]}); 
-		var contentLength = d.httpresponse.contentLength || "unknown";
-		addRow({indentFirstCol: true, values:["<i>Content Length</i>", contentLength ]});
-		var contentType = d.httpresponse.contentType || "unknown";
-		addRow({indentFirstCol: true, values:["<i>Content Type</i>", contentType ]});
-		var lastModified = d.httpresponse.lastModified || "unknown";
-		addRow({indentFirstCol: true, values:["<i>Last Modified</i>", lastModified ]});
-	}
-	
-	if (d.stream) {
-		addRow({midHeader: true,values:["File stream info (unpacked)" ]});
-		addRow({indentFirstCol: true, values:["<i>Byte Count</i>", d.stream.byteCount ]});
-		addRow({indentFirstCol: true, values:["<i>Char Count</i>", d.stream.charCount ]});
-		addRow({indentFirstCol: true, values:["<i>Line Count</i>", d.stream.lineCount ]});
-	}
-	
-	if (d.exceptions) {
-		addRow({midHeader: true, rowClass: "danger", values: ["<strong>Exceptions</strong>"]});
-		for (var exception in  d.exceptions) {
-			var exceptionContent = d.exceptions[exception];
-			if (typeof exceptionContent == "array") {
-				for (var i = 0; i < exceptionContent.length; i++) {
-					addRow({indentFirstCol: true, rowClass: "danger", values: ["<i>" + exeption + "</i>", exceptionContent[i]]});
+var drawDataset = function(url) {
+	$.ajax({
+		url: sparql.url,
+		data: {query:sparql.queries.datasetInfo(url),"default-graph-uri": sparql.mainGraph},
+		success: function(data) {
+			var table = $("<table class='table'></table>");
+			var addRow = function(config) {
+				var row = $("<tr></tr>").appendTo(table);
+				if (config.rowClass) row.addClass(config.rowClass);
+				if (config.midHeader) row.css("font-weight", "bold");
+				for (var i = 0; i < config.values.length; i++) {
+					var col = $("<td></td>");
+					if (config.isHeader) col = $("<th></th>");
+					if (config.midHeader) col.attr("colspan", "2");
+					row.append(col);
+					var arg = config.values[i];
+					if (typeof arg == "string") {
+						col.html(arg);
+					} else {
+						col.append(arg);
+					}
+					if (i == 0 && config.indentFirstCol) col.css("padding-left", "15px");
 				}
-			} else {
-				addRow({indentFirstCol: true, rowClass: "danger", values: ["<i>" + exception + "</i>", exceptionContent]});
+			};
+			var formattedProps = {};
+			var results = data.results.bindings;
+			$.each(results, function(key, bindings) {
+				if (bindings.pred.value.indexOf("http://www.wouterbeek.com/ap.owl#") == 0) {
+					
+					
+					var shortenedProp = bindings.pred.value.substring("http://www.wouterbeek.com/ap.owl#".length);
+					if (bindings.obj) {
+						if (shortenedProp in formattedProps) {
+							if (typeof formattedProps[shortenedProp] == "string") {
+								formattedProps[shortenedProp] = [formattedProps[shortenedProp]];
+							}
+							formattedProps[shortenedProp].push(bindings.obj.value);
+						}
+						formattedProps[shortenedProp] = bindings.obj.value;
+					}
+				}
+			});
+			addRow({values: ["URL" , "<a href='" + formattedProps.url + "' target='_blank'>" + formattedProps.url + "</a>"]});
+			if (formattedProps.archive_contains) {
+				addRow({midHeader: true,values:["Archive entries" ]});
+				for (var i = 0; i < formattedProps.archive_contains.length; i++) {
+					var colContent = $("<a href='" + formattedProps.archive_contains[i] + "' target='_blank'>" + formattedProps.archive_contains[i] + "</a>");
+					addRow({values:["", colContent ]});
+				}
+			}
+//			if (d.fromArchive) {
+//				var colContent = $("<a href='" + d.fromArchive + "' target='_blank'>" + d.fromArchive + "</a>");
+//				addRow({values:["Unpacked from archive" , colContent]}); 
+//			}
+//			if (d.archiveEntrySize) {
+//				addRow({values:["Size of archive entry" , d.archiveEntrySize]}); 
+//			}
+			if (formattedProps.file_extension) {
+				addRow({values:["File extension" , formattedProps.file_extension]}); 
+			}
+			if (formattedProps.triples) {
+				addRow({midHeader: true,values:["Parsed RDF info" ]});
+				addRow({indentFirstCol: true, values:["<i>#triples</i>", formattedProps.triples ]});
+				addRow({indentFirstCol: true, values:["<i>#Duplicates</i>", formattedProps.duplicates ]});
+				addRow({indentFirstCol: true, values:["<i>Serialization Format</i>", formattedProps.serialization_format ]});
+				if (formattedProps.messages) {
+					var firstCol = "<i>Syntax errors</i>";
+					for (var i = 0; i < formattedProps.messages.length; i++) {
+						addRow({indentFirstCol: true, rowClass: "warning", values:[firstCol, formattedProps.messages[i]]});
+						firstCol = "";
+					}
+				}
+			}
+			if (formattedProps.http_content_type) {
+				addRow({midHeader: true, values:["HTTP Response" ]}); 
+				var contentLength = formattedProps.http_content_length|| "unknown";
+				addRow({indentFirstCol: true, values:["<i>Content Length</i>", contentLength ]});
+				var contentType = formattedProps.http_content_type || "unknown";
+				addRow({indentFirstCol: true, values:["<i>Content Type</i>", contentType ]});
+				var lastModified = formattedProps.http_last_modified || "unknown";
+				addRow({indentFirstCol: true, values:["<i>Last Modified</i>", lastModified ]});
 			}
 			
+			if (formattedProps.stream_byte_count) {
+				addRow({midHeader: true,values:["File stream info (unpacked)" ]});
+				addRow({indentFirstCol: true, values:["<i>Byte Count</i>", formattedProps.stream_byte_count ]});
+				addRow({indentFirstCol: true, values:["<i>Char Count</i>", formattedProps.stream_char_count ]});
+				addRow({indentFirstCol: true, values:["<i>Line Count</i>", formattedProps.stream_line_count]});
+			}
+			
+			if (formattedProps.exceptions) {
+				addRow({midHeader: true, rowClass: "danger", values: ["<strong>Exceptions</strong>"]});
+				for (var i = 0; i < formattedProps.exceptions.length; i++) {
+					var exception = formattedProps.exceptions[i];
+					addRow({indentFirstCol: true, rowClass: "danger", values: ["<i></i>", exception]});
+				}
+			}
+			
+			drawModal({header: "Dataset Properties", content: table});
+		},
+		headers: {
+			"Accept": "application/sparql-results+json,*/*;q=0.9"
 		}
-	}
-//    "exceptions": {"tcp": ["Host not found" ]},
-//    "md5":"5af93b73d12ecfa254941d49855c6bff",
-//    "url":"http://%20http://commondatastorage.googleapis.com/m-lab/"
+	});
 	
-	drawModal({header: "Dataset Properties", content: table});
+	
+	
+	
 };
 var deleteEveryDivExcept = function(divId) {
 	$("div").hide();

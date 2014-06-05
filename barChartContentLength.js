@@ -1,15 +1,15 @@
 var drawContentLengthBarChart = function(config) {
-	var data = config.data;
-	var dataValues = $.map(data, function(value, key) {
-		return value;
-	});
-	dataValues = $.grep(dataValues, function(a) {
-		var hasResponse = a.httpResponse;
-		var hasContentLength = hasResponse && a.httpResponse.contentLength >= 0;
-		var hasByteCount = a.stream && a.stream.byteCount >= 0;
-		var isZip = a.hasArchiveEntry || a.fromArchive;//no zipped files! the bytecount is the -rdf- byte count, not the zip byte count
-		return !isZip && hasContentLength && hasByteCount;
-	});
+	var dataValues = config.data;
+//	var dataValues = $.map(data, function(value, key) {
+//		return value;
+//	});
+//	dataValues = $.grep(dataValues, function(a) {
+//		var hasResponse = a.httpResponse;
+//		var hasContentLength = hasResponse && a.httpResponse.contentLength >= 0;
+//		var hasByteCount = a.stream && a.stream.byteCount >= 0;
+//		var isZip = a.hasArchiveEntry || a.fromArchive;//no zipped files! the bytecount is the -rdf- byte count, not the zip byte count
+//		return !isZip && hasContentLength && hasByteCount;
+//	});
 
 	var formatOrdinalVal = d3.format(".2s");
 	var getBucket = function(diff, largerThan, lessThan) {
@@ -23,13 +23,13 @@ var drawContentLengthBarChart = function(config) {
 		}
 	};
 	var totalDatasets = 0;
-	dataValues.forEach(function(d) {
+	dataValues.forEach(function(bindings) {
 		totalDatasets++;
-		d.diff = Math.abs(d.httpResponse.contentLength - d.stream.byteCount);
-		if (d.diff == 0) {
-			d.diffOrdinal = "0";
+		bindings.diff = Math.abs(bindings.clength.value - bindings.bcount.value);
+		if (bindings.diff == 0) {
+			bindings.diffOrdinal = "0";
 		} else {
-			d.diffOrdinal = getBucket(d.diff);
+			bindings.diffOrdinal = getBucket(bindings.diff);
 		}
 	});
 

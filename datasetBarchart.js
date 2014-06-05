@@ -1,34 +1,26 @@
-var drawBarChart = function(config) {
-	var data = config.data;
-	var dataValues = $.map(data, function(value, key) {
-		return value;
-	});
-	dataValues = $.grep(dataValues, function(a) {
-		// console.log(a);
-		return a.rdf && a.rdf.triples && a.rdf.triples > 0;
-	});
+var drawDatasetsBarChart = function(config) {
+	var dataValues = config.data;
 
-	dataValues.forEach(function(d) {
-		d.total = +(d.rdf.triples + d.rdf.duplicates);
-		var origObject = $.extend({}, d);
-		d.counts = [ {
+	dataValues.forEach(function(bindings) {
+		bindings.total = +(parseInt(bindings.triples.value) + parseInt(bindings.duplicates.value));
+		var origObject = $.extend({}, bindings);
+		bindings.counts = [ {
 			name : "# unique triples",
 			x0 : +1,
-			x1 : +d.rdf.triples
+			x1 : +bindings.triples.value
 		}, {
 			name : "# duplicate triples",
-			x0 : +d.rdf.triples,
-			x1 : +(d.rdf.triples + d.rdf.duplicates)
+			x0 : +bindings.triples.value,
+			x1 : +bindings.total
 		} ];
 
-		$.extend(d.counts[0], origObject);
-		$.extend(d.counts[1], origObject);
+		$.extend(bindings.counts[0], origObject);
+		$.extend(bindings.counts[1], origObject);
 	});
 
 	dataValues.sort(function(a, b) {
 		return b.total - a.total;
 	});
-//	console.log(dataValues.length);
 	var margin = {
 		top : 40,
 		right : 20,
@@ -43,7 +35,7 @@ var drawBarChart = function(config) {
 
 	var y = d3.scale.ordinal().rangeBands([ 0, height ], .1).domain(
 			dataValues.map(function(d) {
-				return d.url;
+				return d.doc.value;
 			}));
 
 	var color = d3.scale.ordinal().range([ "#ff8c00", "#98abc5" ]);
@@ -65,16 +57,16 @@ var drawBarChart = function(config) {
 	var xAxis = d3.svg.axis().scale(x).tickFormat(logFormat).orient("top");
 
 	var tip = d3.tip().attr('class', 'd3-tip').offset([ -10, 0 ]).html(
-			function(d) {
+			function(bindings) {
 
-				return "<i>" + d.url + ":<br> <strong>total triples: </strong>"
-						+ formatThousands(d.total)
+				return "<i>" + bindings.doc.value+ ":<br> <strong>total triples: </strong>"
+						+ formatThousands(bindings.total)
 						+ "<br><Strong>unique: </strong>"
-						+ formatThousands(d.rdf.triples) + " ("
-						+ formatPercentage(d.rdf.triples / d.total)
+						+ formatThousands(bindings.triples.value) + " ("
+						+ formatPercentage(bindings.triples.value / bindings.total)
 						+ ")<br><Strong>duplicates: </strong>"
-						+ formatThousands(d.rdf.duplicates) + " ("
-						+ formatPercentage(d.rdf.duplicates / d.total) + ")";
+						+ formatThousands(bindings.duplicates.value) + " ("
+						+ formatPercentage(bindings.duplicates.value / bindings.total) + ")";
 			}).direction("e");
 	var svg = d3.select("#" + config.rootId).append("svg").attr("width",
 			width + margin.left + margin.right).attr("height",
@@ -95,9 +87,11 @@ var drawBarChart = function(config) {
 
 	var state = svg.selectAll(".state").data(dataValues).enter().append("g")
 			.attr("class", "g").attr("transform", function(d) {
-				return "translate(0," + +y(d.url) + ")";
+				return "translate(0," + +y(d.doc.value) + ")";
 			});
-
+	var handleBarClick = function(bindings) {
+		drawDataset(bindings.doc.value);
+	};
 	state.selectAll(".bar").data(function(d) {
 		return d.counts;
 	}).enter().append("rect").attr("class", "bar")
@@ -109,8 +103,9 @@ var drawBarChart = function(config) {
 				return color(d.name);
 			}).on('mouseover', tip.show)
 			.on('mouseout', tip.hide)
-			.on('click', drawDataset);
-
+			.on('click', handleBarClick);
+	
+	
 	var legend = svg.selectAll(".legend")
 			.data(color.domain().slice().reverse()).enter().append("g").attr(
 					"class", "legend").attr("transform", function(d, i) {

@@ -114,16 +114,20 @@ var drawPieChart = function(config) {
 	
 	
 	
-		var dataValues = $.map(data, function (value, key) { return value; });
+		var dataValues = data;
+		if (!config.isArray) dataValues = $.map(data, function (value, key) { return value; });
 		if (config.filter) {
 			dataValues = $.grep(dataValues, config.filter);
 		}
-		var aggregatedValues = d3.nest().key(
-				config.sumBy
-			)
-			.rollup(function(d) {
-			  return d3.sum(d, config.aggregate);
-			}).entries(dataValues);
+		var aggregatedValues = dataValues;
+		if (config.sumBy && config.aggregate) {
+			aggregatedValues = d3.nest().key(
+					config.sumBy
+				)
+				.rollup(function(d) {
+				  return d3.sum(d, config.aggregate);
+				}).entries(dataValues);
+		}
 		
 		
 		
