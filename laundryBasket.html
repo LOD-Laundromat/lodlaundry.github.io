@@ -40,9 +40,10 @@
 
 
 <div class="row">
-	<h3>Have some dirty laundry of your own? Let us know, and we'll wash it! The washed, dried and ironed clothes will pop up after each scheduled weekly run</h3>
-    <textarea id='newDirtyLaundry' style="width: 100%; height: 300px;" placeholder="Either paste a list of URLs pointing to dump files or VOID descriptions, or paste VoID description directly"></textarea>
-    <p><button type="button" class="submitDirtyLaundryLink btn btn-info btn-lg"><span class="glyphicon glyphicon-send"></span>&nbsp;&nbsp;Send</button></p>
+	<h3>Have some dirty laundry of your own? Let us know, and we'll wash it! The washed, dried and ironed clothes will pop up after each scheduled weekly run
+	<small>Paste a link to any online resource containing RDF data. E.g. XML, zipped data dump, HTML with RDFa, etc)</small></h3>
+    <input id='newDirtyLaundry' style="margin-bottom: 10px;width: 450px;"type="text">
+    <div><button type="button" class="submitDirtyLaundryLink btn btn-info btn-lg"><span class="glyphicon glyphicon-send"></span>&nbsp;&nbsp;Send</button><div class='submitStatus'></div></div>
 </div>
 <div class="row">
 	<h3>List of addresses for picking up the dirty laundry</h3>

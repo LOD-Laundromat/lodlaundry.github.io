@@ -5,7 +5,6 @@ $( document ).ready(function() {
 });
 
 var drawDirtyLaundry = function(data) {
-	console.log(data);
 	data = data.split("\n");
 	var table = $('<table cellpadding="0" cellspacing="0" border="0" class="display" id="laundryBasketTable"></table>');
 	$('#tableWrapper').html(table);
@@ -59,28 +58,28 @@ var drawDirtyLaundry = function(data) {
 	    	],
 	    	"aaSorting": [[ 2, 'desc' ]]
 	    };
-	console.log(table);
-	console.log(table.dataTable);
-	console.log(dTableConfig);
 	dataTable = table.dataTable(dTableConfig);
 	
 };
 
+$("#newDirtyLaundry").keyup(function() {
+	$(".submitStatus").hide(400);
+});
 $(".submitDirtyLaundryLink").click(function() {
-	var newDirtyLaundry = $("#newDirtyLaundry").val();
-	if (newDirtyLaundry.trim().length > 0) {
-		
+	var success = "<span class=\"label label-success\">Successfully received. Pffff, that dirty data smells!</span>";
+	var fail = "<span class=\"label label-danger\">Something went wrong... Is the url correct? If this problem persists, let us know via github!</span>";
+	var newDirtyLaundry = $("#newDirtyLaundry").val().trim();
+	if (newDirtyLaundry.length > 0) {
 		$.ajax({
-			  type: "POST",
+			  type: "GET",
 			  url: api.laundryBasket.send,
-			  data: {"laundry": newDirtyLaundry},
+			  data: {url: newDirtyLaundry},
 			  success: function() {
+				  $(".submitStatus").empty().hide().append(success).show(400);
 //				  loadingFinish();
 			  },
 			  error: function() {
-				  //something went wrong
-//				  glyphicon-check
-//				  loadingFinish();
+				  $(".submitStatus").empty().hide().append(fail).show(400);
 			  } 
 			});
 	}

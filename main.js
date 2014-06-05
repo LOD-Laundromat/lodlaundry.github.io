@@ -7,7 +7,7 @@ var api = {
 	},
 	laundryBasket: {
 		all: "lod_basket.txt",
-		send: "lodlaundry.wbeek.ops.few.vu.nl/ll/newLaundry"
+		send: "http://lodlaundry.wbeek.ops.few.vu.nl/lwm/basket"
 	},
 	
 };
