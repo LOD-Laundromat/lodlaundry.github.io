@@ -1,3 +1,4 @@
+if (!console.log) console={log:function(){}};//that way js wont break on ie when log statements are still in code
 var api = {
 	wardrobe: {
 //		all: "http://lodlaundry.wbeek.ops.few.vu.nl/ll/all.json"
@@ -14,7 +15,18 @@ var sparql = {
 	url: "http://virtuoso.lodlaundromat.ops.few.vu.nl/sparql",
 	mainGraph: "http://laundromat",
 	queries: {
-		totalTripleCount: "PREFIX wbeek: <http://www.wouterbeek.com/ap.owl#>SELECT (SUM(?triples) AS ?totalTriples) {?dataset wbeek:triples ?triples}",
+		totalTripleCount: "PREFIX wbeek: <http://www.wouterbeek.com/ap.owl#>\
+				SELECT (SUM(?triples) AS ?totalTriples) {?dataset wbeek:triples ?triples}",
+		wardrobeListing: "PREFIX wbeek: <http://www.wouterbeek.com/ap.owl#>\
+			PREFIX rvoid: <http://rdfs.org/ns/void#>\
+			SELECT ?doc ?serializationFormat ?lastModified ?duplicates ?triples (MD5(?doc) AS ?md5) ?parentArchive WHERE {\
+			  ?doc a wbeek:LOD-URL ;\
+			    wbeek:http_last_modified ?lastModified .\
+			  OPTIONAL {?doc wbeek:serialization_format ?serializationFormat}\
+			  OPTIONAL {?doc wbeek:duplicates ?duplicates}\
+			  OPTIONAL {?doc wbeek:triples ?triples}\
+			 OPTIONAL {?parentArchive wbeek:archive_contains ?doc}\
+			} "
 		
 	}
 };
@@ -283,8 +295,6 @@ drawHeader();
 
 var getAndDrawCounter = function() {
 	var draw = function(count) {
-		console.log("draw");
-		
 		 var holder = $('.counter');
 		 var countString = count.toString();
 		 var charsLeft = countString.length;

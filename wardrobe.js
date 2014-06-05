@@ -1,40 +1,8 @@
-//jQuery.extend( jQuery.fn.dataTableExt.oSort, {
-//	"formatted_numbers-pre": function ( a ) {
-//        a = (a==="-") ? 0 : a.replace( /[^\d\-\.]/g, "" );
-//        return parseFloat( a );
-//    },
-//
-//    "formatted_numbers-asc": function ( a, b ) {
-//        return a - b;
-//    },
-//
-//    "formatted_numbers-desc": function ( a, b ) {
-//        return b - a;
-//    }
-//} );
 var hoverDiv;
 var wardrobeData = null;
-//var initHoverIcons = function() {
-//	hoverDiv = $("<div align='right' class='tableHoverImgs'></div>").hide();
-//	$("<a download='output.nt.gz'  class='tableHoverItem' id='downloadItem' target='_blank'><img src='imgs/download.png'></img></a>")
-//		.appendTo(hoverDiv);
-//	$("<a  class='tableHoverItem'><img src='imgs/info.png' ></img></a>")
-//	.click(function(){
-//		var url = $(this).closest("td").text();
-//		drawDataset(wardrobeData[url]);
-//	})
-//	.appendTo(hoverDiv);
-//	$("body").append(hoverDiv);
-//};
-//initHoverIcons();
-//var showIcons = function() {
-//	hoverDiv.show();
-//	$(this).find('td:eq(1)').append(hoverDiv);
-//	
-//	var url = hoverDiv.closest("td").text();
-//	var md5 = wardrobeData[url].md5;
-//	hoverDiv.find("#downloadItem").attr("href", api.wardrobe.download(md5));
-//};
+var hasArchiveEntry = {};
+var fromArchive = {};
+var md5 = {};
 var hideIcons = function() {
 	hoverDiv.hide();
 };
@@ -91,24 +59,31 @@ var drawTable = function() {
 	$('#tableWrapper').html(table);
 	 
 	var rows = [];
-	for (var dataKey in wardrobeData) {
-		var dataObj = wardrobeData[dataKey];
+	if (!wardrobeData || !wardrobeData.results || !wardrobeData.results.bindings) return;
+	
+	for (var i = 0; i < wardrobeData.results.bindings.length; i++) {
+		var results = wardrobeData.results.bindings[i];
+//		var dataObj = wardrobeData[dataKey];
 		var row = [];
-		if (!dataObj.url) continue;
+		
+		if (results.parentArchive) {
+			hasArchiveEntry[results.parentArchive.value] = true;
+			fromArchive[results.doc.value] = true;
+		}
+		md5[results.doc.value] = results.md5.value;
+		
 		row.push("");//this is where the row index comes automatically
-		var urlCol = dataObj.url + "<div align='right'></div>";
-		
-		
+		var urlCol = results.doc.value + "<div align='right'></div>";
 		row.push(urlCol);
 		
 		
 		
-		row.push(dataObj.rdf && dataObj.rdf.serializationFormat? dataObj.rdf.serializationFormat: "unknown");
-		row.push(dataObj.httpresponse && dataObj.httpresponse.lastModified? dataObj.httpresponse.lastModified: "unknown");
-		row.push(dataObj.rdf && dataObj.rdf.duplicates ? dataObj.rdf.duplicates : 0);
-		row.push(dataObj.rdf && dataObj.rdf.triples ? dataObj.rdf.triples: null);
+		row.push(results.serializationFormat? results.serializationFormat.value: "unknown");
+		row.push(results.lastModified? results.lastModified.value: "unknown");
+		row.push(results.duplicates?results.duplicates.value: 0);
+		row.push(results.triples ? results.triples.value: null);
 		row.push("<a class='downloadClean btn btn-default' title='Download the washed and cleaned data' target='_blank'><span class='glyphicon glyphicon-download'></span> Clean</a>&nbsp;" +
-				"<a class='downloadDirty btn btn-default' title='Download original dirty dataset' href='" + dataObj.url + "' target='_blank'><span class='glyphicon glyphicon-download'></span> Dirty</a>"
+				"<a class='downloadDirty btn btn-default' title='Download original dirty dataset' href='" + results.doc.value + "' target='_blank'><span class='glyphicon glyphicon-download'></span> Dirty</a>"
 		);
 		row.push("<button type='button' class='showDatasetInfo btn btn-default' title='Show more info'><span class='glyphicon glyphicon-info-sign'></span></button>");
 		rows.push(row);
@@ -137,22 +112,18 @@ var drawTable = function() {
 	        },
 	        "createdRow": function ( row, data, index ) {
 	        	var url = $(row).find("td:nth-child(2)").text().trim();
-	        	var d = wardrobeData[url];
-	        	
-	        	if (d.hasArchiveEntry) {
+	        	if (hasArchiveEntry[url]) {
 	        		$(row).find(".downloadClean").attr('disabled', true).css("pointer-events", "auto").attr("title", "This document is an archive. Each separate archive entry is available as cleaned data");
-	        	} else if (!d.rdf) {
-	        		$(row).find(".downloadClean").attr('disabled', true).css("pointer-events", "auto").attr("title", "Failed to clean this document!");
 	        	} else {
 		        	$(row).find(".downloadClean")
 		        		.attr("download", getDownloadName(url))
-		        		.attr("href", api.wardrobe.download(d.md5));
+		        		.attr("href", api.wardrobe.download(md5[url]));
 	        	}
-	        	if (d.fromArchive) {
+	        	if (fromArchive[url]) {
 	        		$(row).find(".downloadDirty").attr('disabled', true)
 	        			.attr("href", "javascript:void(0);")
 	        			.css("pointer-events", "auto")
-	        			.attr("title", "This document come from an archive. If you would want to download the original (dirty) file, download the parent archive")
+	        			.attr("title", "This document is extracted from an archive. If you would want to download the original (dirty) file, download the parent archive")
 	        	}
 	        	$(row).find(".showDatasetInfo").click(function(){
 	        		var url = $(this).closest("tr").find("td:nth-child(2)").text().trim();
@@ -164,21 +135,6 @@ var drawTable = function() {
 	        	
 	        	$(this).toggleClass('selected');
 	        	$(row).click(function(){$(this).toggleClass('selected');updateMultiSelectDownloads();});
-	        },
-	        "drawCallback" : function(settings){
-//	        	var api = this.api();
-//	            var rows = api.rows( {page:'current'} ).nodes();
-//	            var last=null;
-//	 
-//	            api.column(2, {page:'current'} ).data().each( function ( group, i ) {
-//	                if ( last !== group ) {
-//	                    $(rows).eq( i ).before(
-//	                        '<tr class="group"><td colspan="5">'+group+'</td></tr>'
-//	                    );
-//	 
-//	                    last = group;
-//	                }
-//	            } );
 	        },
 	        "fnDrawCallback": function ( oSettings ) {
 	    		/* Need to redo the counters if filtered or sorted */
@@ -208,7 +164,6 @@ var drawTable = function() {
 	
 	 multiButtons =  $("<div id='multiButtons' style='float:left; display:none'></div>");
 	 $("#wardrobeTable_wrapper").prepend(multiButtons);
-	 console.log(multiButtons);
 	 $("<button style='margin-left: 10px;' class='btn btn-primary' title='Download the selected washed and cleaned data'><span class='glyphicon glyphicon-download'></span> Download selected cleaned data</button>")
 	 	.appendTo(multiButtons)
 	 	.click(downloadSelectedCleaned);
@@ -222,16 +177,23 @@ var drawTable = function() {
 		updateMultiSelectDownloads();
 	} );
 	 
-//    $('#button').click( function () {
-//        alert( table.rows('.selected').data().length +' row(s) selected' );
-//    } );
 };
 
 
 $( document ).ready(function() {
-	$.get(api.wardrobe.all, function(data) {
-		wardrobeData = data.results;
-		drawTable();
+	
+	
+	
+	$.ajax({
+		url: sparql.url,
+		data: {query:sparql.queries.wardrobeListing,"default-graph-uri": sparql.mainGraph},
+		success: function(data) {
+			wardrobeData = data;
+			drawTable();
+		},
+		headers: {
+			"Accept": "application/sparql-results+json,*/*;q=0.9"
+		}
 	});
 });
 
