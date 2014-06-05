@@ -127,7 +127,7 @@ var drawTable = function() {
 	        	}
 	        	$(row).find(".showDatasetInfo").click(function(){
 	        		var url = $(this).closest("tr").find("td:nth-child(2)").text().trim();
-	        		drawDataset(wardrobeData[url]);
+	        		drawDataset(url);
 	        	});
 	        	
 	        	$(row).find("a").click(function(event){event.stopPropagation();});
