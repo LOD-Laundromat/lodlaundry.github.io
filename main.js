@@ -7,9 +7,17 @@ var api = {
 	laundryBasket: {
 		all: "lod_basket.txt",
 		send: "lodlaundry.wbeek.ops.few.vu.nl/ll/newLaundry"
+	},
+	
+};
+var sparql = {
+	url: "http://virtuoso.lodlaundromat.ops.few.vu.nl/sparql",
+	mainGraph: "http://laundromat",
+	queries: {
+		totalTripleCount: "PREFIX wbeek: <http://www.wouterbeek.com/ap.owl#>SELECT (SUM(?triples) AS ?totalTriples) {?dataset wbeek:triples ?triples}",
+		
 	}
 };
-
 //
 //drawBackButton = function() {
 //	$('  <div class="backButton"><button type="button" class="wardrobeLink btn btn-primary btn-lg"><span class="glyphicon glyphicon-arrow-left"></span></button></div>')
@@ -232,7 +240,7 @@ var drawHeader = function() {
 		if (config.active) item.addClass("active");
 		var anchor = $("<a></a>").attr("href", config.href).appendTo(item);
 		if (config.newWindow) anchor.attr("target", "_blank");
-		$("<img/>").attr("src", config.img).appendTo(anchor);
+//		$("<img/>").attr("src", config.img).appendTo(anchor);
 		$("<span></span>").text(config.title).appendTo(anchor);
 	};
 	var items = [
@@ -273,6 +281,38 @@ var drawHeader = function() {
 };
 drawHeader();
 
+var getAndDrawCounter = function() {
+	var draw = function(count) {
+		console.log("draw");
+		
+		 var holder = $('.counter');
+		 var countString = count.toString();
+		 var charsLeft = countString.length;
+		 for (var i = 0; i < countString.length; i++) {
+//			 <span class="position"><span class="digit static" style="top: 0px; opacity: 1;">0</span></span>
+			 holder.append($('<span>' + countString.charAt(i) + '</span>'));
+			 charsLeft = charsLeft - 1;
+			 if (charsLeft % 3 == 0 && charsLeft > 0) holder.append("<span>.</span>");
+			 
+			 
+		 }
+	};
+	if ($('.counter').length > 0) {
+		$.ajax({
+			url: sparql.url,
+			data: {query:sparql.queries.totalTripleCount,"default-graph-uri": sparql.mainGraph},
+			success: function(data) {
+				if (data.results && data.results.bindings && data.results.bindings.length > 0 && data.results.bindings[0].totalTriples) {
+					draw(data.results.bindings[0].totalTriples.value);
+				}
+			},
+			headers: {
+				"Accept": "application/sparql-results+json,*/*;q=0.9"
+			}
+		});
+	}
+};
+getAndDrawCounter();
 
 /**
  * draw google analytics
