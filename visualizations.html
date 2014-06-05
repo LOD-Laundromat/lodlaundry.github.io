@@ -16,6 +16,7 @@
     <link href="bower_components/github-fork-ribbon-css/gh-fork-ribbon.css" rel="stylesheet">
 
     <link href="style.css" rel="stylesheet">
+    <link href="visualizations.css" rel="stylesheet">
     <link href="pieChart.css" rel="stylesheet">
     <link href="datasetBarChart.css" rel="stylesheet">
     <link href="barChartContentLength.css" rel="stylesheet">
@@ -37,9 +38,6 @@
       	
         <img style="display:inline-block;" src="imgs/analysis.png"></img><div style="text-align: center;vertical-align: middle;width: 600px;;display:inline-block;"><h1>An inventory of our wardrobe</h1></div>
         <p style="padding-top:20px;">How much data did we wash clean, how many socks did we lose in the washing Machine, and what types of data do we actually have in our wardrobe? Check it out!</p>
-        <p>
-          <a id="getJsonAllBtn" target="_blank" class="btn btn-lg btn-default" role="button">Get {JSON}</a>
-        </p>
       </div>
 
 	<div class="row">
@@ -52,31 +50,31 @@
 	
 	<div class="col-md-6">
 	
-	<div id="pieChartTripleSerializations"></div>
+	<div class="vizSpace" id="pieChartTripleSerializations"></div>
 	</div>
 	<div class="col-md-6">
-	<div id="pieChartDatasetSerializations"></div>
+	<div class="vizSpace" id="pieChartDatasetSerializations"></div>
 	</div>
 	</div><!-- row -->
 	
 	<div class="row">
 		<div class="col-md-6">
 		<h3 style="text-align: center">Invalid Documents</h3>
-			<div id="pieChartExceptions"></div>
+			<div class="vizSpace" id="pieChartExceptions"></div>
 		</div>
 		<div class="col-md-6">
 		<h3 style="text-align: center">Invalid HTTP content lengths</h3>
-			<div id="barChartContentLength"></div>
+			<div class="vizSpace" id="barChartContentLength"></div>
 		</div>
 	</div><!-- row -->
 	<div class="row">
 		<div class="col-md-6">
 			<h3 style="text-align: center">Content Types<br><small>Filtered zipped files with multiple docs</small></h3>
-			<div id="pieChartContentTypes"></div>
+			<div class="vizSpace" id="pieChartContentTypes"></div>
 		</div>
 		<div class="col-md-6">
 			<h3 style="text-align: center">Content Types vs. Serialization Formats<br><small>Filtered zipped files altogether</small></h3>
-			<div id="pieChartContentTypesVsSer"></div>
+			<div class="vizSpace" id="pieChartContentTypesVsSer"></div>
 		</div>
 	</div><!-- row -->
 	
@@ -84,7 +82,7 @@
 	<div class="row">
 	<div class="col-md-12">
 	<h2 style="text-align: center">Datasets</h2>
-	<div id="barChartDatasets"></div>
+	<div class="vizSpace" id="barChartDatasets"></div>
     </div>
 </div>
     
