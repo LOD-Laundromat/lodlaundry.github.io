@@ -104,6 +104,23 @@
 	</div>
 	</div>
 	</div>
+	
+	<div class="jumbotron" style="height:100%;">
+	<div class="container">
+	<div class="row">
+	
+		<div class="col-md-4" style="vertical-align:middle;">
+		<img class="clickable largeLogo labelsLink" src="imgs/labels.png">
+		</div>
+	
+		<div class="col-md-8">
+		  <h1>SPARQL endpoint</h1>
+		  <p>Check out low-level details such as the labelling of the dirty data, and use our SPARQL endpoint.</p>
+		  <p><button type="button" class="labelsLink btn btn-info btn-lg"><span class="glyphicon glyphicon-chevron-right"></span></button></p>
+		</div>
+	</div>
+	</div>
+	</div>
     
 
 
@@ -129,6 +146,9 @@
    
    $(".analysisLink").click(function() {
 	   window.location = "visualizations.html";
+   });
+   $(".labelsLink").click(function() {
+	   window.location = "sparql.html";
    });
    
    </script>
