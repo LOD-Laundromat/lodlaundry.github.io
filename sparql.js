@@ -4,6 +4,7 @@ $( document ).ready(function() {
 	YASQE(document.getElementById("sparql"), {
 		
 		sparql: {
+			defaultGraphs: [sparql.mainGraph],
 			showQueryButton: true,
 			endpoint: "http://virtuoso.lodlaundromat.ops.few.vu.nl/sparql",
 			handlers: {

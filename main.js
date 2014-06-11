@@ -91,7 +91,7 @@ var sparql = {
 	}
 };
 var getSparqlLink = function(query) {
-	return "http://yasgui.laurensrietveld.nl?query=" + encodeURI(query) + "&endpoint="+encodeURI(sparql.url);
+	return "sparql.html?query=" + encodeURI(query);
 };
 
 //init loader
