@@ -1,19 +1,18 @@
 if (!console.log) console={log:function(){}};//that way js wont break on ie when log statements are still in code
 var api = {
 	wardrobe: {
-//		all: "http://lodlaundry.wbeek.ops.few.vu.nl/ll/all.json"
 		all: "testInput.json",
 		download: function(md5) {return "http://lodlaundry.wbeek.ops.few.vu.nl/ll/datadocs/" + md5 + "/input.nt.gz";}
 	},
 	laundryBasket: {
 		all: "lod_basket.txt",
-		send: "http://lodlaundry.wbeek.ops.few.vu.nl/lwm/basket"
+		send: "http://lodlaundry.wbeek.ops.few.vu.nl/basket"
 	},
 	
 };
 var sparql = {
 	url: "http://virtuoso.lodlaundromat.ops.few.vu.nl/sparql",
-	mainGraph: "http://laundromat",
+	mainGraph: "http://lodlaundromat.org#8",
 	queries: {
 		totalTripleCount: "PREFIX wbeek: <http://www.wouterbeek.com/ap.owl#>\
 				SELECT (SUM(?triples) AS ?totalTriples) {?dataset wbeek:triples ?triples}",

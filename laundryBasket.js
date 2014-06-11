@@ -76,7 +76,6 @@ $(".submitDirtyLaundryLink").click(function() {
 			  data: {url: newDirtyLaundry},
 			  success: function() {
 				  $(".submitStatus").empty().hide().append(success).show(400);
-//				  loadingFinish();
 			  },
 			  error: function() {
 				  $(".submitStatus").empty().hide().append(fail).show(400);
