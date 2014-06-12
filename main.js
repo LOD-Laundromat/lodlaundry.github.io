@@ -34,7 +34,7 @@ SELECT ?md5 ?url ?serializationFormat ?lastModified ?duplicates ?triples ?parent
 }",
 		serializationsPerDoc: 
 "PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
-SELECT ?serializationFormat (COUNT(?triples) AS ?count) WHERE {\n\
+SELECT ?serializationFormat (COUNT(?doc) AS ?count) WHERE {\n\
 	?doc ll:serialization_format ?serializationFormat\n\
 } GROUP BY ?serializationFormat ",
 		serializationsPerTriple: 
@@ -81,18 +81,22 @@ SELECT ?serializationFormat (SUM(?triples) AS ?count) WHERE {\n\
 			  FILTER(!STRENDS(str(?doc), \".bz2\"))\
 			  FILTER(!STRENDS(str(?doc), \".gz\"))\
 			} ",
-		datasetsWithCounts: "PREFIX ll: <http://lodlaundromat.org/vocab#>\
-			SELECT ?doc ?triples ?duplicates {\
-			  ?doc  a ll:LOD-URL ;\
-			    ll:triples ?triples;\
-			    ll:duplicates ?duplicates .\
-			  FILTER(?triples > 0)\
-			}",
-		datasetInfo: function(doc) {
-			return "SELECT ?sub ?pred ?obj {\
-				  {<" + doc + "> ?pred ?obj}\
+		datasetsWithCounts: 
+"PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
+SELECT ?md5 ?doc ?triples ?duplicates {\n\
+  []  a ll:URL ;\n\
+    ll:triples ?triples;\n\
+    ll:duplicates ?duplicates ;\n\
+    ll:url ?doc .\n\
+  FILTER(?triples > 0)\n\
+}",
+		datasetInfo: function(url) {
+			return "PREFIX ll: <http://lodlaundromat.org/vocab#>\
+				SELECT ?sub ?pred ?obj {\
+				  ?doc ll:url <" + url + "> .\
+				  {?doc ?pred ?obj}\
 				  UNION\
-				  {?sub ?pred <" + doc + ">}\
+				  {?sub ?pred ?doc}\
 				}";
 		}
 	}
@@ -228,10 +232,10 @@ var drawDataset = function(url) {
 			var formattedProps = {};
 			var results = data.results.bindings;
 			$.each(results, function(key, bindings) {
-				if (bindings.pred.value.indexOf("http://www.wouterbeek.com/ap.owl#") == 0) {
+				if (bindings.pred.value.indexOf("http://lodlaundromat.org/vocab#") == 0) {
 					
 					
-					var shortenedProp = bindings.pred.value.substring("http://www.wouterbeek.com/ap.owl#".length);
+					var shortenedProp = bindings.pred.value.substring("http://lodlaundromat.org/vocab#".length);
 					if (bindings.obj) {
 						if (shortenedProp in formattedProps) {
 							if (typeof formattedProps[shortenedProp] == "string") {
