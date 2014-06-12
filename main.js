@@ -2,7 +2,9 @@ if (!console.log) console={log:function(){}};//that way js wont break on ie when
 var api = {
 	wardrobe: {
 		all: "testInput.json",
-		download: function(md5) {return "http://lodlaundry.wbeek.ops.few.vu.nl/ll/datadocs/" + md5 + "/input.nt.gz";}
+		download: function(md5) {
+			return "http://lodlaundry.wbeek.ops.few.vu.nl/data/" + md5 + "/clean.nt.gz";
+		}
 	},
 	laundryBasket: {
 		all: "lod_basket.txt",
@@ -14,30 +16,36 @@ var sparql = {
 	url: "http://virtuoso.lodlaundromat.ops.few.vu.nl/sparql",
 	mainGraph: "http://lodlaundromat.org#8",
 	queries: {
-		totalTripleCount: "PREFIX wbeek: <http://www.wouterbeek.com/ap.owl#>\
-				SELECT (SUM(?triples) AS ?totalTriples) {?dataset wbeek:triples ?triples}",
-		wardrobeListing: "PREFIX wbeek: <http://www.wouterbeek.com/ap.owl#>\
-			PREFIX rvoid: <http://rdfs.org/ns/void#>\
-			SELECT ?doc ?serializationFormat ?lastModified ?duplicates ?triples (MD5(?doc) AS ?md5) ?parentArchive WHERE {\
-			  ?doc a wbeek:LOD-URL ;\
-			    wbeek:http_last_modified ?lastModified .\
-			  OPTIONAL {?doc wbeek:serialization_format ?serializationFormat}\
-			  OPTIONAL {?doc wbeek:duplicates ?duplicates}\
-			  OPTIONAL {?doc wbeek:triples ?triples}\
-			 OPTIONAL {?parentArchive wbeek:archive_contains ?doc}\
-			} ",
-		serializationsPerDoc: "PREFIX wbeek: <http://www.wouterbeek.com/ap.owl#>\
-			SELECT ?serializationFormat (COUNT(?doc) AS ?count) WHERE {\
-			 ?doc wbeek:serialization_format ?serializationFormat\
-			} GROUP BY ?serializationFormat ",
-		serializationsPerTriple: "PREFIX wbeek: <http://www.wouterbeek.com/ap.owl#>\
-			SELECT ?serializationFormat (SUM(?triples) AS ?count) WHERE {\
-			  [] wbeek:serialization_format ?serializationFormat ;\
-			    wbeek:triples ?triples.\
-			} GROUP BY ?serializationFormat ",
-		contentTypesPerDoc: "PREFIX wbeek: <http://www.wouterbeek.com/ap.owl#>\
+		totalTripleCount: 
+"PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
+SELECT (SUM(?triples) AS ?totalTriples) {?dataset ll:triples ?triples}",
+		wardrobeListing: 
+"PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
+SELECT ?md5 ?url ?serializationFormat ?lastModified ?duplicates ?triples ?parentArchive WHERE {\n\
+  ?doc a ll:URL ;\n\
+  	ll:url ?url ;\n\
+	ll:triples ?triples ;\n\
+	ll:md5 ?md5 .\n\
+  OPTIONAL {?doc ll:http_last_modified ?lastModified}\n\
+  OPTIONAL {?doc ll:serialization_format ?serializationFormat}\n\
+  OPTIONAL {?doc ll:duplicates ?duplicates}\n\
+  OPTIONAL {?doc ll:triples ?triples}\n\
+  OPTIONAL {?parentArchive ll:archive_contains ?doc}\n\
+}",
+		serializationsPerDoc: 
+"PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
+SELECT ?serializationFormat (COUNT(?triples) AS ?count) WHERE {\n\
+	?doc ll:serialization_format ?serializationFormat\n\
+} GROUP BY ?serializationFormat ",
+		serializationsPerTriple: 
+"PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
+SELECT ?serializationFormat (SUM(?triples) AS ?count) WHERE {\n\
+  [] ll:serialization_format ?serializationFormat ;\n\
+    ll:triples ?triples.\n\
+} GROUP BY ?serializationFormat ",
+		contentTypesPerDoc: "PREFIX ll: <http://lodlaundromat.org/vocab#>\
 			SELECT ?contentType (COUNT(?doc) AS ?count) WHERE {\
-			  ?doc wbeek:http_content_type ?contentTypeString\
+			  ?doc ll:http_content_type ?contentTypeString\
 			   BIND(REPLACE(?contentTypeString, \";.*\", \"\", \"i\") AS ?contentType)\
 			} GROUP BY ?contentType ",
 			
@@ -46,43 +54,42 @@ var sparql = {
 		 * - we do not include documents with serialization format rdfa, as these should not be transferred with their own content type (but part of e.g. an http page)
 		 * - we replace the 'n3' content type string with 'turtle', to make our matching function easier
 		 */
-		contentTypesVsSerializationFormats: "PREFIX wbeek: <http://www.wouterbeek.com/ap.owl#>\
+		contentTypesVsSerializationFormats: "PREFIX ll: <http://lodlaundromat.org/vocab#>\
 			SELECT ?matchType (COUNT(?doc) AS ?count) WHERE {\
-			  ?doc wbeek:http_content_type ?contentType;\
-			    wbeek:serialization_format ?serializationFormat .\
+			  ?doc ll:http_content_type ?contentType;\
+			    ll:serialization_format ?serializationFormat .\
 			  FILTER(str(?serializationFormat) != \"rdfa\")\
 			  FILTER(!contains(str(?contentType), \"zip\"))\
 			  BIND(if(contains(str(?contentType), \"n3\"), \"turtle\", ?contentType) AS ?contentType)\
 			  BIND(if (contains(str(?contentType), str(?serializationFormat)), \"matches\", \"does not match\") AS ?matchType)\
 			} GROUP BY ?matchType ",
-		parseExceptions: "PREFIX wbeek: <http://www.wouterbeek.com/ap.owl#>\
+		parseExceptions: "PREFIX ll: <http://lodlaundromat.org/vocab#>\
 			SELECT ?exception ?message ?triples WHERE {\
-			  ?doc  a wbeek:LOD-URL .\
-			  BIND(EXISTS{?doc wbeek:exception []} AS ?exception)\
-			  BIND(EXISTS{?doc wbeek:message []} AS ?message)\
-			  OPTIONAL {?doc wbeek:triples ?triples}\
+			  ?doc  a ll:LOD-URL .\
+			  BIND(EXISTS{?doc ll:exception []} AS ?exception)\
+			  BIND(EXISTS{?doc ll:message []} AS ?message)\
+			  OPTIONAL {?doc ll:triples ?triples}\
 			} ",
-		contentLengths: "PREFIX wbeek: <http://www.wouterbeek.com/ap.owl#>\
+		contentLengths: "PREFIX ll: <http://lodlaundromat.org/vocab#>\
 			SELECT ?clength ?bcount WHERE {\
-			  ?doc wbeek:http_content_length ?clength ;\
-			    wbeek:stream_byte_count ?bcount.\
+			  ?doc ll:http_content_length ?clength ;\
+			    ll:stream_byte_count ?bcount.\
 			  MINUS {\
-			    ?doc wbeek:archive_contains []\
+			    ?doc ll:archive_contains []\
 			  }\
-			  MINUS {[] wbeek:archive_contains ?doc}\
+			  MINUS {[] ll:archive_contains ?doc}\
 			  FILTER(!STRENDS(str(?doc), \".bz2\"))\
 			  FILTER(!STRENDS(str(?doc), \".gz\"))\
 			} ",
-		datasetsWithCounts: "PREFIX wbeek: <http://www.wouterbeek.com/ap.owl#>\
+		datasetsWithCounts: "PREFIX ll: <http://lodlaundromat.org/vocab#>\
 			SELECT ?doc ?triples ?duplicates {\
-			  ?doc  a wbeek:LOD-URL ;\
-			    wbeek:triples ?triples;\
-			    wbeek:duplicates ?duplicates .\
+			  ?doc  a ll:LOD-URL ;\
+			    ll:triples ?triples;\
+			    ll:duplicates ?duplicates .\
 			  FILTER(?triples > 0)\
 			}",
 		datasetInfo: function(doc) {
-			return "PREFIX wbeek: <http://www.wouterbeek.com/ap.owl#>\
-				SELECT ?sub ?pred ?obj {\
+			return "SELECT ?sub ?pred ?obj {\
 				  {<" + doc + "> ?pred ?obj}\
 				  UNION\
 				  {?sub ?pred <" + doc + ">}\
@@ -91,7 +98,7 @@ var sparql = {
 	}
 };
 var getSparqlLink = function(query) {
-	return "sparql.html?query=" + encodeURI(query);
+	return "sparql.html?query=" + encodeURIComponent(query);
 };
 
 //init loader
@@ -369,6 +376,7 @@ var drawHeader = function() {
 drawHeader();
 
 var getAndDrawCounter = function() {
+	return;
 	var draw = function(count) {
 		 var holder = $('.counter');
 		 var countString = count.toString();

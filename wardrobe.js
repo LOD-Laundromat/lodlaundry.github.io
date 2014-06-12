@@ -68,12 +68,12 @@ var drawTable = function() {
 		
 		if (results.parentArchive) {
 			hasArchiveEntry[results.parentArchive.value] = true;
-			fromArchive[results.doc.value] = true;
+			fromArchive[results.url.value] = true;
 		}
-		md5[results.doc.value] = results.md5.value;
+		md5[results.url.value] = results.md5.value;
 		
 		row.push("");//this is where the row index comes automatically
-		var urlCol = results.doc.value + "<div align='right'></div>";
+		var urlCol = results.url.value + "<div align='right'></div>";
 		row.push(urlCol);
 		
 		
@@ -83,7 +83,7 @@ var drawTable = function() {
 		row.push(results.duplicates?results.duplicates.value: 0);
 		row.push(results.triples ? results.triples.value: null);
 		row.push("<a class='downloadClean btn btn-default' title='Download the washed and cleaned data' target='_blank'><span class='glyphicon glyphicon-download'></span> Clean</a>&nbsp;" +
-				"<a class='downloadDirty btn btn-default' title='Download original dirty dataset' href='" + results.doc.value + "' target='_blank'><span class='glyphicon glyphicon-download'></span> Dirty</a>"
+				"<a class='downloadDirty btn btn-default' title='Download original dirty dataset' href='" + results.url.value + "' target='_blank'><span class='glyphicon glyphicon-download'></span> Dirty</a>"
 		);
 		row.push("<button type='button' class='showDatasetInfo btn btn-default' title='Show more info'><span class='glyphicon glyphicon-info-sign'></span></button>");
 		rows.push(row);
@@ -183,13 +183,21 @@ var drawTable = function() {
 $( document ).ready(function() {
 	
 	
-	
+	var query = sparql.queries.wardrobeListing;
 	$.ajax({
 		url: sparql.url,
-		data: {query:sparql.queries.wardrobeListing,"default-graph-uri": sparql.mainGraph},
+		data: {query:query,"default-graph-uri": sparql.mainGraph},
 		success: function(data) {
 			wardrobeData = data;
 			drawTable();
+			$("<button type='button' class='btn btn-default sparqlBtn'>SPARQL</button>")
+				.css("position", "absolute")
+				.css("top", "0px")
+				.css("left", "5px")
+				.click(function() {
+					window.open(getSparqlLink(query));
+				})
+				.appendTo($("#wardrobeTable_wrapper"));
 		},
 		headers: {
 			"Accept": "application/sparql-results+json,*/*;q=0.9"
