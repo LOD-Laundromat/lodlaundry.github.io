@@ -12,7 +12,7 @@ $( document ).ready(function() {
 		sparql: {
 			defaultGraphs: [sparql.mainGraph],
 			showQueryButton: true,
-			endpoint: "http://virtuoso.lodlaundromat.ops.few.vu.nl/sparql",
+			endpoint: sparql.url,
 			handlers: {
 				error: function(xhr, textStatus, errorThrown) {
 					yasr.setResponse({exception: textStatus + ": " + errorThrown});
