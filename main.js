@@ -64,13 +64,13 @@ SELECT ?serializationFormat (SUM(?triples) AS ?count) WHERE {\n\
 			  BIND(if(contains(str(?contentType), \"n3\"), \"turtle\", ?contentType) AS ?contentType)\
 			  BIND(if (contains(str(?contentType), str(?serializationFormat)), \"matches\", \"does not match\") AS ?matchType)\
 			} GROUP BY ?matchType ",
-		parseExceptions: "PREFIX ll: <http://lodlaundromat.org/vocab#>\
-			SELECT ?exception ?message ?triples WHERE {\
-			  ?doc  a ll:LOD-URL .\
-			  BIND(EXISTS{?doc ll:exception []} AS ?exception)\
-			  BIND(EXISTS{?doc ll:message []} AS ?message)\
-			  OPTIONAL {?doc ll:triples ?triples}\
-			} ",
+		parseExceptions: "PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
+SELECT ?exception ?message ?triples WHERE {\n\
+			?doc  a ll:URL .\n\
+			BIND(EXISTS{?doc ll:exception []} AS ?exception)\n\
+			BIND(EXISTS{?doc ll:message []} AS ?message)\n\
+			OPTIONAL {?doc ll:triples ?triples}\n\
+}",
 		contentLengths: "PREFIX ll: <http://lodlaundromat.org/vocab#>\
 			SELECT ?clength ?bcount WHERE {\
 			  ?doc ll:http_content_length ?clength ;\

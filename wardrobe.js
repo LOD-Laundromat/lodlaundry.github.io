@@ -192,7 +192,7 @@ $( document ).ready(function() {
 			drawTable();
 			$("<button type='button' class='btn btn-default sparqlBtn'>SPARQL</button>")
 				.css("position", "absolute")
-				.css("top", "0px")
+				.css("top", "-40px")
 				.css("left", "5px")
 				.click(function() {
 					window.open(getSparqlLink(query));
