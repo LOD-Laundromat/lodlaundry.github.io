@@ -381,6 +381,7 @@ var drawHeader = function() {
 drawHeader();
 
 var getAndDrawCounter = function() {
+	return;
 	var draw = function(count) {
 		 var holder = $('.counter');
 		 var countString = count.toString();
