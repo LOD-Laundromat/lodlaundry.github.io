@@ -15,7 +15,7 @@ var api = {
 var sparql = {
 	//url: "http://virtuoso.lodlaundromat.ops.few.vu.nl/sparql",
 	url: "http://lodlaundry.wbeek.ops.few.vu.nl/sparql/",
-	mainGraph: "http://lodlaundromat.org#8",
+	mainGraph: "http://lodlaundromat.org#9",
 	queries: {
 		totalTripleCount: 
 "PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
@@ -381,7 +381,6 @@ var drawHeader = function() {
 drawHeader();
 
 var getAndDrawCounter = function() {
-	return;
 	var draw = function(count) {
 		 var holder = $('.counter');
 		 var countString = count.toString();
