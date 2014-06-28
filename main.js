@@ -15,7 +15,7 @@ var api = {
 var sparql = {
 	//url: "http://virtuoso.lodlaundromat.ops.few.vu.nl/sparql",
 	url: "http://lodlaundry.wbeek.ops.few.vu.nl/sparql/",
-	mainGraph: "http://lodlaundromat.org#9",
+	mainGraph: "http://lodlaundromat.org#10",
 	queries: {
 		totalTripleCount: 
 "PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
