@@ -83,7 +83,7 @@ $(".submitDirtyLaundryLink").click(function() {
       success: function() {
         $(".submitStatus").empty().hide().append(success).show(400);
       },
-      type: "PUT",
+      type: "GET",
       url: api.laundryBasket.endpoint
     });
   }
