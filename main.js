@@ -244,7 +244,10 @@ var drawModal = function(config) {
 var drawDataset = function(url) {
   $.ajax({
     url: sparql.url,
-    data: {query:sparql.queries.datasetInfo(url),"default-graph-uri": sparql.mainGraph},
+    data: {
+      query: sparql.queries.datasetInfo(url),
+      "default-graph-uri": sparql.mainGraph
+    },
     success: function(data) {
       var table = $("<table class='table'></table>");
       var addRow = function(config) {
@@ -269,8 +272,6 @@ var drawDataset = function(url) {
       var results = data.results.bindings;
       $.each(results, function(key, bindings) {
         if (bindings.pred.value.indexOf("http://lodlaundromat.org/vocab#") == 0) {
-          
-          
           var shortenedProp = bindings.pred.value.substring("http://lodlaundromat.org/vocab#".length);
           if (bindings.obj) {
             if (shortenedProp in formattedProps) {
