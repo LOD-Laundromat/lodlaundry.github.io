@@ -90,5 +90,5 @@ function storeUrl() {
       url: api.laundryBasket.endpoint
     });
   }
-});
+}
 
