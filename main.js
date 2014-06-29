@@ -1,6 +1,112 @@
+/*
+JSlint gives a whole host of errors on this one:
+  - Read only.
+  - Empty block.
+  - Expected `;` and instead saw `}`.
 // This way JS wont break on Internet Explorer when log statements
 // are still in the code.
-if (!console.log) console={log:function(){}};
+if (!console.log) {
+  console = {log:function(){}}
+};
+*/
+
+var contentLengthsSPARQL = 
+"PREFIX ll: <http://lodlaundromat.org/vocab#>\
+SELECT ?clength ?bcount WHERE {\
+  ?doc ll:http_content_length ?clength ;\
+    ll:stream_byte_count ?bcount.\
+  MINUS {\
+    ?doc ll:archive_contains []\
+  }\
+  MINUS {[] ll:archive_contains ?doc}\
+  FILTER(!STRENDS(str(?doc), \".bz2\"))\
+  FILTER(!STRENDS(str(?doc), \".gz\"))\
+}";
+
+var contentTypesPerDocSPARQL =
+"PREFIX ll: <http://lodlaundromat.org/vocab#>\
+SELECT ?contentType (COUNT(?doc) AS ?count) WHERE {\
+  ?doc ll:http_content_type ?contentTypeString\
+  BIND(REPLACE(?contentTypeString, \";.*\", \"\", \"i\") AS ?contentType)\
+} GROUP BY ?contentType",
+
+/**
+ * Some explanations:
+ * - Do not include documents with serialization format RDFa,
+ *   as these should not be transferred with their own content type
+ *   (but as part of e.g. an HTTP page).
+ * - Replace the N3 content type string with Turtle
+ *   to make our matching function easier.
+ */
+var contentTypesVsSerializationFormatsSPARQL =
+"PREFIX ll: <http://lodlaundromat.org/vocab#>\
+SELECT ?matchType (COUNT(?doc) AS ?count) WHERE {\
+  ?doc ll:http_content_type ?contentType;\
+    ll:serialization_format ?serializationFormat .\
+  FILTER(str(?serializationFormat) != \"rdfa\")\
+  FILTER(!contains(str(?contentType), \"zip\"))\
+  BIND(if(contains(str(?contentType), \"n3\"), \"turtle\", ?contentType) AS ?contentType)\
+  BIND(if (contains(str(?contentType), str(?serializationFormat)), \"matches\", \"does not match\") AS ?matchType)\
+} GROUP BY ?matchType";
+
+var datasetInfo =
+"PREFIX ll: <http://lodlaundromat.org/vocab#>\
+SELECT ?sub ?pred ?obj {\
+  ?doc ll:url <" + url + "> .\
+  {?doc ?pred ?obj}\
+  UNION\
+  {?sub ?pred ?doc}\
+}";
+
+var datasetsWithCounts =
+"PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
+SELECT ?md5 ?doc ?triples ?duplicates {\n\
+  []  a ll:URL ;\n\
+    ll:triples ?triples;\n\
+    ll:duplicates ?duplicates ;\n\
+    ll:url ?doc .\n\
+  FILTER(?triples > 0)\n\
+}";
+
+var parseExceptions =
+"PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
+SELECT ?exception ?message ?triples WHERE {\n\
+  ?doc a ll:URL .\n\
+  BIND(EXISTS{?doc ll:exception []} AS ?exception)\n\
+  BIND(EXISTS{?doc ll:message []} AS ?message)\n\
+  OPTIONAL {?doc ll:triples ?triples}\n\
+}";
+
+var serializationsPerDocSPARQL =
+"PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
+SELECT ?serializationFormat (COUNT(?doc) AS ?count) WHERE {\n\
+  ?doc ll:serialization_format ?serializationFormat\n\
+} GROUP BY ?serializationFormat";
+
+var serializationsPerTripleSPARQL =
+"PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
+SELECT ?serializationFormat (SUM(?triples) AS ?count) WHERE {\n\
+  [] ll:serialization_format ?serializationFormat ;\n\
+    ll:triples ?triples.\n\
+} GROUP BY ?serializationFormat";
+
+var totalTripleCountSPARQL =
+"PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
+SELECT (SUM(?triples) AS ?totalTriples) {?dataset ll:triples ?triples}";
+
+var wardrobeListingSPARQL =
+"PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
+SELECT ?md5 ?url ?serializationFormat ?lastModified ?duplicates ?triples ?parentArchive WHERE {\n\
+  ?doc a ll:URL ;\n\
+    ll:url ?url ;\n\
+  ll:triples ?triples ;\n\
+  ll:md5 ?md5 .\n\
+  OPTIONAL {?doc ll:http_last_modified ?lastModified}\n\
+  OPTIONAL {?doc ll:serialization_format ?serializationFormat}\n\
+  OPTIONAL {?doc ll:duplicates ?duplicates}\n\
+  OPTIONAL {?doc ll:triples ?triples}\n\
+  OPTIONAL {?parentArchive ll:archive_contains ?doc}\n\
+}";
 
 var api = {
   wardrobe: {
@@ -21,95 +127,17 @@ var sparql = {
   url: "http://lodlaundry.wbeek.ops.few.vu.nl/sparql/",
   mainGraph: "http://lodlaundromat.org#10",
   queries: {
-    totalTripleCount:
-"PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
-SELECT (SUM(?triples) AS ?totalTriples) {?dataset ll:triples ?triples}",
-    wardrobeListing:
-"PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
-SELECT ?md5 ?url ?serializationFormat ?lastModified ?duplicates ?triples ?parentArchive WHERE {\n\
-  ?doc a ll:URL ;\n\
-    ll:url ?url ;\n\
-  ll:triples ?triples ;\n\
-  ll:md5 ?md5 .\n\
-  OPTIONAL {?doc ll:http_last_modified ?lastModified}\n\
-  OPTIONAL {?doc ll:serialization_format ?serializationFormat}\n\
-  OPTIONAL {?doc ll:duplicates ?duplicates}\n\
-  OPTIONAL {?doc ll:triples ?triples}\n\
-  OPTIONAL {?parentArchive ll:archive_contains ?doc}\n\
-}",
-    serializationsPerDoc:
-"PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
-SELECT ?serializationFormat (COUNT(?doc) AS ?count) WHERE {\n\
-  ?doc ll:serialization_format ?serializationFormat\n\
-} GROUP BY ?serializationFormat",
-    serializationsPerTriple:
-"PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
-SELECT ?serializationFormat (SUM(?triples) AS ?count) WHERE {\n\
-  [] ll:serialization_format ?serializationFormat ;\n\
-    ll:triples ?triples.\n\
-} GROUP BY ?serializationFormat",
-    contentTypesPerDoc:
-"PREFIX ll: <http://lodlaundromat.org/vocab#>\
-SELECT ?contentType (COUNT(?doc) AS ?count) WHERE {\
-  ?doc ll:http_content_type ?contentTypeString\
-  BIND(REPLACE(?contentTypeString, \";.*\", \"\", \"i\") AS ?contentType)\
-} GROUP BY ?contentType",
-    /**
-     * Some explanations:
-     * - Do not include documents with serialization format RDFa,
-     *   as these should not be transferred with their own content type
-     *   (but as part of e.g. an HTTP page).
-     * - Replace the N3 content type string with Turtle
-     *   to make our matching function easier.
-     */
+    totalTripleCount: totalTripleCountSPARQL,
+    wardrobeListing: wardrobeListingSPARQL,
+    serializationsPerDoc: serializationsPerDocSPARQL,
+    serializationsPerTriple: serializationsPerTripleSPARQL,
+    contentTypesPerDoc: contentTypesPerDocSPARQL,
     contentTypesVsSerializationFormats:
-"PREFIX ll: <http://lodlaundromat.org/vocab#>\
-SELECT ?matchType (COUNT(?doc) AS ?count) WHERE {\
-  ?doc ll:http_content_type ?contentType;\
-    ll:serialization_format ?serializationFormat .\
-  FILTER(str(?serializationFormat) != \"rdfa\")\
-  FILTER(!contains(str(?contentType), \"zip\"))\
-  BIND(if(contains(str(?contentType), \"n3\"), \"turtle\", ?contentType) AS ?contentType)\
-  BIND(if (contains(str(?contentType), str(?serializationFormat)), \"matches\", \"does not match\") AS ?matchType)\
-} GROUP BY ?matchType",
-    parseExceptions:
-"PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
-SELECT ?exception ?message ?triples WHERE {\n\
-  ?doc a ll:URL .\n\
-  BIND(EXISTS{?doc ll:exception []} AS ?exception)\n\
-  BIND(EXISTS{?doc ll:message []} AS ?message)\n\
-  OPTIONAL {?doc ll:triples ?triples}\n\
-}",
-    contentLengths:
-"PREFIX ll: <http://lodlaundromat.org/vocab#>\
-SELECT ?clength ?bcount WHERE {\
-  ?doc ll:http_content_length ?clength ;\
-    ll:stream_byte_count ?bcount.\
-  MINUS {\
-    ?doc ll:archive_contains []\
-  }\
-  MINUS {[] ll:archive_contains ?doc}\
-  FILTER(!STRENDS(str(?doc), \".bz2\"))\
-  FILTER(!STRENDS(str(?doc), \".gz\"))\
-}",
-    datasetsWithCounts:
-"PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
-SELECT ?md5 ?doc ?triples ?duplicates {\n\
-  []  a ll:URL ;\n\
-    ll:triples ?triples;\n\
-    ll:duplicates ?duplicates ;\n\
-    ll:url ?doc .\n\
-  FILTER(?triples > 0)\n\
-}",
-    datasetInfo: function(url) { return
-"PREFIX ll: <http://lodlaundromat.org/vocab#>\
-SELECT ?sub ?pred ?obj {\
-  ?doc ll:url <" + url + "> .\
-  {?doc ?pred ?obj}\
-  UNION\
-  {?sub ?pred ?doc}\
-}";
-    }
+        contentTypesVsSerializationFormatsSPARQL,
+    parseExceptions: parseExceptionsSPARQL,
+    contentLengths: contentLengthsSPARQL,
+    datasetsWithCounts: datasetsWithCountsSPARQL,
+    datasetInfo: function(url) { return datasetInfoSPARQL }
   }
 };
 
