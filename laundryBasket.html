@@ -55,21 +55,22 @@
           any of the RDF serailization formats
           (i.e., RDFa, XML/RDF, N-Triples, N-Quads, Turte, Trig).
         </p>
+        <!-- @tbd Pressing ENTER should also send the text. -->
         <input
-            id='newDirtyLaundry'
+            id="newDirtyLaundry"
+            onkeydown="if (event.keyCode == 13) { storeUrl(); return false; }"
             style="margin-bottom: 10px; width: 450px;"
             type="text"
         >
-        <div>
-          <button
-              class="submitDirtyLaundryLink btn btn-info btn-lg"
-              type="button"
-          >
-            <span class="glyphicon glyphicon-send"></span>
-            &nbsp;&nbsp;Send
-          </button>
-          <div class="submitStatus">
-          </div>
+        <button
+            class="submitDirtyLaundryLink btn btn-info btn-lg"
+            onclick="storeUrl"
+            type="button"
+        >
+          <span class="glyphicon glyphicon-send"></span>
+          &nbsp;&nbsp;Send
+        </button>
+        <div class="submitStatus">
         </div>
       </div>
       

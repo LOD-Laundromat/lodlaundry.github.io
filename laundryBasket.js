@@ -65,24 +65,27 @@ $("#newDirtyLaundry").keyup(function() {
   $(".submitStatus").hide(400);
 });
 
-$(".submitDirtyLaundryLink").click(function() {
-  var success =
+function storeUrl() {
+  var successMsg =
       "<span class=\"label label-success\">Successfully received!</span>";
   // @tbd Change color of link text in failure message.
-  var fail =
+  var failureMsg =
       "<span class=\"label label-danger\">Something went wrong... Is the url correct? If this problem persists, please drop us a <a href=\"https://github.com/LODLaundry/lodlaundry.github.io/issues\">Github issue</a>!</span>";
-  var newDirtyLaundry = $("#newDirtyLaundry").val().trim();
-  if (newDirtyLaundry.length > 0) {
+  
+  var url = $("#newDirtyLaundry").val().trim();
+  if (url.length > 0) {
     $.ajax({
       data: {
-        url: newDirtyLaundry
+        url: url
       },
       error: function() {
-        $(".submitStatus").empty().hide().append(fail).show(400);
+        $(".submitStatus").empty().hide().append(failureMsg).show(400);
       },
       success: function() {
-        $(".submitStatus").empty().hide().append(success).show(400);
+        $(".submitStatus").empty().hide().append(successMsg).show(400);
       },
+      // @tbd The POST method would be more applicable here,
+      //      but this causes a CORS warning.
       type: "GET",
       url: api.laundryBasket.endpoint
     });
