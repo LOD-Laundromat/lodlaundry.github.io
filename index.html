@@ -1,156 +1,253 @@
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
+    <!--
+      Non-standard HTTP-like header taht tells Internet Explorer to use
+      the most recent version of its rendering engine.
+    -->
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <link rel="shortcut icon" href="imgs/laundry.ico">
-
-    <title>LOD Laundry</title>
-
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, user-scalable=yes"
+    >
+    <meta
+      name="description"
+      content="LOD Laundromat: cleaning all the Linked Open Data in the world."
+    >
+    <meta name="author" content="Laurens Rietveld, Wouter Beek">
+    
+    <link rel="icon" href="imgs/laundry.ico">
+    
+    <title>LOD Laundromat</title>
+    
     <!-- Bootstrap core CSS -->
-    <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="bower_components/github-fork-ribbon-css/gh-fork-ribbon.css" rel="stylesheet">
+    <link
+      rel="stylesheet"
+      href="bower_components/bootstrap/dist/css/bootstrap.min.css"
+    >
+    <link
+      rel="stylesheet"
+      href="bower_components/github-fork-ribbon-css/gh-fork-ribbon.css"
+    >
 
-    <link href="style.css" rel="stylesheet">
-    <link href="index.css" rel="stylesheet">
-
-    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-      <link rel="stylesheet" href="bower_components/github-fork-ribbon-css/gh-fork-ribbon.ie.css">
-    <![endif]-->
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="index.css">
   </head>
-
   <body>
-  
-  
-  <div class="container">
-  
-  <div class="jumbotron" style="height:100%; position:relative;">
-  	<div class='counterWrapper'><div class='counter'></div> <div class='postfix'>triples and counting!</div></div>
-  	<img style="display:inline-block;" src="imgs/laundry.png"></img><div style="text-align: center;vertical-align: middle;width: 600px;;display:inline-block;"><h1>Your Linked Data Laundry Machine!</h1></div>
-        <p style="padding-top:20px;">We provide a method for crawling the Linked Data cloud, as well access to a large set of uniformly formatted datasets.
-        These datasets are siblings of existing Linked Datasets, published as gzipped files, uniformly formatted (canonical N-Triple format), without duplicates, and without blank nodes. For more information on the advantages, and our approach, see <a href='pdf/lodlaundry.pdf' target='_blank'> our paper (under submission at ISWC)</a></p>
-  </div>
-  </div>
-
-
-	
-	<div class="jumbotron" style="height:100%;">
-	<div class="container">
-	<div class="row">
-	<div class="col-md-4">
-		<img class="largeLogo laundryBasketLink clickable" src="imgs/basket.png">
-	</div>
-	<div class="col-md-8" style="vertical-align:middle;">
-		  <h1>Laundry Basket</h1>
-		  <p>Check what LOD data we wash clean. If you have any dirty laundry, feel free to drop them in the basket here! We automatically add these items to our seed list, used by the LOD Washing Machine</p>
-		  <p><button type="button" class="btn btn-info btn-lg laundryBasketLink"><span class="glyphicon glyphicon-chevron-right"></span></button></p>
-		</div>
-		
-	</div>
-	</div>
-	</div>
-	<div class="jumbotron" style="height:100%;">
-	<div class="container">
-	<div class="row">
-	
-	<div class="col-md-8" style="vertical-align:middle;">
-		  <h1>Washing Machine</h1>
-		  <p>Where we put dirty Linked Data in a washing machine, add some detergent... let the thing run for a while... and get out clean data!</p>
-		  <p><button type="button" class="washingMachineLink btn btn-info btn-lg"><span class="glyphicon glyphicon-chevron-right"></span></button></p>
-		</div>
-		<div class="col-md-4">
-		<img class="clickable largeLogo washingMachineLink" src="imgs/washingMachine.png">
-		</div>
-	</div>
-	</div>
-	</div>
-	<div class="jumbotron" style="height:100%;">
-	<div class="container">
-	<div class="row">
-	
-	
-		<div class="col-md-4">
-		<img class="clickable largeLogo wardrobeLink" src="imgs/wardrobe.png">
-		</div>
-		<div class="col-md-8" style="vertical-align:middle;">
-		  <h1>Wardrobe</h1>
-		  <p>All the data is cleaned, ironed, and folded, and available for download. If you want something, take it!</p>
-		  <p><button type="button" class="wardrobeLink btn btn-info btn-lg"><span class="glyphicon glyphicon-chevron-right"></span></button></p>
-		</div>
-	</div>
-	</div>
-	</div>
     
-	<div class="jumbotron" style="height:100%;">
-	<div class="container">
-	<div class="row">
-	
-	
-		<div class="col-md-8">
-		  <h1>Inventory</h1>
-		  <p>How much data did we wash clean, how many socks did we lose in the washing Machine, and what types of data do we actually have in our wardrobe? Check it out!</p>
-		  <p><button type="button" class="analysisLink btn btn-info btn-lg"><span class="glyphicon glyphicon-chevron-right"></span></button></p>
-		</div>
-		<div class="col-md-4" style="vertical-align:middle;">
-		<img class="clickable largeLogo analysisLink" src="imgs/analysis.png">
-		</div>
-	</div>
-	</div>
-	</div>
-	
-	<div class="jumbotron" style="height:100%;">
-	<div class="container">
-	<div class="row">
-	
-		<div class="col-md-4" style="vertical-align:middle;">
-		<img class="clickable largeLogo labelsLink" src="imgs/labels.png">
-		</div>
-	
-		<div class="col-md-8">
-		  <h1>SPARQL endpoint</h1>
-		  <p>Check out low-level details such as the labelling of the dirty data, and use our SPARQL endpoint.</p>
-		  <p><button type="button" class="labelsLink btn btn-info btn-lg"><span class="glyphicon glyphicon-chevron-right"></span></button></p>
-		</div>
-	</div>
-	</div>
-	</div>
     
-
-
+    <!-- LOD Laundromat -->
+    <div class="container">
+      <div class="jumbotron" style="height:100%; position:relative;">
+        <div class='counterWrapper'>
+          <div class='counter'></div>
+          <div class='postfix'>triples and counting!</div>
+        </div>
+        <img
+            alt="LOD Laundromat icon"
+            src="imgs/laundry.png"
+            style="display:inline-block;"
+        >
+        <div style="text-align:center; vertical-align:middle; width:600px; display:inline-block;">
+          <h1>LOD Laundromat</h1>
+        </div>
+        <p style="padding-top:20px;">
+          The LOD Laundromat provides access to all Linked Open Data (LOD)
+          in the world.  It does this by crawling the LOD cloud,
+          and converting all its contents in a standards-compliant way
+          (gzipped N-Triples), removing all data stains such as syntax erros,
+          duplicates, and blank nodes.
+        </p>
+      </div>
+    </div>
     
-    <!-- Bootstrap core JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    
+    <!-- LOD Laundry Basket -->
+    <div class="jumbotron" style="height:100%;">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-4">
+            <img
+                alt="LOD Laundry Basket"
+                class="largeLogo laundryBasketLink clickable"
+                src="imgs/basket.png"
+            >
+          </div>
+          <div class="col-md-8" style="vertical-align:middle;">
+            <h1>LOD Laundry Basket</h1>
+            <p>
+              The LOD Laundry Basket contains the URLs of dirty datasets
+              that are waiting to be cleaned by the <a>LOD Washing Machine</a>.
+              This is where you can add a URL to the LOD Laundry Basket
+              for cleaning.
+            </p>
+            <p>
+              <button
+                  class="btn btn-info btn-lg laundryBasketLink"
+                  type="button"
+              >
+                <span class="glyphicon glyphicon-chevron-right"></span>
+              </button>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    
+    <!-- LOD Washing Machine -->
+    <div class="jumbotron" style="height:100%;">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-8" style="vertical-align:middle;">
+            <h1>LOD Washing Machine</h1>
+            <p>
+              The LOD Washing Machine is the code that fetches LOD, cleans it,
+              and stores it in a standards-compliant format.
+            </p>
+            <p>
+              <button
+                  class="washingMachineLink btn btn-info btn-lg"
+                  type="button"
+              >
+                <span class="glyphicon glyphicon-chevron-right"></span>
+              </button>
+            </p>
+          </div>
+          <div class="col-md-4">
+            <img
+                alt="LOD Washing Machine"
+                class="clickable largeLogo washingMachineLink"
+                src="imgs/washingMachine.png"
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    
+    <!-- LOD Wardrobe -->
+    <div class="jumbotron" style="height:100%;">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-4">
+            <img
+                alt="LOD Wardrobe"
+                class="clickable largeLogo wardrobeLink"
+                src="imgs/wardrobe.png"
+            >
+          </div>
+          <div class="col-md-8" style="vertical-align:middle;">
+            <h1>Wardrobe</h1>
+            <p>
+              The LOD Wardrobe is where the cleaned data is stored.
+              You can download both clean and dirty (i.e. the original) data.
+              Each data document contains a meta-data description
+              that includes all the stains that were detected,
+              e.g. wrong HTTP headers, syntax errors.
+            </p>
+            <p>
+              <button
+                  type="button"
+                  class="wardrobeLink btn btn-info btn-lg"
+              >
+                <span class="glyphicon glyphicon-chevron-right"></span>
+              </button>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    
+    <!-- LOD Analytics -->
+    <div class="jumbotron" style="height:100%;">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-8">
+            <h1>LOD Analytics</h1>
+            <p>
+              How much data did we clean?
+              How many <del>socks</del> triples did we lose
+              in the LOD Washing Machine?
+              Which RDF serialization formats did we come across?
+              This is where we show such LOD Analytics.
+            </p>
+            <p>
+              <button type="button" class="analysisLink btn btn-info btn-lg">
+                <span class="glyphicon glyphicon-chevron-right"></span>
+              </button>
+            </p>
+          </div>
+          <div class="col-md-4" style="vertical-align:middle;">
+            <img
+                alt="Various diagrams that show analytics."
+                class="clickable largeLogo analysisLink"
+                src="imgs/analysis.png"
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    
+    <!-- SPARQL Endpoint -->
+    <div class="jumbotron" style="height:100%;">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-4" style="vertical-align:middle;">
+            <img
+                alt="Various icons familiar from descriptions of how to wash clothes."
+                class="clickable largeLogo labelsLink"
+                src="imgs/labels.png"
+            >
+          </div>
+          <div class="col-md-8">
+            <h1>SPARQL endpoint</h1>
+            <p>
+              For an in-depth overview of the data cleaned
+              by the LOD Laundromat, we provide a live SPARQL endpoint
+              in which all meta-data can be queried.
+            </p>
+            <p>
+              <button type="button" class="labelsLink btn btn-info btn-lg">
+                <span class="glyphicon glyphicon-chevron-right"></span>
+              </button>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    
+    <!--
+      Bootstrap core JavaScript
+      Placed at the end of the document so the page loads faster.
+    -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js">
+    </script>
     <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="bower_components/d3js/build/d3.v3.min.js"></script>
     <script src="bower_components/d3-tip/index.js"></script>
     <script src="main.js"></script>
-   <script type="text/javascript">
-   $(".washingMachineLink").click(function() {
-	   window.open("https://github.com/LODLaundry/LOD-Washing-Machine", "_blank", "");
-   });
-   $(".wardrobeLink").click(function() {
-	   window.location = "wardrobe.html";
-   });
-   $(".laundryBasketLink").click(function() {
-	   window.location = "laundryBasket.html";
-   });
-   
-   $(".analysisLink").click(function() {
-	   window.location = "visualizations.html";
-   });
-   $(".labelsLink").click(function() {
-	   window.location = "sparql.html";
-   });
-   
-   </script>
+    <script type="text/javascript">
+      $(".washingMachineLink").click(function() {
+        window.open("https://github.com/LODLaundry/LOD-Washing-Machine", "_blank", "");
+      });
+      $(".wardrobeLink").click(function() {
+        window.location = "wardrobe.html";
+      });
+      $(".laundryBasketLink").click(function() {
+        window.location = "laundryBasket.html";
+      });
+      $(".analysisLink").click(function() {
+        window.location = "visualizations.html";
+      });
+      $(".labelsLink").click(function() {
+        window.location = "sparql.html";
+      });
+    </script>
   </body>
 </html>
+
