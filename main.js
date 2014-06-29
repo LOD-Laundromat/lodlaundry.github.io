@@ -28,7 +28,7 @@ var contentTypesPerDocSPARQL =
 SELECT ?contentType (COUNT(?doc) AS ?count) WHERE {\
   ?doc ll:http_content_type ?contentTypeString\
   BIND(REPLACE(?contentTypeString, \";.*\", \"\", \"i\") AS ?contentType)\
-} GROUP BY ?contentType",
+} GROUP BY ?contentType";
 
 /**
  * Some explanations:
