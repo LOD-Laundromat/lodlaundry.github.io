@@ -120,7 +120,7 @@ var api = {
   },
   laundryBasket: {
     all: "lod_basket.txt",
-    send: "http://lodlaundry.wbeek.ops.few.vu.nl/basket"
+    endpoint: "http://lodlaundry.wbeek.ops.few.vu.nl/basket"
   }
 };
 

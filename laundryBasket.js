@@ -68,20 +68,24 @@ $("#newDirtyLaundry").keyup(function() {
 $(".submitDirtyLaundryLink").click(function() {
   var success =
       "<span class=\"label label-success\">Successfully received!</span>";
+  // @tbd Change color of link text in failure message.
   var fail =
       "<span class=\"label label-danger\">Something went wrong... Is the url correct? If this problem persists, please drop us a <a href=\"https://github.com/LODLaundry/lodlaundry.github.io/issues\">Github issue</a>!</span>";
   var newDirtyLaundry = $("#newDirtyLaundry").val().trim();
   if (newDirtyLaundry.length > 0) {
     $.ajax({
-        type: "GET",
-        url: api.laundryBasket.send,
-        data: {url: newDirtyLaundry},
-        success: function() {
-          $(".submitStatus").empty().hide().append(success).show(400);
-        },
-        error: function() {
-          $(".submitStatus").empty().hide().append(fail).show(400);
-        } 
-      });
+      data: {
+        url: newDirtyLaundry
+      },
+      error: function() {
+        $(".submitStatus").empty().hide().append(fail).show(400);
+      },
+      success: function() {
+        $(".submitStatus").empty().hide().append(success).show(400);
+      },
+      type: "PUT",
+      url: api.laundryBasket.endpoint
+    });
   }
 });
+
