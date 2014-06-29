@@ -49,16 +49,18 @@ SELECT ?matchType (COUNT(?doc) AS ?count) WHERE {\
   BIND(if (contains(str(?contentType), str(?serializationFormat)), \"matches\", \"does not match\") AS ?matchType)\
 } GROUP BY ?matchType";
 
-var datasetInfo =
+var datasetInfoSPARQL1 =
 "PREFIX ll: <http://lodlaundromat.org/vocab#>\
 SELECT ?sub ?pred ?obj {\
-  ?doc ll:url <" + url + "> .\
+  ?doc ll:url <";
+var datasetInfoSPARQL2 =
+"> .\
   {?doc ?pred ?obj}\
   UNION\
   {?sub ?pred ?doc}\
 }";
 
-var datasetsWithCounts =
+var datasetsWithCountsSPARQL =
 "PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
 SELECT ?md5 ?doc ?triples ?duplicates {\n\
   []  a ll:URL ;\n\
@@ -68,7 +70,7 @@ SELECT ?md5 ?doc ?triples ?duplicates {\n\
   FILTER(?triples > 0)\n\
 }";
 
-var parseExceptions =
+var parseExceptionsSPARQL =
 "PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
 SELECT ?exception ?message ?triples WHERE {\n\
   ?doc a ll:URL .\n\
@@ -137,7 +139,8 @@ var sparql = {
     parseExceptions: parseExceptionsSPARQL,
     contentLengths: contentLengthsSPARQL,
     datasetsWithCounts: datasetsWithCountsSPARQL,
-    datasetInfo: function(url) { return datasetInfoSPARQL }
+    datasetInfo:
+        function(url) { return datasetInfoSPARQL1 + url + datasetInfoSPARQL2; }
   }
 };
 
