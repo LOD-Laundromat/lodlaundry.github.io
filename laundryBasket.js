@@ -69,7 +69,7 @@ $(".submitDirtyLaundryLink").click(function() {
   var success =
       "<span class=\"label label-success\">Successfully received!</span>";
   var fail =
-      "<span class=\"label label-danger\">Something went wrong... Is the url correct? If this problem persists, please drop us a <a href="https://github.com/LODLaundry/lodlaundry.github.io/issues">Github issue</a>!</span>";
+      "<span class=\"label label-danger\">Something went wrong... Is the url correct? If this problem persists, please drop us a <a href=\"https://github.com/LODLaundry/lodlaundry.github.io/issues\">Github issue</a>!</span>";
   var newDirtyLaundry = $("#newDirtyLaundry").val().trim();
   if (newDirtyLaundry.length > 0) {
     $.ajax({
