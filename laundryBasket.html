@@ -1,13 +1,15 @@
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <link rel="shortcut icon" href="imgs/laundry.ico">
+    <meta
+        name="description"
+        content="Contains the URLs of dirty datasets that are waiting to be cleaned by the LOD Washing Machine."
+    >
+    <meta name="author" content="Laurens Rietveld">
+    <link rel="icon" href="imgs/laundry.ico">
 
     <title>LOD Laundry Basket</title>
 
@@ -15,49 +17,78 @@
     <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="//cdn.datatables.net/1.10.0/css/jquery.dataTables.css" rel="stylesheet">
     <link href="style.css" rel="stylesheet">
-
-
-    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-      <link rel="stylesheet" href="bower_components/github-fork-ribbon-css/gh-fork-ribbon.ie.css">
-    <![endif]-->
   </head>
-
   <body>
-
-  
-  <div class="container">
-  
-  
-  
-  <div class="jumbotron" style="height:100%;">
-  <img style="display:inline-block;max-height: 200px;max-width: 200px;" src="imgs/basket.png"></img><div style="text-align: center;vertical-align: middle;width: 600px;;display:inline-block;"><h1>The Linked Data Laundry Basket</h1></div>
-        <p style="padding-top:20px;">Check what LOD data we wash clean. If you have any dirty laundry, feel free to drop them in the basket here! We automatically add these items to our seed list, used by the LOD Washing Machine</p>
-  </div>
-	
-
-
-<div class="row">
-	<h3>Have some dirty laundry of your own? Let us know, and we'll wash it! The washed, dried and ironed clothes will pop up after each scheduled weekly run
-	<small>Paste a link to any online resource containing RDF data. E.g. XML, zipped data dump, HTML with RDFa, etc)</small></h3>
-    <input id='newDirtyLaundry' style="margin-bottom: 10px;width: 450px;"type="text">
-    <div><button type="button" class="submitDirtyLaundryLink btn btn-info btn-lg"><span class="glyphicon glyphicon-send"></span>&nbsp;&nbsp;Send</button><div class='submitStatus'></div></div>
-</div>
-<div class="row">
-	<h3>List of addresses for picking up the dirty laundry</h3>
-    <div id="tableWrapper"></div>
-</div>
-  </div><!-- container -->
-
-
+    <div class="container">
+      <div class="jumbotron" style="height:100%;">
+        <img
+            alt="LOD Laundry Basket"
+            style="display:inline-block;max-height: 200px;max-width: 200px;"
+            src="imgs/basket.png"
+        >
+        <div
+            style="text-align: center; vertical-align: middle; width: 600px; display:inline-block;"
+        >
+          <h1>LOD Laundry Basket</h1>
+        </div>
+        <p style="padding-top:20px;">
+          The LOD Laundry Basket contains the URLs of dirty datasets
+          that are waiting to be cleaned by the
+          <a
+              href="https://github.com/LODLaundry/LOD-Washing-Machine"
+              target="_blank"
+          >
+            LOD Washing Machine
+          </a>.
+          You can add a URL to the LOD Laundry Basket
+          by using the entry field below.
+        </p>
+      </div>
+      
+      
+      <!-- LOD Laundry Basket: Form -->
+      <div class="row">
+        <p>
+          Paste a URL that points to an online data source
+          in the text field below and press the button.
+          Data can be contained in archives and can use
+          any of the RDF serailization formats
+          (i.e., RDFa, XML/RDF, N-Triples, N-Quads, Turte, Trig).
+        </p>
+        <input
+            id='newDirtyLaundry'
+            style="margin-bottom: 10px; width: 450px;"
+            type="text"
+        >
+        <div>
+          <button
+              class="submitDirtyLaundryLink btn btn-info btn-lg"
+              type="button"
+          >
+            <span class="glyphicon glyphicon-send"></span>
+            &nbsp;&nbsp;Send
+          </button>
+          <div class='submitStatus'>
+          </div>
+        </div>
+      </div>
+      
+      
+      <!-- LOD Laundry Basket: Overview of contents -->
+      <div class="row">
+        <h3>List of addresses for picking up the dirty laundry</h3>
+        <div id="tableWrapper">
+        </div>
+      </div>
     
     
-    <!-- Bootstrap core JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    </div>
+    <!--
+      Bootstrap core JavaScript.
+      Placed at the end of the document so the page loads faster.
+    -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js">
+    </script>
     <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="bower_components/d3js/build/d3.v3.min.js"></script>
     <script src="//cdn.datatables.net/1.10.0/js/jquery.dataTables.js"></script>
@@ -65,3 +96,4 @@
     <script src="laundryBasket.js"></script>
   </body>
 </html>
+

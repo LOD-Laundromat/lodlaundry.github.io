@@ -37,7 +37,7 @@
   <body>
     
     
-    <!-- LOD Laundromat -->
+    <!-- LOD Laundromat: Overview -->
     <div class="container">
       <div class="jumbotron" style="height:100%; position:relative;">
         <div class='counterWrapper'>
@@ -78,16 +78,22 @@
             <h1>LOD Laundry Basket</h1>
             <p>
               The LOD Laundry Basket contains the URLs of dirty datasets
-              that are waiting to be cleaned by the <a>LOD Washing Machine</a>.
+              that are waiting to be cleaned by the
+              <a
+                  href="https://github.com/LODLaundry/LOD-Washing-Machine"
+                  target="_blank"
+              >
+                LOD Washing Machine
+              </a>.
               This is where you can add a URL to the LOD Laundry Basket
               for cleaning.
+              <button
+                  class="btn btn-info btn-lg laundryBasketLink"
+                  type="button"
+              >
+                <span class="glyphicon glyphicon-chevron-right"></span>
+              </button>
             </p>
-            <button
-                class="btn btn-info btn-lg laundryBasketLink"
-                type="button"
-            >
-              <span class="glyphicon glyphicon-chevron-right"></span>
-            </button>
           </div>
         </div>
       </div>
@@ -103,13 +109,13 @@
             <p>
               The LOD Washing Machine is the code that fetches LOD, cleans it,
               and stores it in a standards-compliant format.
+              <button
+                  class="washingMachineLink btn btn-info btn-lg"
+                  type="button"
+              >
+                <span class="glyphicon glyphicon-chevron-right"></span>
+              </button>
             </p>
-            <button
-                class="washingMachineLink btn btn-info btn-lg"
-                type="button"
-            >
-              <span class="glyphicon glyphicon-chevron-right"></span>
-            </button>
           </div>
           <div class="col-md-4">
             <img
@@ -142,13 +148,13 @@
               Each data document contains a meta-data description
               that includes all the stains that were detected,
               e.g. wrong HTTP headers, syntax errors.
+              <button
+                  type="button"
+                  class="wardrobeLink btn btn-info btn-lg"
+              >
+                <span class="glyphicon glyphicon-chevron-right"></span>
+              </button>
             </p>
-            <button
-                type="button"
-                class="wardrobeLink btn btn-info btn-lg"
-            >
-              <span class="glyphicon glyphicon-chevron-right"></span>
-            </button>
           </div>
         </div>
       </div>
@@ -167,10 +173,10 @@
               in the LOD Washing Machine?
               Which RDF serialization formats did we come across?
               This is where we show such LOD Analytics.
+              <button type="button" class="analysisLink btn btn-info btn-lg">
+                <span class="glyphicon glyphicon-chevron-right"></span>
+              </button>
             </p>
-            <button type="button" class="analysisLink btn btn-info btn-lg">
-              <span class="glyphicon glyphicon-chevron-right"></span>
-            </button>
           </div>
           <div class="col-md-4" style="vertical-align:middle;">
             <img
@@ -201,10 +207,10 @@
               For an in-depth overview of the data cleaned
               by the LOD Laundromat, we provide a live SPARQL endpoint
               in which all meta-data can be queried.
+              <button type="button" class="labelsLink btn btn-info btn-lg">
+                <span class="glyphicon glyphicon-chevron-right"></span>
+              </button>
             </p>
-            <button type="button" class="labelsLink btn btn-info btn-lg">
-              <span class="glyphicon glyphicon-chevron-right"></span>
-            </button>
           </div>
         </div>
       </div>
