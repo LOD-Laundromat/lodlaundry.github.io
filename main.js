@@ -48,7 +48,7 @@ SELECT ?serializationFormat (SUM(?triples) AS ?count) WHERE {\n\
   [] ll:serialization_format ?serializationFormat ;\n\
     ll:triples ?triples.\n\
 } GROUP BY ?serializationFormat",
-  contentTypesPerDoc:
+    contentTypesPerDoc:
 "PREFIX ll: <http://lodlaundromat.org/vocab#>\
 SELECT ?contentType (COUNT(?doc) AS ?count) WHERE {\
   ?doc ll:http_content_type ?contentTypeString\
@@ -62,7 +62,7 @@ SELECT ?contentType (COUNT(?doc) AS ?count) WHERE {\
      * - Replace the N3 content type string with Turtle
      *   to make our matching function easier.
      */
-  contentTypesVsSerializationFormats:
+    contentTypesVsSerializationFormats:
 "PREFIX ll: <http://lodlaundromat.org/vocab#>\
 SELECT ?matchType (COUNT(?doc) AS ?count) WHERE {\
   ?doc ll:http_content_type ?contentType;\
@@ -72,7 +72,7 @@ SELECT ?matchType (COUNT(?doc) AS ?count) WHERE {\
   BIND(if(contains(str(?contentType), \"n3\"), \"turtle\", ?contentType) AS ?contentType)\
   BIND(if (contains(str(?contentType), str(?serializationFormat)), \"matches\", \"does not match\") AS ?matchType)\
 } GROUP BY ?matchType",
-  parseExceptions:
+    parseExceptions:
 "PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
 SELECT ?exception ?message ?triples WHERE {\n\
   ?doc a ll:URL .\n\
@@ -80,7 +80,7 @@ SELECT ?exception ?message ?triples WHERE {\n\
   BIND(EXISTS{?doc ll:message []} AS ?message)\n\
   OPTIONAL {?doc ll:triples ?triples}\n\
 }",
-  contentLengths:
+    contentLengths:
 "PREFIX ll: <http://lodlaundromat.org/vocab#>\
 SELECT ?clength ?bcount WHERE {\
   ?doc ll:http_content_length ?clength ;\
@@ -92,7 +92,7 @@ SELECT ?clength ?bcount WHERE {\
   FILTER(!STRENDS(str(?doc), \".bz2\"))\
   FILTER(!STRENDS(str(?doc), \".gz\"))\
 }",
-  datasetsWithCounts:
+    datasetsWithCounts:
 "PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
 SELECT ?md5 ?doc ?triples ?duplicates {\n\
   []  a ll:URL ;\n\
@@ -101,8 +101,7 @@ SELECT ?md5 ?doc ?triples ?duplicates {\n\
     ll:url ?doc .\n\
   FILTER(?triples > 0)\n\
 }",
-  datasetInfo: function(url) {
-    return
+    datasetInfo: function(url) { return
 "PREFIX ll: <http://lodlaundromat.org/vocab#>\
 SELECT ?sub ?pred ?obj {\
   ?doc ll:url <" + url + "> .\
@@ -110,6 +109,7 @@ SELECT ?sub ?pred ?obj {\
   UNION\
   {?sub ?pred ?doc}\
 }";
+    }
   }
 };
 
