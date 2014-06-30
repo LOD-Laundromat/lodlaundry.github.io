@@ -85,6 +85,7 @@ SELECT ?serializationFormat (COUNT(?doc) AS ?count)\n\
 WHERE {\n\
   GRAPH <http://lodlaundromat.org#10> {\n\
     ?doc ll:serialization_format ?serializationFormat .\n\
+  }\n\
 }\n\
 GROUP BY ?serializationFormat\n";
 
