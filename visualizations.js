@@ -162,10 +162,14 @@ fetchAndDrawViz(
   }
 );
 
-fetchAndDrawViz(sparql.queries.datasetsWithCounts,"barChartDatasets", function(data, rootId) {
-  drawDatasetsBarChart({
-    rootId: rootId,
-    data: data.results.bindings,
-  });
-});
+fetchAndDrawViz(
+  sparql.queries.datasetsWithCounts,
+  "barChartDatasets",
+  function(data, rootId) {
+    drawDatasetsBarChart({
+      data: data.results.bindings,
+      rootId: rootId
+    });
+  }
+);
 
