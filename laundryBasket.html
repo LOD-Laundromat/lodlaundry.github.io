@@ -10,7 +10,6 @@
     >
     <meta name="author" content="Laurens Rietveld">
     <link rel="icon" href="imgs/laundry.ico">
-
     <title>LOD Laundry Basket</title>
 
     <!-- Bootstrap core CSS -->
@@ -25,33 +24,39 @@
     <![endif]-->
   </head>
   <body>
-    <div class="container">
-      <div class="jumbotron" style="height:100%;">
-        <img
-            alt="LOD Laundry Basket"
-            style="display:inline-block;max-height: 200px;max-width: 200px;"
-            src="imgs/basket.png"
-        >
-        <div
-            style="text-align: center; vertical-align: middle; width: 600px; display:inline-block;"
-        >
-          <h1>LOD Laundry Basket</h1>
+    
+    <!-- Header section. -->
+    <div class="jumbotron" style="height:100%;">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-4">
+            <img
+                alt="LOD Laundry Basket"
+                class="largeLogo"
+                src="imgs/basket.png"
+            >
+          </div>
+          <div class="col-md-8" style="vertical-align:middle;">
+            <h1>LOD Laundry Basket</h1>
+            <p>
+              The LOD Laundry Basket contains the URLs of dirty datasets
+              that are waiting to be cleaned by the
+              <a
+                href="https://github.com/LODLaundry/LOD-Washing-Machine"
+                target="_blank"
+              >
+                LOD Washing Machine
+              </a>.
+              You can add a URL to the LOD Laundry Basket
+              by using the entry field below.
+            </p>
+          </div>
         </div>
-        <p style="padding-top:20px;">
-          The LOD Laundry Basket contains the URLs of dirty datasets
-          that are waiting to be cleaned by the
-          <a
-              href="https://github.com/LODLaundry/LOD-Washing-Machine"
-              target="_blank"
-          >
-            LOD Washing Machine
-          </a>.
-          You can add a URL to the LOD Laundry Basket
-          by using the entry field below.
-        </p>
       </div>
-      
-      
+    </div>
+    
+    
+    <div class="container">
       <!-- LOD Laundry Basket: Form -->
       <div class="row">
         <p>
