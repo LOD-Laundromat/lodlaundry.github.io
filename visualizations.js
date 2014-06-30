@@ -17,6 +17,7 @@ var formatSerialization = function(serializationFormat) {
     default:
       return serializationFormat;
   };
+}
 
 var fetchAndDrawViz = function(query, rootId, callback) {
   $.ajax({
