@@ -1,5 +1,4 @@
 $(document).ready(function() {
-  // @tbd Use a SPARQL query to retrieve the contents of the LOD Laundry Basket.
   $.get(api.laundryBasket.all, function(data) {
     drawDirtyLaundry(data);
   });
@@ -66,7 +65,6 @@ $("#newDirtyLaundry").keyup(function() {
 });
 
 function storeUrl() {
-  // @tbd Change color of link text in failure message.
   var failureMsg =
       "<span class=\"label label-danger\">Something went wrong... Is the url correct? If this problem persists, please drop us a <a href=\"https://github.com/LODLaundry/lodlaundry.github.io/issues\">Github issue</a>!</span>";
   var successMsg =
@@ -84,8 +82,6 @@ function storeUrl() {
       success: function() {
         $(".submitStatus").empty().hide().append(successMsg).show(400);
       },
-      // @tbd The POST method would be more applicable here,
-      //      but this causes a CORS warning.
       type: "GET",
       url: api.laundryBasket.endpoint
     });

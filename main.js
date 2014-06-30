@@ -88,9 +88,11 @@ SELECT ?serializationFormat (COUNT(?doc) AS ?count) WHERE {\n\
 var serializationsPerTripleSPARQL =
 "PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
 SELECT ?serializationFormat (SUM(?triples) AS ?count) WHERE {\n\
-  [] ll:serialization_format ?serializationFormat ;\n\
-    ll:triples ?triples.\n\
-} GROUP BY ?serializationFormat";
+  GRAPH <http://lodlaundromat.org#10> {\n\
+    [] ll:serialization_format ?serializationFormat ;\n\
+       ll:triples ?triples .\n\
+  }\n\
+} GROUP BY ?serializationFormat\n";
 
 var totalTripleCountSPARQL =
 "PREFIX ll: <http://lodlaundromat.org/vocab#>\n\

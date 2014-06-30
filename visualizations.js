@@ -39,6 +39,27 @@ var fetchAndDrawViz = function(query, rootId, callback) {
 };
 
 fetchAndDrawViz(
+  sparql.queries.serializationsPerTriple,
+  "pieChartTripleSerializations",
+  function(data, rootId) {
+    drawPieChart({
+      rootId: rootId,
+      totalUnit: "triples",
+      totalLabel: "TOTAL",
+      //hideLabelsBelow: 0.02,
+      data: data.results.bindings,
+      isArray: true,
+      sumBy: function(bindings) {
+        return formatSerialization(bindings.serializationFormat.value);
+      },
+      aggregate: function(bindings) {
+        return bindings.count.value;
+      },
+    });
+  }
+);
+
+fetchAndDrawViz(
   sparql.queries.serializationsPerDoc,
   "pieChartDatasetSerializations",
   function(data, rootId) {
@@ -55,27 +76,6 @@ fetchAndDrawViz(
       aggregate: function(bindings) {
         return bindings.count.value;
       }
-    });
-  }
-);
-
-fetchAndDrawViz(
-  sparql.queries.serializationsPerTriple,
-  "pieChartTripleSerializations",
-  function(data, rootId) {
-    drawPieChart({
-      rootId: rootId,
-      totalUnit: "triples",
-      totalLabel: "TOTAL",
-      hideLabelsBelow: 0.02,
-      data: data.results.bindings,
-      isArray: true,
-      sumBy: function(bindings) {
-        return formatSerialization(bindings.serializationFormat.value);
-      },
-      aggregate: function(bindings) {
-        return bindings.count.value;
-      },
     });
   }
 );
