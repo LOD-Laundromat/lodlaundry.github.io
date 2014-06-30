@@ -1,20 +1,20 @@
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <link rel="shortcut icon" href="imgs/laundry.ico">
-
-    <title>Laundromat Visualizations</title>
+    <meta
+        name="description"
+        content="Analytics of data cleaned by the LOD Laundromat."
+    >
+    <meta name="author" content="Laurens Rietveld, Wouter Beek">
+    <link rel="icon" href="imgs/laundry.ico">
+    <title>LOD Laundromat - Analytics</title>
 
     <!-- Bootstrap core CSS -->
     <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="bower_components/github-fork-ribbon-css/gh-fork-ribbon.css" rel="stylesheet">
-
     <link href="style.css" rel="stylesheet">
     <link href="visualizations.css" rel="stylesheet">
     <link href="pieChart.css" rel="stylesheet">
@@ -28,72 +28,99 @@
       <link rel="stylesheet" href="bower_components/github-fork-ribbon-css/gh-fork-ribbon.ie.css">
     <![endif]-->
   </head>
-
   <body>
-
     <div class="container">
-
-      <!-- Main component for a primary marketing message or call to action -->
+      
+      <!-- Header section. -->
       <div class="jumbotron">
-      	
-        <img style="display:inline-block;" src="imgs/analysis.png"></img><div style="text-align: center;vertical-align: middle;width: 600px;;display:inline-block;"><h1>An inventory of our wardrobe</h1></div>
-        <p style="padding-top:20px;">How much data did we wash clean, how many socks did we lose in the washing Machine, and what types of data do we actually have in our wardrobe? Check it out!</p>
+        <img
+            alt="Various diagrams that show analytics."
+            src="imgs/analysis.png"
+            style="display:inline-block;"
+        >
+        <div style="text-align:center; vertical-align:middle; width:600px; display:inline-block;">
+          <h1>An inventory of our wardrobe</h1>
+        </div>
+        <p style="padding-top:20px;">
+          How much data did we clean?
+          How many <del>socks</del> triples did we lose
+          in the LOD Washing Machine?
+          Which RDF serialization formats did we come across?
+          This is where we show such LOD Analytics.
+        </p>
       </div>
-
-	<div class="row">
-		<div class="col-md-12">
-		<h3 style="text-align: center">Serializations</h3>
-		</div>
-	
-	</div>
-	<div class="row">
-	
-	<div class="col-md-6">
-	
-	<div class="vizSpace" id="pieChartTripleSerializations"></div>
-	</div>
-	<div class="col-md-6">
-	<div class="vizSpace" id="pieChartDatasetSerializations"></div>
-	</div>
-	</div><!-- row -->
-	
-	<div class="row">
-		<div class="col-md-6">
-		<h3 style="text-align: center">Invalid Documents</h3>
-			<div class="vizSpace" id="pieChartExceptions"></div>
-		</div>
-		<div class="col-md-6">
-		<h3 style="text-align: center">Invalid HTTP content lengths</h3>
-			<div class="vizSpace" id="barChartContentLength"></div>
-		</div>
-	</div><!-- row -->
-	<div class="row">
-		<div class="col-md-6">
-			<h3 style="text-align: center">Content Types<br><small>Filtered zipped files with multiple docs</small></h3>
-			<div class="vizSpace" id="pieChartContentTypes"></div>
-		</div>
-		<div class="col-md-6">
-			<h3 style="text-align: center">Content Types vs. Serialization Formats<br><small>Filtered zipped files altogether</small></h3>
-			<div class="vizSpace" id="pieChartContentTypesVsSer"></div>
-		</div>
-	</div><!-- row -->
-	
-<!-- <div class='container-fluid'></div> -->
-	<div class="row">
-	<div class="col-md-12">
-	<h2 style="text-align: center">Datasets</h2>
-	<div class="vizSpace" id="barChartDatasets"></div>
+      <div class="row">
+        <div class="col-md-12">
+          <h3 style="text-align:center">Serializations</h3>
+        </div>
+      </div>
+      
+      
+      <!-- First analytics row. -->
+      <div class="row">
+        <div class="col-md-6">
+          <div class="vizSpace" id="pieChartTripleSerializations">
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="vizSpace" id="pieChartDatasetSerializations">
+          </div>
+        </div>
+      </div>
+      
+      
+      <!-- Second analytics row. -->
+      <div class="row">
+        <div class="col-md-6">
+          <h3 style="text-align:center">Invalid Documents</h3>
+          <div class="vizSpace" id="pieChartExceptions">
+          </div>
+        </div>
+        <div class="col-md-6">
+          <h3 style="text-align:center">Invalid HTTP content lengths</h3>
+          <div class="vizSpace" id="barChartContentLength">
+          </div>
+        </div>
+      </div>
+      
+      
+      <!-- Third analytics row. -->
+      <div class="row">
+        <div class="col-md-6">
+          <h3 style="text-align:center">
+            Content Types
+            <br>
+            <small>
+              We filtered out archive files that contain data documents.
+            </small>
+          </h3>
+          <div class="vizSpace" id="pieChartContentTypes">
+          </div>
+        </div>
+        <div class="col-md-6">
+          <h3 style="text-align:center">
+            Content Types vs. RDF Serialization Formats
+            <br>
+            <small>
+              We filtered out archive files that contain data documents.
+            </small>
+          </h3>
+          <div class="vizSpace" id="pieChartContentTypesVsSer"></div>
+        </div>
+      </div>
+      
+      <!-- <div class='container-fluid'></div> -->
+      <div class="row">
+        <div class="col-md-12">
+          <h2 style="text-align: center">
+            Datasets
+          </h2>
+          <div class="vizSpace" id="barChartDatasets">
+          </div>
+        </div>
+      </div>
+    
     </div>
-</div>
-    
-</div> <!-- /container -->
-    
-    
-    
-
-
-    
-    
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
@@ -102,7 +129,7 @@
     <script src="bower_components/d3js/build/d3.v3.min.js"></script>
     <script src="bower_components/d3-tip/index.js"></script>
     <script src="bower_components/jquery.scrollTo/jquery.scrollTo.min.js"></script>
-<!--     <script src="bower_components/jquery-ui/ui/minified/jquery.ui.core.min.js"></script> -->
+    <!-- <script src="bower_components/jquery-ui/ui/minified/jquery.ui.core.min.js"></script> -->
     <script src="main.js"></script>
     <script src="piechart.js"></script>
     <script src="datasetBarchart.js"></script>
@@ -110,3 +137,4 @@
     <script src="visualizations.js"></script>
   </body>
 </html>
+
