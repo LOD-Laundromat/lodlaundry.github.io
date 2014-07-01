@@ -80,10 +80,7 @@ var drawTable = function() {
   }
   
   var dTableConfig = {
-      "data": rows,
-      "sScrollX": "100%",
       "bAutoWidth": true,
-      "iDisplayLength": 25,
       "columnDefs":
         [
           {
@@ -123,6 +120,8 @@ var drawTable = function() {
             visible: true
           }
         ],
+      "data": rows,
+      dom: S,
       "language": {
         "decimal": ",",
         "thousands": "."
@@ -153,6 +152,7 @@ var drawTable = function() {
         $(this).toggleClass('selected');
         $(row).click(function(){$(this).toggleClass('selected');updateMultiSelectDownloads();});
       },
+      "iDisplayLength": 25,
       "fnDrawCallback": function ( oSettings ) {
         /* Need to redo the counters if filtered or sorted */
         if ( oSettings.bSorted || oSettings.bFiltered ) {
@@ -160,7 +160,8 @@ var drawTable = function() {
           {
             $('td:eq(0)', oSettings.aoData[ oSettings.aiDisplay[i] ].nTr ).html( i+1 );
           }
-        }
+        },
+      "sScrollX": "100%"
       }
   };
   dataTable = table.dataTable(dTableConfig);
