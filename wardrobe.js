@@ -17,17 +17,6 @@ var formatInt = function(origValue) {
       });
 };
 
-var getDownloadName = function(url) {
-   if(url.lastIndexOf("#") != -1)       
-     url = url.substring(0, url.lastIndexOf("#"));
-   if(url.lastIndexOf(".") != -1)       
-     url = url.substring(0, url.lastIndexOf("."));
-   if (url.indexOf(url.length) == "/") url = url.substring(url.length-1);
-   url = url.substring(url.lastIndexOf('/') + 1); 
-    
-   return url + "_clean.nt.gz";
-};
-
 var downloadSelectedCleaned = function() {
   $("#wardrobeTable tr.selected .downloadClean").each(function(){
     this.click();
@@ -120,24 +109,22 @@ var drawTable = function() {
       "data": rows,
       "dom": "frtipS",
       "deferRender": true,
-      "createdRow": function ( row, data, index ) {
-        var url = $(row).find("td:nth-child(2)").text().trim();
-        if (hasArchiveEntry[url]) {
-          $(row).find(".downloadClean").attr('disabled', true).css("pointer-events", "auto").attr("title", "This document is an archive. Each separate archive entry is available as cleaned data");
+      "createdRow": function (row, data, index) {
+        var md5 = $(row).find("td:nth-child(1)").text();
+        var triples = parseInt($(row).find("id:nth-child(4)").text());
+        var cleanLink;
+        if (triples == 0) {
+            cleanLink = "javascript:void(0);";
         } else {
-          $(row).find(".downloadClean")
-            .attr("download", getDownloadName(url))
-            .attr("href", api.wardrobe.download(md5[url]));
+            cleanLink = "api.wardrobe.download(" + md5 + ")";
         }
-        if (fromArchive[url]) {
-          $(row).find(".downloadDirty").attr('disabled', true)
-            .attr("href", "javascript:void(0);")
-            .css("pointer-events", "auto")
-            .attr("title", "This document is extracted from an archive. If you would want to download the original (dirty) file, download the parent archive")
-        }
+        $(row).find(".downloadClean").attr("href", cleanLink);
+        
+        
+        
         $(row).find(".showDatasetInfo").click(function(){
           var url = $(this).closest("tr").find("td:nth-child(2)").text().trim();
-          drawDataset(url);
+          showMetadataBox(md5);
         });
         
         $(row).find("a").click(function(event){event.stopPropagation();});

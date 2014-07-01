@@ -49,16 +49,14 @@ SELECT ?matchType (COUNT(?doc) AS ?count) WHERE {\
   BIND(if (contains(str(?contentType), str(?serializationFormat)), \"matches\", \"does not match\") AS ?matchType)\
 } GROUP BY ?matchType";
 
-var datasetInfoSPARQL1 =
-"PREFIX ll: <http://lodlaundromat.org/vocab#>\
-SELECT ?sub ?pred ?obj {\
-  ?doc ll:url <";
+var datasetInfoSPARQL1 = "\
+PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
+SELECT ?datadoc ?p ?o {\n\
+  ?datadoc ll:md5 \"";
 var datasetInfoSPARQL2 =
-"> .\
-  {?doc ?pred ?obj}\
-  UNION\
-  {?sub ?pred ?doc}\
-}";
+"\"^^xsd:string .\n\
+  ?datadoc ?p ?o .\n\
+}\n";
 
 var datasetsWithCountsSPARQL =
 "PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
@@ -120,20 +118,21 @@ var api = {
 
 var sparql = {
   //url: "http://virtuoso.lodlaundromat.ops.few.vu.nl/sparql",
-  url: "http://lodlaundry.wbeek.ops.few.vu.nl/sparql/",
-  mainGraph: "http://lodlaundromat.org#10",
-  queries: {
-    totalTripleCount: totalTripleCountSPARQL,
-    serializationsPerDoc: serializationsPerDocSPARQL,
-    serializationsPerTriple: serializationsPerTripleSPARQL,
-    contentTypesPerDoc: contentTypesPerDocSPARQL,
-    contentTypesVsSerializationFormats:
+  "url": "http://lodlaundry.wbeek.ops.few.vu.nl/sparql/",
+  "mainGraph": "http://lodlaundromat.org#10",
+  "queries": {
+    "totalTripleCount": totalTripleCountSPARQL,
+    "serializationsPerDoc": serializationsPerDocSPARQL,
+    "serializationsPerTriple": serializationsPerTripleSPARQL,
+    "contentTypesPerDoc": contentTypesPerDocSPARQL,
+    "contentTypesVsSerializationFormats":
         contentTypesVsSerializationFormatsSPARQL,
-    parseExceptions: parseExceptionsSPARQL,
-    contentLengths: contentLengthsSPARQL,
-    datasetsWithCounts: datasetsWithCountsSPARQL,
-    datasetInfo:
-        function(url) { return datasetInfoSPARQL1 + url + datasetInfoSPARQL2; }
+    "parseExceptions": parseExceptionsSPARQL,
+    "contentLengths": contentLengthsSPARQL,
+    "datasetsWithCounts": datasetsWithCountsSPARQL,
+    "datasetInfo": function(md5) {
+        return datasetInfoSPARQL1 + md5 + datasetInfoSPARQL2;
+    }
   }
 };
 
@@ -234,16 +233,16 @@ var drawModal = function(config) {
   modal.modal("show");
 };
 
-var drawDataset = function(url) {
+var showMetadataBox = function(md5) {
   $.ajax({
-    data: {
+    "data": {
       "default-graph-uri": sparql.mainGraph,
-      query: sparql.queries.datasetInfo(url)
+      "query": sparql.queries.datasetInfo(md5)
     },
-    headers: {
+    "headers": {
       "Accept": "application/sparql-results+json,*/*;q=0.9"
     },
-    success: function(data) {
+    "success": function(data) {
       var table = $("<table class='table'></table>");
       var addRow = function(config) {
         var row = $("<tr></tr>").appendTo(table);
@@ -337,7 +336,7 @@ var drawDataset = function(url) {
       
       drawModal({header: "Dataset Properties", content: table});
     },
-    url: sparql.url
+    "url": sparql.url
   });
 };
 var deleteEveryDivExcept = function(divId) {
