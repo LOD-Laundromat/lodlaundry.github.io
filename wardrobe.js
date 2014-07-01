@@ -71,7 +71,7 @@ var drawTable = function() {
     row.push(results.md5.value);
     row.push(results.url.value);
     row.push(
-        "<a class='downloadClean btn btn-default' title='Download the washed and cleaned data' target='_blank'><span class='glyphicon glyphicon-download'></span> Clean</a>&nbsp;" +
+        "<a class='downloadClean btn btn-default' title='Download the washed and cleaned data' target='_blank'><span class='glyphicon glyphicon-download'></span> Clean</a>" +
         "<a class='downloadDirty btn btn-default' title='Download original dirty dataset' href='" + results.url.value + "' target='_blank'><span class='glyphicon glyphicon-download'></span> Dirty</a>"
     );
     row.push(results.triples ? results.triples.value : 0);
@@ -164,7 +164,7 @@ var drawTable = function() {
         }
       },
       "scrollX": "100%",
-      "scrollY": "400px"
+      "scrollY": "800px"
   };
   dataTable = table.dataTable(dTableConfig);
   
