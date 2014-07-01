@@ -68,14 +68,13 @@ var drawTable = function() {
       "sScrollX": "100%",
       "bAutoWidth": true,
       "iDisplayLength": 25,
-      "columns": [
-          { "title": "index"},//0
-          { "title": "URL" },//1
-          { "title": "Status"}//2
-      ],
+      "columns":
+          [{ "title": "index" },
+          { "title": "URL" },
+          { "title": "Status" }],
       "language": {
-          "decimal": ",",
-          "thousands": "."
+         "decimal": ",",
+         "thousands": "."
       },
       "createdRow": function ( row, data, index ) {
       },
@@ -90,10 +89,10 @@ var drawTable = function() {
       }
     },
     "aoColumnDefs":
-        [{ "bSearchable": true, "aTargets": [ 1 ] },
-         { "bSortable": false, "aTargets": [ 0 ] },
+        [{ "bSearchable": true, "aTargets": [1] },
+         { "bSortable": false, "aTargets": [0] },
          { "sWidth": "30px", "aTargets": [0] }],
-    "aaSorting": [[ 2, 'desc' ]]
+    "aaSorting": [[2, 'desc']]
   };
   dataTable = table.dataTable(dTableConfig);
 };

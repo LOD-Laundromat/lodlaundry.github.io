@@ -85,12 +85,12 @@ var drawTable = function() {
       "bAutoWidth": true,
       "iDisplayLength": 25,
       "columns":
-          [{ "title": "index" },
-          { "title": "MD5" },
-          { "title": "URL" },
-          { "title": "Downloads", "targets": 6 },
-          { "title": "Triples" },
-          { "title": "Metadata", "targets": 7 }],
+          [{ "title": "index" }, // 0
+          { "title": "MD5" }, // 1
+          { "title": "URL" }, // 2
+          { "title": "Downloads", "targets": 6 }, // 3
+          { "title": "Triples" }, // 4
+          { "title": "Metadata", "targets": 7 }], // 5
       "language": {
         "decimal": ",",
         "thousands": "."
@@ -130,14 +130,44 @@ var drawTable = function() {
           }
         }
       },
+      "columnDefs":
+          [{
+            "searchable": false,
+            "targets": [2]
+          },
+          {
+            "targets": [1],
+            "visible": false
+          }],
       "aoColumnDefs":
-          [{ "bSearchable": true, "aTargets": [1,2,3,4,5] },
-          { "bSortable": false, "aTargets": [0,6,7] },
-          { "sType": "numeric","aTargets": [4,5] },
-          { "sWidth": "30px", "aTargets": [0] },
-          { "sWidth": "140px", "aTargets": [6] },
-          { "sWidth": "30px", "aTargets": [7] },
-          { "sWidth": "130px", "aTargets": [3] }],
+          [{
+            "aTargets": [1,2,3,4,5],
+            "bSearchable": true
+          },
+          {
+            "aTargets": [0,6,7],
+            "bSortable": false
+          },
+          {
+            "aTargets": [4,5],
+            "sType": "numeric"
+          },
+          {
+            "aTargets": [0],
+            "sWidth": "30px"
+          },
+          {
+            "aTargets": [6],
+            "sWidth": "140px"
+          },
+          {
+            "aTargets": [7],
+            "sWidth": "30px"
+          },
+          {
+            "aTargets": [3],
+            "sWidth": "130px"
+          }],
       "aaSorting": [[ 5, 'desc' ]]
   };
   dataTable = table.dataTable(dTableConfig);
