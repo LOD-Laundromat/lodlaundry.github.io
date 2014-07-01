@@ -67,7 +67,6 @@ var drawTable = function() {
   for (var i = 0; i < wardrobeData.results.bindings.length; i++) {
     var results = wardrobeData.results.bindings[i];
     var row = [];
-    row.push("");//this is where the row index comes automatically
     row.push(results.md5.value);
     row.push(results.url.value);
     row.push(
@@ -86,41 +85,34 @@ var drawTable = function() {
             "orderable": false,
             "searchable": false,
             "targets": [0],
-            "title": "index",
-            "visible": true
-          },
-          {
-            "orderable": false,
-            "searchable": false,
-            "targets": [1],
             "title": "MD5",
             "visible": false
           },
           {
             "orderable": true,
             "searchable": true,
-            "targets": [2],
+            "targets": [1],
             "title": "URL",
             "visible": true
           },
           {
             "orderable": false,
             "searchable": false,
-            "targets": [3],
+            "targets": [2],
             "title": "Downloads",
             "visible": true
           },
           {
             "orderable": true,
             "searchable": false,
-            "targets": [4],
+            "targets": [3],
             "title": "Triples",
             "visible": true
           },
           {
             "orderable": false,
             "searchable": false,
-            "targets": [5],
+            "targets": [4],
             "title": "Metadata",
             "visible": true
           }
@@ -158,7 +150,7 @@ var drawTable = function() {
         "decimal": ",",
         "thousands": "."
       },
-      "order": [4, "desc"],
+      "order": [3, "desc"],
       "ordering": true,
       "iDisplayLength": 25,
       "fnDrawCallback": function ( oSettings ) {
