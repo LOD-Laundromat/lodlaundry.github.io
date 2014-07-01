@@ -51,12 +51,11 @@ var drawTable = function() {
   var table = $('<table cellpadding="0" cellspacing="0" border="0" class="display" id="laundryBasketTable"></table>');
   $('#tableWrapper').html(table);
   
-  var rows = [];
-  
   if (!basketContents || !basketContents.results || !basketContents.results.bindings) {
     return;
   }
   
+  var rows = [];
   for (var i = 0; i < basketContents.results.bindings.length; i++) {
     var result = basketContents.results.bindings[i];
     var row = [];
@@ -73,10 +72,9 @@ var drawTable = function() {
       "bAutoWidth": true,
       "iDisplayLength": 25,
       "columns": [
-          {  "title": "index"},//0
-          { "title": "Seed" },//1
-          { "title": "Added"},//2
-          { "title": "Last crawled" },//3
+          { "title": "index"},//0
+          { "title": "URL" },//1
+          { "title": "Status"}//2
       ],
       "language": {
           "decimal": ",",
@@ -95,7 +93,7 @@ var drawTable = function() {
       }
     },
     "aoColumnDefs":
-        [{ "bSearchable": true, "aTargets": [ 1,2,3 ] },
+        [{ "bSearchable": true, "aTargets": [ 1 ] },
          { "bSortable": false, "aTargets": [ 0 ] },
          { "sWidth": "30px", "aTargets": [0] }],
     "aaSorting": [[ 2, 'desc' ]]
