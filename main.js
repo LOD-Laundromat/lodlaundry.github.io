@@ -262,75 +262,9 @@ var showMetadataBox = function(md5) {
           if (i == 0 && config.indentFirstCol) col.css("padding-left", "15px");
         }
       };
-      var formattedProps = {};
-      $.each(data.results, function(key, bindings) {
-        var shortenedProp = bindings.pred.value.substring("http://lodlaundromat.org/vocab#".length);
-        if (bindings.obj) {
-          if (shortenedProp in formattedProps) {
-            if (typeof formattedProps[shortenedProp] == "string") {
-              formattedProps[shortenedProp] = [formattedProps[shortenedProp]];
-            }
-            formattedProps[shortenedProp].push(bindings.obj.value);
-          }
-          formattedProps[shortenedProp] = bindings.obj.value;
-        }
+      $.each(data.results.bindings, function(index, triple) {
+        addRow({values: [triple.p, triple.o]});
       });
-      addRow({values: ["URL" , "<a href='" + formattedProps.url + "' target='_blank'>" + formattedProps.url + "</a>"]});
-      if (formattedProps.archive_contains) {
-        addRow({midHeader: true,values:["Archive entries" ]});
-        for (var i = 0; i < formattedProps.archive_contains.length; i++) {
-          var colContent = $("<a href='" + formattedProps.archive_contains[i] + "' target='_blank'>" + formattedProps.archive_contains[i] + "</a>");
-          addRow({values:["", colContent ]});
-        }
-      }
-//      if (d.fromArchive) {
-//        var colContent = $("<a href='" + d.fromArchive + "' target='_blank'>" + d.fromArchive + "</a>");
-//        addRow({values:["Unpacked from archive" , colContent]}); 
-//      }
-//      if (d.archiveEntrySize) {
-//        addRow({values:["Size of archive entry" , d.archiveEntrySize]}); 
-//      }
-      if (formattedProps.file_extension) {
-        addRow({values:["File extension" , formattedProps.file_extension]}); 
-      }
-      if (formattedProps.triples) {
-        addRow({midHeader: true,values:["Parsed RDF info" ]});
-        addRow({indentFirstCol: true, values:["<i>#triples</i>", formattedProps.triples ]});
-        addRow({indentFirstCol: true, values:["<i>#Duplicates</i>", formattedProps.duplicates ]});
-        addRow({indentFirstCol: true, values:["<i>Serialization Format</i>", formattedProps.serialization_format ]});
-        if (formattedProps.messages) {
-          var firstCol = "<i>Syntax errors</i>";
-          for (var i = 0; i < formattedProps.messages.length; i++) {
-            addRow({indentFirstCol: true, rowClass: "warning", values:[firstCol, formattedProps.messages[i]]});
-            firstCol = "";
-          }
-        }
-      }
-      if (formattedProps.http_content_type) {
-        addRow({midHeader: true, values:["HTTP Response" ]}); 
-        var contentLength = formattedProps.http_content_length|| "unknown";
-        addRow({indentFirstCol: true, values:["<i>Content Length</i>", contentLength ]});
-        var contentType = formattedProps.http_content_type || "unknown";
-        addRow({indentFirstCol: true, values:["<i>Content Type</i>", contentType ]});
-        var lastModified = formattedProps.http_last_modified || "unknown";
-        addRow({indentFirstCol: true, values:["<i>Last Modified</i>", lastModified ]});
-      }
-      
-      if (formattedProps.stream_byte_count) {
-        addRow({midHeader: true,values:["File stream info (unpacked)" ]});
-        addRow({indentFirstCol: true, values:["<i>Byte Count</i>", formattedProps.stream_byte_count ]});
-        addRow({indentFirstCol: true, values:["<i>Char Count</i>", formattedProps.stream_char_count ]});
-        addRow({indentFirstCol: true, values:["<i>Line Count</i>", formattedProps.stream_line_count]});
-      }
-      
-      if (formattedProps.exceptions) {
-        addRow({midHeader: true, rowClass: "danger", values: ["<strong>Exceptions</strong>"]});
-        for (var i = 0; i < formattedProps.exceptions.length; i++) {
-          var exception = formattedProps.exceptions[i];
-          addRow({indentFirstCol: true, rowClass: "danger", values: ["<i></i>", exception]});
-        }
-      }
-      
       drawModal({header: "Dataset Properties", content: table});
     },
     "url": sparql.url
