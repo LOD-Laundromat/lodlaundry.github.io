@@ -3,14 +3,16 @@ var basketContents = null;
 $( document ).ready(function() {
   var queryBasketContents = "\
 PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
-SELECT ?url ?added ?start_unpack ?end_unpack ?start_clean ?end_clean\n\
+SELECT ?url ?added ?start_unpack ?end_unpack ?start_clean\n\
 WHERE {\n\
-  ?datadoc ll:url ?url .\n\
-  ?datadoc ll:added ?added .\n\
-  OPTIONAL { ?datadoc ll:start_unpack ?start_unpack . }\n\
-  OPTIONAL { ?datadoc ll:end_unpack ?end_unpack . }\n\
-  OPTIONAL { ?datadoc ll:start_clean ?start_clean . }\n\
-  OPTIONAL { ?datadoc ll:end_clean ?end_clean . }\n\
+  GRAPH <http://lodlaundromat.org#10> {\n\
+    ?datadoc ll:url ?url .\n\
+    ?datadoc ll:added ?added .\n\
+    OPTIONAL { ?datadoc ll:start_unpack ?start_unpack . }\n\
+    OPTIONAL { ?datadoc ll:end_unpack ?end_unpack . }\n\
+    OPTIONAL { ?datadoc ll:start_clean ?start_clean . }\n\
+    FILTER NOT EXISTS { ?datadoc ll:end_clean ?end_clean . }\n\
+  }\n\
 }\n\
 LIMIT 10\n";
   $.ajax({
@@ -30,6 +32,18 @@ LIMIT 10\n";
 });
 
 
+function status(result) {
+  if (!result.start_unpack) {
+    return "pending";
+  } else if (!result.end_unpack) {
+    return "unpacking";
+  } else if (!result.start_clean) {
+    return "cleaning";
+  } else {
+    return "cleaned";
+  }
+}
+
 var dataTable;
 var drawTable = function() {
   var table = $('<table cellpadding="0" cellspacing="0" border="0" class="display" id="laundryBasketTable"></table>');
@@ -46,7 +60,7 @@ var drawTable = function() {
     var row = [];
     row.push("");//this is where the row index comes automatically
     row.push(result.url.value);
-    row.push(result.added.value);
+    row.push(status(result);
     rows.push(row);
     // @tbd Start/end unpack/clean
   }
