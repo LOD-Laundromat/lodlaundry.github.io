@@ -111,7 +111,7 @@ var drawTable = function() {
       "deferRender": true,
       "createdRow": function (row, data, index) {
         var md5 = data[0];
-        var triples = parseInt($(row).find("id:nth-child(3)").text());
+        var triples = parseInt(data[3]);
         var cleanLink;
         if (triples == 0) {
           cleanLink = "javascript:void(0);";
