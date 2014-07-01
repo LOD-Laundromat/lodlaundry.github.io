@@ -152,6 +152,7 @@ var drawTable = function() {
         "decimal": ",",
         "thousands": "."
       },
+      "ordering": true,
       "iDisplayLength": 25,
       "fnDrawCallback": function ( oSettings ) {
         /* Need to redo the counters if filtered or sorted */
