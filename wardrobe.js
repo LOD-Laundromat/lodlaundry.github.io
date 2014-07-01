@@ -158,6 +158,7 @@ var drawTable = function() {
         "decimal": ",",
         "thousands": "."
       },
+      "order": [4, "desc"],
       "ordering": true,
       "iDisplayLength": 25,
       "fnDrawCallback": function ( oSettings ) {
