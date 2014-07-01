@@ -104,20 +104,6 @@ var totalTripleCountSPARQL =
 "PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
 SELECT (SUM(?triples) AS ?totalTriples) {?dataset ll:triples ?triples}";
 
-var wardrobeListingSPARQL =
-"PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
-SELECT ?md5 ?url ?serializationFormat ?lastModified ?duplicates ?triples ?parentArchive WHERE {\n\
-  ?doc a ll:URL ;\n\
-    ll:url ?url ;\n\
-  ll:triples ?triples ;\n\
-  ll:md5 ?md5 .\n\
-  OPTIONAL {?doc ll:http_last_modified ?lastModified}\n\
-  OPTIONAL {?doc ll:serialization_format ?serializationFormat}\n\
-  OPTIONAL {?doc ll:duplicates ?duplicates}\n\
-  OPTIONAL {?doc ll:triples ?triples}\n\
-  OPTIONAL {?parentArchive ll:archive_contains ?doc}\n\
-}";
-
 var api = {
   wardrobe: {
     all: "testInput.json",
@@ -138,7 +124,6 @@ var sparql = {
   mainGraph: "http://lodlaundromat.org#10",
   queries: {
     totalTripleCount: totalTripleCountSPARQL,
-    wardrobeListing: wardrobeListingSPARQL,
     serializationsPerDoc: serializationsPerDocSPARQL,
     serializationsPerTriple: serializationsPerTripleSPARQL,
     contentTypesPerDoc: contentTypesPerDocSPARQL,
@@ -251,10 +236,12 @@ var drawModal = function(config) {
 
 var drawDataset = function(url) {
   $.ajax({
-    url: sparql.url,
     data: {
-      query: sparql.queries.datasetInfo(url),
-      "default-graph-uri": sparql.mainGraph
+      "default-graph-uri": sparql.mainGraph,
+      query: sparql.queries.datasetInfo(url)
+    },
+    headers: {
+      "Accept": "application/sparql-results+json,*/*;q=0.9"
     },
     success: function(data) {
       var table = $("<table class='table'></table>");
@@ -350,9 +337,7 @@ var drawDataset = function(url) {
       
       drawModal({header: "Dataset Properties", content: table});
     },
-    headers: {
-      "Accept": "application/sparql-results+json,*/*;q=0.9"
-    }
+    url: sparql.url
   });
 };
 var deleteEveryDivExcept = function(divId) {
