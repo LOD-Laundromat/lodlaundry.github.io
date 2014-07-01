@@ -84,13 +84,24 @@ var drawTable = function() {
       "sScrollX": "100%",
       "bAutoWidth": true,
       "iDisplayLength": 25,
+      "columnDefs":
+        [
+          {
+            "targets": [1],
+            "visible": false
+          },
+          {
+            "searchable": true,
+            "targets": [2]
+          }
+        ],
       "columns":
           [{ "title": "index" }, // 0
           { "title": "MD5" }, // 1
           { "title": "URL" }, // 2
-          { "title": "Downloads", "targets": 6 }, // 3
+          { "title": "Downloads" }, // 3
           { "title": "Triples" }, // 4
-          { "title": "Metadata", "targets": 7 }], // 5
+          { "title": "Metadata" }], // 5
       "language": {
         "decimal": ",",
         "thousands": "."
@@ -129,16 +140,8 @@ var drawTable = function() {
             $('td:eq(0)', oSettings.aoData[ oSettings.aiDisplay[i] ].nTr ).html( i+1 );
           }
         }
-      },
-      "columnDefs":
-          [{
-            "searchable": false,
-            "targets": [2]
-          },
-          {
-            "targets": [1],
-            "visible": false
-          }],
+      }
+/*
       "aoColumnDefs":
           [{
             "aTargets": [1,2,3,4,5],
@@ -169,6 +172,7 @@ var drawTable = function() {
             "sWidth": "130px"
           }],
       "aaSorting": [[ 5, 'desc' ]]
+*/
   };
   dataTable = table.dataTable(dTableConfig);
   
