@@ -90,7 +90,7 @@ var drawDatasetsBarChart = function(config) {
 				return "translate(0," + +y(d.doc.value) + ")";
 			});
 	var handleBarClick = function(bindings) {
-		drawDataset(bindings.doc.value);
+		showMetadataBox(bindings.doc.value);
 	};
 	state.selectAll(".bar").data(function(d) {
 		return d.counts;
