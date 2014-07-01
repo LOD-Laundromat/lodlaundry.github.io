@@ -2,6 +2,7 @@ var basketContents = null;
 
 $( document ).ready(function() {
   var queryBasketContents = "\
+PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
 SELECT ?url ?added ?start_unpack ?end_unpack ?start_clean ?end_clean\n\
 WHERE {\n\
   ?datadoc ll:added ?added .\n\
