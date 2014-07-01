@@ -16,6 +16,11 @@ body {
   max-height: 275px;
 }
 
+.mediumLogo{
+  max-width: 225px;
+  max-height: 225px;
+}
+
 .clickable {
   cursor: pointer;
 }
