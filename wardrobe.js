@@ -173,7 +173,6 @@ var drawTable = function() {
    $("<button style='margin-left: 10px;' class='btn btn-primary' title='Download the selected dirty data'><span class='glyphicon glyphicon-download'></span> Download selected dirty data</button>")
      .appendTo(multiButtons)
      .click(downloadSelectedDirty);
-
    
    
   dataTable.on( 'draw.dt', function () {

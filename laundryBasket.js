@@ -47,6 +47,7 @@ var drawTable = function() {
     row.push("");//this is where the row index comes automatically
     row.push(result.url.value);
     row.push(result.added.value);
+    rows.push(row);
     // @tbd Start/end unpack/clean
   }
   
