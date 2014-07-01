@@ -160,9 +160,9 @@ var drawTable = function() {
           {
             $('td:eq(0)', oSettings.aoData[ oSettings.aiDisplay[i] ].nTr ).html( i+1 );
           }
-        },
+        }
+      },
       "sScrollX": "100%"
-      }
   };
   dataTable = table.dataTable(dTableConfig);
   
