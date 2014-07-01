@@ -84,44 +84,44 @@ var drawTable = function() {
       "columnDefs":
         [
           {
-            searchable: false,
-            targets: [0],
-            title: "index",
-            visible: true
+            "searchable": false,
+            "targets": [0],
+            "title": "index",
+            "visible": true
           },
           {
-            searchable: false,
-            targets: [1],
-            title: "MD5",
-            visible: false
+            "searchable": false,
+            "targets": [1],
+            "title": "MD5",
+            "visible": false
           },
           {
-            searchable: true,
-            targets: [2],
-            title: "URL",
-            visible: true
+            "searchable": true,
+            "targets": [2],
+            "title": "URL",
+            "visible": true
           },
           {
-            searchable: false,
-            targets: [3],
-            title: "Downloads",
-            visible: true
+            "searchable": false,
+            "targets": [3],
+            "title": "Downloads",
+            "visible": true
           },
           {
-            searchable: false,
-            targets: [4],
-            title: "Triples",
-            visible: true
+            "searchable": false,
+            "targets": [4],
+            "title": "Triples",
+            "visible": true
           },
           {
-            searchable: false,
-            targets: [5],
-            title: "Metadata",
-            visible: true
+            "searchable": false,
+            "targets": [5],
+            "title": "Metadata",
+            "visible": true
           }
         ],
       "data": rows,
-      dom: "S",
+      "dom": "frtiS",
       "language": {
         "decimal": ",",
         "thousands": "."
