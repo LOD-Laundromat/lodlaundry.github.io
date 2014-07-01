@@ -152,7 +152,6 @@ var drawTable = function() {
       },
       "order": [3, "desc"],
       "ordering": true,
-      "iDisplayLength": 25,
       "scrollX": "100%",
       "scrollY": "800px"
   };
