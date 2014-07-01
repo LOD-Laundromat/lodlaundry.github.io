@@ -119,17 +119,18 @@ var drawTable = function() {
           cleanLink = api.wardrobe.download(md5);
         }
         $(row).find(".downloadClean").attr("href", cleanLink);
-        
-        $(row).find(".showDatasetInfo").click(function(){
-          var md5 = $(this).closest("tr").find("td:nth-child(1)").text();
-          showMetadataBox(md5);
-        });
-        
+        $(row).find(".showDatasetInfo").click(
+            function(){showMetadataBox(md5);}
+        );
         $(row).find("a").click(function(event){event.stopPropagation();});
         $(row).find("button").click(function(event){event.stopPropagation();});
-        
         $(this).toggleClass('selected');
-        $(row).click(function(){$(this).toggleClass('selected');updateMultiSelectDownloads();});
+        $(row).click(
+            function(){
+              $(this).toggleClass('selected');
+              updateMultiSelectDownloads();
+            }
+        );
       },
       "language": {
         "decimal": ",",
