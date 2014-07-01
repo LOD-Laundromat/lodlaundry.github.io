@@ -40,10 +40,11 @@ var drawTable = function() {
   }
   
   for (var i = 0; i < basketContents.results.bindings.length; i++) {
-    var results = basketContents.results.bindings[i];
+    var result = basketContents.results.bindings[i];
+    alert(result);
     var row = [];
     row.push("");//this is where the row index comes automatically
-    row.push(results.url.value);
+    row.push(result.url.value);
     
     row.push(data[i]); //seed
     // @tbd Added
