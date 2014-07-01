@@ -122,10 +122,7 @@ var drawTable = function() {
         ],
       "data": rows,
       "dom": "frtiS",
-      "language": {
-        "decimal": ",",
-        "thousands": "."
-      },
+      "deferRender": true,
       "createdRow": function ( row, data, index ) {
         var url = $(row).find("td:nth-child(2)").text().trim();
         if (hasArchiveEntry[url]) {
@@ -152,6 +149,10 @@ var drawTable = function() {
         $(this).toggleClass('selected');
         $(row).click(function(){$(this).toggleClass('selected');updateMultiSelectDownloads();});
       },
+      "language": {
+        "decimal": ",",
+        "thousands": "."
+      },
       "iDisplayLength": 25,
       "fnDrawCallback": function ( oSettings ) {
         /* Need to redo the counters if filtered or sorted */
@@ -162,7 +163,8 @@ var drawTable = function() {
           }
         }
       },
-      "sScrollX": "100%"
+      "scrollX": "100%",
+      "scrollY": "400px"
   };
   dataTable = table.dataTable(dTableConfig);
   
