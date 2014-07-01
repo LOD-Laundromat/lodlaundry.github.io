@@ -114,16 +114,14 @@ var drawTable = function() {
         var triples = parseInt($(row).find("id:nth-child(4)").text());
         var cleanLink;
         if (triples == 0) {
-            cleanLink = "javascript:void(0);";
+          cleanLink = "javascript:void(0);";
         } else {
-            cleanLink = "api.wardrobe.download(" + md5 + ")";
+          cleanLink = api.wardrobe.download(md5);
         }
         $(row).find(".downloadClean").attr("href", cleanLink);
         
-        
-        
         $(row).find(".showDatasetInfo").click(function(){
-          var url = $(this).closest("tr").find("td:nth-child(2)").text().trim();
+          var md5 = $(this).closest("tr").find("td:nth-child(1)").text();
           showMetadataBox(md5);
         });
         

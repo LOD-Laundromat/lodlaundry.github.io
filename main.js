@@ -167,7 +167,7 @@ var formatNumber = d3.format(",n");
 
 var goToHash = function(){
   if(window.location.hash) {
-    $.scrollTo($(window.location.hash), { duration: 500});
+    $.scrollTo($(window.location.hash), { duration: 500 });
   }
 };
 
