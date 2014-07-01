@@ -60,7 +60,7 @@ var drawTable = function() {
     var row = [];
     row.push("");//this is where the row index comes automatically
     row.push(result.url.value);
-    row.push(status(result);
+    row.push(status(result));
     rows.push(row);
     // @tbd Start/end unpack/clean
   }
