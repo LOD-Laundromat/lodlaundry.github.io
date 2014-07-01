@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -8,16 +7,13 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="shortcut icon" href="imgs/laundry.ico">
-
-    <title>LOD Wardrobe</title>
+    <title>LOD Laundromat - Wardrobe</title>
 
     <!-- Bootstrap core CSS -->
     <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="//cdn.datatables.net/1.10.0/css/jquery.dataTables.css" rel="stylesheet">
     <link href="style.css" rel="stylesheet">
     <link href="wardrobe.css" rel="stylesheet">
-
-
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
@@ -25,34 +21,48 @@
       <link rel="stylesheet" href="bower_components/github-fork-ribbon-css/gh-fork-ribbon.ie.css">
     <![endif]-->
   </head>
-
   <body>
-
-  
-  <div class="container">
-  <div class="jumbotron" style="height:100%;position:relative">
-  <div class='counterWrapper'><div class='counter'></div> <div class='postfix'>triples and counting!</div></div>
-  <img style="display:inline-block;max-height: 200px;max-width: 200px;" src="imgs/wardrobe.png"></img><div style="text-align: center;vertical-align: middle;width: 600px;;display:inline-block;"><h1>Your Linked Data Wardrobe!</h1></div>
-        <p style="padding-top:20px;">All the data is cleaned, ironed, and folded, and available for download. If you want something, take it!</p>
-  </div>
-  </div>
-	
+    <div class="jumbotron" style="height: 100%;">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-4">
+            <div class='counterWrapper'>
+              <div class='counter'></div>
+              <div class='postfix'>triples and counting!</div>
+            </div>
+            <img
+                alt="LOD Wardrobe"
+                class="mediumLogo"
+                src="imgs/wardrobe.png"
+            >
+            <div class="col-md-8" style="vertical-align: middle">
+              <h1>LOD Wardrobe</h1>
+              <p>
+                The LOD Wardrobe is where the cleaned data is stored.
+                You can download both clean and dirty (i.e. the original) data.
+                Each data document contains a meta-data description
+                that includes all the stains that were detected.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
     <div id="tableWrapper"></div>
-
-
-
     
-    
-    <!-- Bootstrap core JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
+    <!--
+        Bootstrap core JavaScript
+        Placed at the end of the document so the pages load faster.
+    -->
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="//cdn.datatables.net/1.10.0/js/jquery.dataTables.js"></script>
     <script src="bower_components/d3js/build/d3.v3.min.js"></script>
     <script src="bower_components/jquery.scrollTo/jquery.scrollTo.min.js"></script>
-<!--     <script src="lib/datatables-column-filter.js"></script> -->
+    <!-- <script src="lib/datatables-column-filter.js"></script> -->
     <script src="main.js"></script>
     <script src="wardrobe.js"></script>
   </body>
 </html>
+

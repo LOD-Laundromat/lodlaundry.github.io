@@ -1,4 +1,5 @@
 var basketContents = null;
+var dataTable;
 
 $( document ).ready(function() {
   var queryBasketContents = "\
@@ -30,7 +31,6 @@ WHERE {\n\
   });
 });
 
-
 function status(result) {
   if (!result.start_unpack) {
     return "pending";
@@ -45,7 +45,6 @@ function status(result) {
   }
 }
 
-var dataTable;
 var drawTable = function() {
   var table = $('<table cellpadding="0" cellspacing="0" border="0" class="display" id="laundryBasketTable"></table>');
   $('#tableWrapper').html(table);
@@ -62,7 +61,6 @@ var drawTable = function() {
     row.push(result.url.value);
     row.push(status(result));
     rows.push(row);
-    // @tbd Start/end unpack/clean
   }
   
   var dTableConfig = {
