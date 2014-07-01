@@ -243,6 +243,7 @@ var showMetadataBox = function(md5) {
       "Accept": "application/sparql-results+json,*/*;q=0.9"
     },
     "success": function(data) {
+      var bindings = data.results.bindings;
       var table = $("<table class='table'></table>");
       var addRow = function(config) {
         var row = $("<tr></tr>").appendTo(table);
