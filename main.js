@@ -263,7 +263,7 @@ var showMetadataBox = function(md5) {
         }
       };
       $.each(data.results.bindings, function(index, triple) {
-        addRow({values: [triple.p, triple.o]});
+        addRow({values: [triple.p.value, triple.o.value]});
       });
       drawModal({header: "Dataset Properties", content: table});
     },
