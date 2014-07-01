@@ -121,7 +121,7 @@ var drawTable = function() {
           }
         ],
       "data": rows,
-      dom: S,
+      dom: "S",
       "language": {
         "decimal": ",",
         "thousands": "."
