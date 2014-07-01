@@ -87,21 +87,42 @@ var drawTable = function() {
       "columnDefs":
         [
           {
-            "targets": [1],
-            "visible": false
+            searchable: false,
+            targets: [0],
+            title: "index",
+            visible: true
           },
           {
-            "searchable": true,
-            "targets": [2]
+            searchable: false,
+            targets: [1],
+            title: "MD5",
+            visible: false
+          },
+          {
+            searchable: true,
+            targets: [2],
+            title: "URL",
+            visible: true
+          },
+          {
+            searchable: false,
+            targets: [3],
+            title: "Downloads",
+            visible: true
+          },
+          {
+            searchable: false,
+            targets: [4],
+            title: "Triples",
+            visible: true
+          },
+          {
+            searchable: false,
+            targets: [5],
+            title: "Metadata",
+            visible: true
           }
         ],
-      "columns":
-          [{ "title": "index" }, // 0
-          { "title": "MD5" }, // 1
-          { "title": "URL" }, // 2
-          { "title": "Downloads" }, // 3
-          { "title": "Triples" }, // 4
-          { "title": "Metadata" }], // 5
       "language": {
         "decimal": ",",
         "thousands": "."
@@ -141,38 +162,6 @@ var drawTable = function() {
           }
         }
       }
-/*
-      "aoColumnDefs":
-          [{
-            "aTargets": [1,2,3,4,5],
-            "bSearchable": true
-          },
-          {
-            "aTargets": [0,6,7],
-            "bSortable": false
-          },
-          {
-            "aTargets": [4,5],
-            "sType": "numeric"
-          },
-          {
-            "aTargets": [0],
-            "sWidth": "30px"
-          },
-          {
-            "aTargets": [6],
-            "sWidth": "140px"
-          },
-          {
-            "aTargets": [7],
-            "sWidth": "30px"
-          },
-          {
-            "aTargets": [3],
-            "sWidth": "130px"
-          }],
-      "aaSorting": [[ 5, 'desc' ]]
-*/
   };
   dataTable = table.dataTable(dTableConfig);
   
