@@ -53,6 +53,7 @@ var updateMultiSelectDownloads = function(url) {
   }
   
 };
+
 var dataTable;
 var drawTable = function() {
   var table = $('<table cellpadding="0" cellspacing="0" border="0" class="display" id="wardrobeTable"></table>');

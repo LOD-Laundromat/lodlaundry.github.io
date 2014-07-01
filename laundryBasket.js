@@ -28,6 +28,7 @@ WHERE {\n\
 });
 
 
+var dataTable;
 var drawTable = function() {
   var table = $('<table cellpadding="0" cellspacing="0" border="0" class="display" id="laundryBasketTable"></table>');
   $('#tableWrapper').html(table);
@@ -84,6 +85,10 @@ var drawTable = function() {
   };
   dataTable = table.dataTable(dTableConfig);
 };
+
+$(window).on('resize', function () {
+  dataTable.fnAdjustColumnSizing();
+} );
 
 $("#newDirtyLaundry").keyup(function() {
   $(".submitStatus").hide(400);
