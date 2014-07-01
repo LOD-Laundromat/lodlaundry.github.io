@@ -13,8 +13,7 @@ WHERE {\n\
     OPTIONAL { ?datadoc ll:start_clean ?start_clean . }\n\
     FILTER NOT EXISTS { ?datadoc ll:end_clean ?end_clean . }\n\
   }\n\
-}\n\
-LIMIT 10\n";
+}\n";
   $.ajax({
     data: {
       "default-graph-uri": sparql.mainGraph,
