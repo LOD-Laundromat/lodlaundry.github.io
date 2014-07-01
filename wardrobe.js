@@ -80,7 +80,6 @@ var drawTable = function() {
   }
   
   var dTableConfig = {
-      "bAutoWidth": true,
       "columnDefs":
         [
           {
@@ -121,7 +120,7 @@ var drawTable = function() {
           }
         ],
       "data": rows,
-      "dom": "frtiS",
+      "dom": "frtipS",
       "deferRender": true,
       "createdRow": function ( row, data, index ) {
         var url = $(row).find("td:nth-child(2)").text().trim();
