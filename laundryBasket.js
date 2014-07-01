@@ -76,8 +76,6 @@ var drawTable = function() {
          "decimal": ",",
          "thousands": "."
       },
-      "createdRow": function ( row, data, index ) {
-      },
       "fnDrawCallback": function ( oSettings ) {
       /* Need to redo the counters if filtered or sorted */
       if ( oSettings.bSorted || oSettings.bFiltered )

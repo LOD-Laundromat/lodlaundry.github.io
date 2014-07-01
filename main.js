@@ -243,7 +243,6 @@ var showMetadataBox = function(md5) {
       "Accept": "application/sparql-results+json,*/*;q=0.9"
     },
     "success": function(data) {
-      var bindings = data.results.bindings;
       var table = $("<table class='table'></table>");
       var addRow = function(config) {
         var row = $("<tr></tr>").appendTo(table);
@@ -264,19 +263,16 @@ var showMetadataBox = function(md5) {
         }
       };
       var formattedProps = {};
-      var results = data.results.bindings;
-      $.each(results, function(key, bindings) {
-        if (bindings.pred.value.indexOf("http://lodlaundromat.org/vocab#") == 0) {
-          var shortenedProp = bindings.pred.value.substring("http://lodlaundromat.org/vocab#".length);
-          if (bindings.obj) {
-            if (shortenedProp in formattedProps) {
-              if (typeof formattedProps[shortenedProp] == "string") {
-                formattedProps[shortenedProp] = [formattedProps[shortenedProp]];
-              }
-              formattedProps[shortenedProp].push(bindings.obj.value);
+      $.each(data.results, function(key, bindings) {
+        var shortenedProp = bindings.pred.value.substring("http://lodlaundromat.org/vocab#".length);
+        if (bindings.obj) {
+          if (shortenedProp in formattedProps) {
+            if (typeof formattedProps[shortenedProp] == "string") {
+              formattedProps[shortenedProp] = [formattedProps[shortenedProp]];
             }
-            formattedProps[shortenedProp] = bindings.obj.value;
+            formattedProps[shortenedProp].push(bindings.obj.value);
           }
+          formattedProps[shortenedProp] = bindings.obj.value;
         }
       });
       addRow({values: ["URL" , "<a href='" + formattedProps.url + "' target='_blank'>" + formattedProps.url + "</a>"]});
