@@ -153,15 +153,6 @@ var drawTable = function() {
       "order": [3, "desc"],
       "ordering": true,
       "iDisplayLength": 25,
-      "fnDrawCallback": function ( oSettings ) {
-        /* Need to redo the counters if filtered or sorted */
-        if ( oSettings.bSorted || oSettings.bFiltered ) {
-          for ( var i=0, iLen=oSettings.aiDisplay.length ; i<iLen ; i++ )
-          {
-            $('td:eq(0)', oSettings.aoData[ oSettings.aiDisplay[i] ].nTr ).html( i+1 );
-          }
-        }
-      },
       "scrollX": "100%",
       "scrollY": "800px"
   };
