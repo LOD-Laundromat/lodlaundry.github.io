@@ -110,7 +110,7 @@ var drawTable = function() {
       "dom": "frtipS",
       "deferRender": true,
       "createdRow": function (row, data, index) {
-        var md5 = data.md5;
+        var md5 = data(0);
         var triples = parseInt($(row).find("id:nth-child(4)").text());
         var cleanLink;
         if (triples == 0) {
