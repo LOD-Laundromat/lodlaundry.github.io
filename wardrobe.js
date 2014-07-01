@@ -83,36 +83,42 @@ var drawTable = function() {
       "columnDefs":
         [
           {
+            "orderable": false,
             "searchable": false,
             "targets": [0],
             "title": "index",
             "visible": true
           },
           {
+            "orderable": false,
             "searchable": false,
             "targets": [1],
             "title": "MD5",
             "visible": false
           },
           {
+            "orderable": true,
             "searchable": true,
             "targets": [2],
             "title": "URL",
             "visible": true
           },
           {
+            "orderable": false,
             "searchable": false,
             "targets": [3],
             "title": "Downloads",
             "visible": true
           },
           {
+            "orderable": true,
             "searchable": false,
             "targets": [4],
             "title": "Triples",
             "visible": true
           },
           {
+            "orderable": false,
             "searchable": false,
             "targets": [5],
             "title": "Metadata",
