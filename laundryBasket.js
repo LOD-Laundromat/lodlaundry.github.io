@@ -38,6 +38,8 @@ function status(result) {
   } else if (!result.end_unpack) {
     return "unpacking";
   } else if (!result.start_clean) {
+    return "unpacked";
+  } else if (!result.end_clean) {
     return "cleaning";
   } else {
     return "cleaned";
