@@ -2,8 +2,8 @@
 var tooltip = $('<div id="tooltip" class="hidden"><p><span id="value">100</span></p></div>');
 $("#barChartDatasets").append(tooltip);
 
-var formatSerialization = function(serializationFormat) {
-  switch (serializationFormat) {
+var formatSerialization = function(format) {
+  switch (format) {
     case "xml":
       return "XML";
     case "ntriples":
@@ -15,7 +15,7 @@ var formatSerialization = function(serializationFormat) {
     case "trig":
       return "TriG";
     default:
-      return serializationFormat;
+      return format;
   };
 }
 
@@ -43,18 +43,18 @@ fetchAndDrawViz(
   "pieChartTripleSerializations",
   function(data, rootId) {
     drawPieChart({
-      rootId: rootId,
-      totalUnit: "triples",
-      totalLabel: "TOTAL",
-      //hideLabelsBelow: 0.02,
-      data: data.results.bindings,
-      isArray: true,
-      sumBy: function(bindings) {
-        return formatSerialization(bindings.serializationFormat.value);
-      },
       aggregate: function(bindings) {
         return bindings.count.value;
       },
+      data: data.results.bindings,
+      //hideLabelsBelow: 0.02,
+      isArray: true,
+      rootId: rootId,
+      sumBy: function(bindings) {
+        return formatSerialization(bindings.serializationFormat.value);
+      },
+      totalUnit: "triples",
+      totalLabel: "TOTAL",
     });
   }
 );
@@ -71,7 +71,7 @@ fetchAndDrawViz(
       data: data.results.bindings,
       isArray: true,
       sumBy: function(bindings) {
-        return formatSerialization(bindings.serializationFormat.value);
+        return formatSerialization(bindings.format.value);
       },
       aggregate: function(bindings) {
         return bindings.count.value;
