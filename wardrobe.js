@@ -77,37 +77,37 @@ var drawTable = function() {
           },
           {
             "className": "columnMd5",
-            "name": "md5",
+            //"name": "md5",
             "orderable": false,
             "searchable": false,
             "targets": [0],
             "title": "MD5",
-            "type": "string",
+            //"type": "string",
             "visible": false
           },
           {
             "className": "columnUrl",
-            "name": "url",
+            //"name": "url",
             "orderable": true,
             "searchable": true,
             "targets": [1],
             "title": "URL",
-            "type": "string",
+            //"type": "string",
             "visible": true
           },
           {
             "className": "columnDownload",
-            "name": "download",
+            //"name": "download",
             "orderable": false,
             "searchable": false,
             "targets": [2],
             "title": "Download",
-            "type": "html",
+            //"type": "html",
             "visible": true
           },
           {
             "className": "columnTriples",
-            "name": "triples",
+            //"name": "triples",
             "orderable": true,
             "searchable": false,
             "targets": [3],
@@ -117,18 +117,18 @@ var drawTable = function() {
           },
           {
             "className": "columnMetadata",
-            "name": "metadata",
+            //"name": "metadata",
             "orderable": false,
             "searchable": false,
             "targets": [4],
             "title": "Metadata",
-            "type": "html",
+            //"type": "html",
             "visible": true
           }
         ],
       "createdRow": function (row, data, dataIndex) {
-        var md5 = data.md5;
-        var triples = parseInt(data.triples);
+        var md5 = data[0];
+        var triples = parseInt(data[3]);
         var cleanLink;
         if (triples == 0) {
           cleanLink = "javascript:void(0);";
