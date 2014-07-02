@@ -51,7 +51,7 @@ fetchAndDrawViz(
       isArray: true,
       rootId: rootId,
       sumBy: function(bindings) {
-        return formatSerialization(bindings.serializationFormat.value);
+        return formatSerialization(bindings.format.value);
       },
       totalUnit: "triples",
       totalLabel: "TOTAL",
