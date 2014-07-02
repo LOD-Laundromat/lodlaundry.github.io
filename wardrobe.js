@@ -81,6 +81,7 @@ var drawTable = function() {
             "searchable": false,
             "targets": [0],
             "title": "MD5",
+            "type": "string",
             "visible": false
           },
           {
@@ -90,6 +91,7 @@ var drawTable = function() {
             "searchable": true,
             "targets": [1],
             "title": "URL",
+            "type": "string",
             "visible": true
           },
           {
@@ -99,6 +101,7 @@ var drawTable = function() {
             "searchable": false,
             "targets": [2],
             "title": "Download",
+            "type": "html",
             "visible": true
           },
           {
@@ -108,6 +111,7 @@ var drawTable = function() {
             "searchable": false,
             "targets": [3],
             "title": "Triples",
+            "type": "numeric",
             "visible": true
           },
           {
@@ -117,6 +121,7 @@ var drawTable = function() {
             "searchable": false,
             "targets": [4],
             "title": "Metadata",
+            "type": "html",
             "visible": true
           }
         ],
