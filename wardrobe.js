@@ -112,7 +112,7 @@ var drawTable = function() {
             "searchable": false,
             "targets": [3],
             "title": "Triples",
-            "type": "numeric",
+            //"type": "numeric",
             "visible": true
           },
           {
@@ -171,8 +171,8 @@ var drawTable = function() {
       },
       "lengthChange": true,
       "lengthMenu": [10,25,50,75,100,250,500,1000],
-      "order": ["triples","desc"],
-      "ordering": true,
+      "order": [3,"desc"],
+      //"ordering": true,
       "paging": true,
       "processing": true,
       "scrollX": false,
