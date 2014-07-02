@@ -146,26 +146,9 @@ fetchAndDrawViz(
       hideLabelsBelow: 0.04,
       isArray: true,
       rootId: rootId,
-/*
       sumBy: function(bindings) {
-        var hasTriples = bindings.triples && bindings.triples.value > 0;
-        var hasException = bindings.exception && bindings.exception.value == 1;
-        var hasSyntaxErrors = bindings.message && bindings.message.value == 1;
-        var returnVal = null;
-        if (hasException) {
-          returnVal = "Exception";
-        } else if (hasSyntaxErrors) {
-          if (hasTriples) {
-            returnVal = "Some syntax errors";
-          } else {
-            returnVal = "Only syntax errors";
-          }
-        } else {
-          returnVal = "No errors";
-        }
-        return returnVal;
+        return formatSerialization(bindings.format.value);
       },
-*/
       totalUnit: "documents",
       totalLabel: "TOTAL",
     });
