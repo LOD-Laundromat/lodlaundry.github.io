@@ -171,8 +171,10 @@ var drawTable = function() {
       "lengthChange": true,
       "order": [3,"desc"],
       "ordering": true,
-      "scrollX": "100%",
-      "scrollY": "800px"
+      "paging": true,
+      "processing": true,
+      "scrollX": false,
+      "scrollY": false
   };
   dataTable = table.dataTable(dTableConfig);
   
