@@ -68,6 +68,7 @@ var drawTable = function() {
   }
   
   var dTableConfig = {
+      "autoWidth": "false",
       "columnDefs":
         [
           {
@@ -163,6 +164,7 @@ var drawTable = function() {
       },
       "language": {
         "decimal": ",",
+        "loadingRecords": "Loading wardrobe contents...",
         "thousands": "."
       },
       "order": [3,"desc"],
