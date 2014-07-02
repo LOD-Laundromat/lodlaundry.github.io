@@ -79,21 +79,12 @@ SELECT ?md5 ?doc ?triples ?duplicates {\n\
   FILTER(?triples > 0)\n\
 }";
 
-var parseExceptionsSparql =
-"PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
-SELECT ?exception ?message ?triples WHERE {\n\
-  ?doc a ll:URL .\n\
-  BIND(EXISTS{?doc ll:exception []} AS ?exception)\n\
-  BIND(EXISTS{?doc ll:message []} AS ?message)\n\
-  OPTIONAL {?doc ll:triples ?triples}\n\
-}";
-
 var serializationsPerDocSparql =
 "PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
-SELECT ?format (COUNT(?doc) AS ?count)\n\
+SELECT ?format (COUNT(?datadoc) AS ?count)\n\
 WHERE {\n\
   GRAPH <http://lodlaundromat.org#10> {\n\
-    ?doc ll:serialization_format ?format .\n\
+    ?datadoc ll:serialization_format ?format .\n\
   }\n\
 }\n\
 GROUP BY ?format\n";

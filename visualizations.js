@@ -116,41 +116,61 @@ fetchAndDrawViz(sparql.queries.contentTypesVsSerializationFormats,"pieChartConte
   });
 });
 
-fetchAndDrawViz(sparql.queries.parseExceptions,"pieChartExceptions", function(data, rootId) {
-  drawPieChart({
-    rootId: rootId,
-    dimensions: {
-      width: 600
-    },
-    totalUnit: "documents",
-    totalLabel: "TOTAL",
-    hideLabelsBelow: 0.04,
-    data: data.results.bindings,
-    isArray: true,
-    sumBy: function(bindings) {
-      
-      var hasTriples = bindings.triples && bindings.triples.value > 0;
-      var hasException = bindings.exception && bindings.exception.value == 1;
-      var hasSyntaxErrors = bindings.message && bindings.message.value == 1;
-      
-      var returnVal = null;
-      if (hasException) {
-        returnVal = "Exception";
-      } else if (hasSyntaxErrors) {
-        if (hasTriples) {
-          returnVal = "Some syntax errors";
+var numberOfErrorDocsSparql = "
+PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
+SELECT (COUNT(?datadoc1) AS ?count1) (COUNT(?datadoc2) AS ?count2) (COUNT(?datadoc3) AS ?count3)\n\
+WHERE {\n\
+  GRAPH <http://lodlaundromat.org#10> {\n\
+    {\n\
+      ?datadoc1 ll:status ?status .\n\
+      FILTER (str(?status) NOT IN ("true"))\n\
+    } UNION {\n\
+      ?datadoc2 ll:status "true"^^xsd:string .\n\
+      ?datadoc2 ll:message ?message2 .\n\
+    } UNION {\n\
+      ?datadoc3 ll:status "true"^^xsd:string .\n\
+      FILTER NOT EXISTS { ?datadoc3 ll:message ?message3 }\n\
+    }\n\
+  }\n\
+}\n";
+fetchAndDrawViz(
+  numberOfErrorDocsSparql,
+  "pieChartExceptions",
+  function(data, rootId) {
+    drawPieChart({
+      aggregate: function(bindings){return 1;},
+      data: data.results.bindings,
+      dimensions: {
+        width: 600
+      },
+      hideLabelsBelow: 0.04,
+      isArray: true,
+      rootId: rootId,
+/*
+      sumBy: function(bindings) {
+        var hasTriples = bindings.triples && bindings.triples.value > 0;
+        var hasException = bindings.exception && bindings.exception.value == 1;
+        var hasSyntaxErrors = bindings.message && bindings.message.value == 1;
+        var returnVal = null;
+        if (hasException) {
+          returnVal = "Exception";
+        } else if (hasSyntaxErrors) {
+          if (hasTriples) {
+            returnVal = "Some syntax errors";
+          } else {
+            returnVal = "Only syntax errors";
+          }
         } else {
-          returnVal = "Only syntax errors";
+          returnVal = "No errors";
         }
-      } else {
-        returnVal = "No errors";
-      }
-      return returnVal;
-      
-    },
-    aggregate: function(bindings){return 1;},
-  });
-});
+        return returnVal;
+      },
+*/
+      totalUnit: "documents",
+      totalLabel: "TOTAL",
+    });
+  }
+);
 
 fetchAndDrawViz(
   sparql.queries.contentLengths,
