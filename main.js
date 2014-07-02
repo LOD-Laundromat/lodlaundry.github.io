@@ -245,7 +245,7 @@ var drawHeader = function() {
        {href: "laundryBasket.html", img: "imgs/basket.png", title: "Laundry Basket"},
        {href: "https://github.com/LODLaundry/LOD-Washing-Machine", newWindow: true, img: "imgs/washingMachine.png", title: "Washing Machine"},
        {href: "wardrobe.html", img: "imgs/wardrobe.png", title: "Wardrobe"},
-       {href: "visualizations.html", img: "imgs/analysis.png", title: "Inventory"},
+       //{href: "visualizations.html", img: "imgs/analysis.png", title: "Inventory"},
        {href: "sparql.html", img: "imgs/labels.png", title: "SPARQL"},
        
      ];
