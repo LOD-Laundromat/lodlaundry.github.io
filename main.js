@@ -223,14 +223,16 @@ var drawModal = function(config) {
 
 var showMetadataBox = function(md5) {
   var url = "http://lodlaundry.wbeek.ops.few.vu.nl/infobox?md5=" + md5;
-  $.get({
-    "dataType": "html",
-    "success": function(data) {
-        drawModal({header: "Dataset Properties", content: data});
-    },
-    "url": url
-  });
+  httpGet(url);
 };
+
+function httpGet(url) {
+  var xmlHttp = null;
+  xmlHttp = new XMLHttpRequest();
+  xmlHttp.open("GET", url, false);
+  xmlHttp.send(null);
+  return xmlHttp.responseText;
+}
 
 
 /**
