@@ -71,6 +71,12 @@ var drawTable = function() {
       "columnDefs":
         [
           {
+            "celltype": "td",
+            "targets": "_all"
+          },
+          {
+            "className": "columnMd5",
+            "name": "md5",
             "orderable": false,
             "searchable": false,
             "targets": [0],
@@ -78,6 +84,8 @@ var drawTable = function() {
             "visible": false
           },
           {
+            "className": "columnUrl",
+            "name": "url",
             "orderable": true,
             "searchable": true,
             "targets": [1],
@@ -85,13 +93,17 @@ var drawTable = function() {
             "visible": true
           },
           {
+            "className": "columnDownload",
+            "name": "download",
             "orderable": false,
             "searchable": false,
             "targets": [2],
-            "title": "Downloads",
+            "title": "Download",
             "visible": true
           },
           {
+            "className": "columnTriples",
+            "name": "triples",
             "orderable": true,
             "searchable": false,
             "targets": [3],
@@ -99,6 +111,8 @@ var drawTable = function() {
             "visible": true
           },
           {
+            "className": "columnMetadata",
+            "name": "metadata",
             "orderable": false,
             "searchable": false,
             "targets": [4],
@@ -109,9 +123,9 @@ var drawTable = function() {
       "data": rows,
       "dom": "frtipS",
       "deferRender": true,
-      "createdRow": function (row, data, index) {
-        var md5 = data[0];
-        var triples = parseInt(data[3]);
+      "createdRow": function (row, data, dataIndex) {
+        var md5 = data.md5;
+        var triples = parseInt(data.triples);
         var cleanLink;
         if (triples == 0) {
           cleanLink = "javascript:void(0);";
@@ -120,10 +134,20 @@ var drawTable = function() {
         }
         $(row).find(".downloadClean").attr("href", cleanLink);
         $(row).find(".showDatasetInfo").click(
-            function(){showMetadataBox(md5);}
+            function(){
+              showMetadataBox(md5);
+            }
         );
-        $(row).find("a").click(function(event){event.stopPropagation();});
-        $(row).find("button").click(function(event){event.stopPropagation();});
+        $(row).find("a").click(
+            function(event){
+              event.stopPropagation();
+            }
+        );
+        $(row).find("button").click(
+            function(event){
+              event.stopPropagation();
+            }
+        );
         $(this).toggleClass('selected');
         $(row).click(
             function(){
@@ -136,7 +160,7 @@ var drawTable = function() {
         "decimal": ",",
         "thousands": "."
       },
-      "order": [3, "desc"],
+      "order": [3,"desc"],
       "ordering": true,
       "scrollX": "100%",
       "scrollY": "800px"
