@@ -116,7 +116,7 @@ fetchAndDrawViz(sparql.queries.contentTypesVsSerializationFormats,"pieChartConte
   });
 });
 
-var numberOfErrorDocsSparql = "
+var numberOfErrorDocsSparql = "\
 PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
 SELECT (COUNT(?datadoc1) AS ?count1) (COUNT(?datadoc2) AS ?count2) (COUNT(?datadoc3) AS ?count3)\n\
 WHERE {\n\
