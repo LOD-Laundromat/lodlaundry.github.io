@@ -123,12 +123,12 @@ WHERE {\n\
   GRAPH <http://lodlaundromat.org#10> {\n\
     {\n\
       ?datadoc1 ll:status ?status .\n\
-      FILTER (str(?status) NOT IN ("true"))\n\
+      FILTER (str(?status) NOT IN (\"true\"))\n\
     } UNION {\n\
-      ?datadoc2 ll:status "true"^^xsd:string .\n\
+      ?datadoc2 ll:status \"true\"^^xsd:string .\n\
       ?datadoc2 ll:message ?message2 .\n\
     } UNION {\n\
-      ?datadoc3 ll:status "true"^^xsd:string .\n\
+      ?datadoc3 ll:status \"true\"^^xsd:string .\n\
       FILTER NOT EXISTS { ?datadoc3 ll:message ?message3 }\n\
     }\n\
   }\n\
