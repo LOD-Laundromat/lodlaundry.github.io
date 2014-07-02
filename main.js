@@ -43,11 +43,11 @@ var contentTypesVsSerializationFormatsSparql =
 SELECT ?matchType (COUNT(?doc) AS ?count)\n\
 WHERE {\n\
   ?datadoc ll:http_content_type ?contentType .\n\
-  ?datadoc ll:serialization_format ?serializationFormat .\n\
-  FILTER(str(?serializationFormat) != \"rdfa\")\n\
+  ?datadoc ll:serialization_format ?format .\n\
+  FILTER(str(?format) != \"rdfa\")\n\
   FILTER(!contains(str(?contentType), \"zip\"))\n\
   BIND(if(contains(str(?contentType), \"n3\"), \"turtle\", ?contentType) AS ?contentType)\n\
-  BIND(if (contains(str(?contentType), str(?serializationFormat)), \"matches\", \"does not match\") AS ?matchType)\n\
+  BIND(if (contains(str(?contentType), str(?format)), \"matches\", \"does not match\") AS ?matchType)\n\
 } GROUP BY ?matchType\n";
 
 var datasetInfoSparql1 = "\
@@ -90,24 +90,24 @@ SELECT ?exception ?message ?triples WHERE {\n\
 
 var serializationsPerDocSparql =
 "PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
-SELECT ?serializationFormat (COUNT(?doc) AS ?count)\n\
+SELECT ?format (COUNT(?doc) AS ?count)\n\
 WHERE {\n\
   GRAPH <http://lodlaundromat.org#10> {\n\
-    ?doc ll:serialization_format ?serializationFormat .\n\
+    ?doc ll:serialization_format ?format .\n\
   }\n\
 }\n\
-GROUP BY ?serializationFormat\n";
+GROUP BY ?format\n";
 
 var serializationsPerTripleSparql =
 "PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
-SELECT ?serializationFormat (SUM(?triples) AS ?count)\n\
+SELECT ?format (SUM(?triples) AS ?count)\n\
 WHERE {\n\
   GRAPH <http://lodlaundromat.org#10> {\n\
-    [] ll:serialization_format ?serializationFormat ;\n\
-       ll:triples ?triples .\n\
+    ?datadoc ll:serialization_format ?format .\n\
+    ?datadoc ll:triples ?triples .\n\
   }\n\
 }\n\
-GROUP BY ?serializationFormat\n";
+GROUP BY ?format\n";
 
 var totalTripleCountSparql =
 "PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
