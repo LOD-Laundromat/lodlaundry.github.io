@@ -233,7 +233,7 @@ function httpGet(url) {
   var xmlHttp = null;
   xmlHttp = new XMLHttpRequest();
   xmlHttp.open("GET", url, false);
-  //xmlHttp.send(null);
+  xmlHttp.send();
   return xmlHttp.responseText;
 }
 
