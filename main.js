@@ -225,14 +225,19 @@ var showMetadataBox = function(md5) {
   var url = "http://lodlaundry.wbeek.ops.few.vu.nl/infobox?md5=" + md5;
   $.ajax({
     "success": function(data) {
-        drawModal({
-          "header": "Monkeys",
-          "content": data
-        });
+        monkeys(data);
     },
     "url": url
   });
 }
+
+function monkeys(data) {
+  drawModal({
+    "header": "Monkeys",
+    "content": data
+  });
+}
+
 /*
 var showMetadataBox = function(md5) {
   var url = "http://lodlaundry.wbeek.ops.few.vu.nl/infobox?md5=" + md5;
