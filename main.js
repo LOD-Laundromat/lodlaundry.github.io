@@ -205,7 +205,6 @@ var modal = modalDiv.modal({show: false});
  * }
  */
 var drawModal = function(config) {
-  //Draw header
   var header = modalDiv.find(".modal-header");
   if (!config.header) {
     if (header.length > 0) modalDiv.find(".modal-header").remove();
@@ -218,27 +217,7 @@ var drawModal = function(config) {
       modalDiv.find(".modal-header").empty().append(config.header);
     }
   }
-  
-  //Draw content
-  if (typeof config.content == "string") {
-    modalDiv.find(".modal-body").text(config.content);
-  } else {
-    modalDiv.find(".modal-body").empty().append(config.content);
-  }
-  
-  var footer = modalDiv.find(".modal-footer");
-  //draw footer
-  if (!config.footer) {
-    if (footer.length > 0) modalDiv.find(".modal-footer").remove();
-  } else {
-    if (footer.length == 0) footer = $(' <div class="modal-footer"></div>').appendTo(modalDiv.find(".modal-content"));
-    if (typeof config.footer == "string") {
-      modalDiv.find(".modal-footer").html(config.footer);
-    } else {
-      modalDiv.find(".modal-footer").empty().append(config.footer);
-    }
-  }
-  
+  modalDiv.find(".modal-body").empty().append(config.content);
   modal.modal("show");
 };
 
