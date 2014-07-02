@@ -172,7 +172,7 @@ var drawTable = function() {
       "lengthChange": true,
       "lengthMenu": [10,25,50,75,100,250,500,1000],
       "order": [3,"desc"],
-      //"ordering": true,
+      "ordering": true,
       "paging": true,
       "processing": true,
       "scrollX": false,

@@ -10,7 +10,7 @@ if (!console.log) {
 };
 */
 
-var contentLengthsSPARQL = 
+var contentLengthsSparql = 
 "PREFIX ll: <http://lodlaundromat.org/vocab#>\
 SELECT ?clength ?bcount WHERE {\
   ?doc ll:http_content_length ?clength ;\
@@ -23,7 +23,7 @@ SELECT ?clength ?bcount WHERE {\
   FILTER(!STRENDS(str(?doc), \".gz\"))\
 }";
 
-var contentTypesPerDocSPARQL =
+var contentTypesPerDocSparql =
 "PREFIX ll: <http://lodlaundromat.org/vocab#>\
 SELECT ?contentType (COUNT(?doc) AS ?count) WHERE {\
   ?doc ll:http_content_type ?contentTypeString\
@@ -38,27 +38,38 @@ SELECT ?contentType (COUNT(?doc) AS ?count) WHERE {\
  * - Replace the N3 content type string with Turtle
  *   to make our matching function easier.
  */
-var contentTypesVsSerializationFormatsSPARQL =
-"PREFIX ll: <http://lodlaundromat.org/vocab#>\
-SELECT ?matchType (COUNT(?doc) AS ?count) WHERE {\
-  ?doc ll:http_content_type ?contentType;\
-    ll:serialization_format ?serializationFormat .\
-  FILTER(str(?serializationFormat) != \"rdfa\")\
-  FILTER(!contains(str(?contentType), \"zip\"))\
-  BIND(if(contains(str(?contentType), \"n3\"), \"turtle\", ?contentType) AS ?contentType)\
-  BIND(if (contains(str(?contentType), str(?serializationFormat)), \"matches\", \"does not match\") AS ?matchType)\
-} GROUP BY ?matchType";
+var contentTypesVsSerializationFormatsSparql =
+"PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
+SELECT ?matchType (COUNT(?doc) AS ?count)\n\
+WHERE {\n\
+  ?datadoc ll:http_content_type ?contentType .\n\
+  ?datadoc ll:serialization_format ?serializationFormat .\n\
+  FILTER(str(?serializationFormat) != \"rdfa\")\n\
+  FILTER(!contains(str(?contentType), \"zip\"))\n\
+  BIND(if(contains(str(?contentType), \"n3\"), \"turtle\", ?contentType) AS ?contentType)\n\
+  BIND(if (contains(str(?contentType), str(?serializationFormat)), \"matches\", \"does not match\") AS ?matchType)\n\
+} GROUP BY ?matchType\n";
 
-var datasetInfoSPARQL1 = "\
+var datasetInfoSparql1 = "\
 PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
-SELECT ?datadoc ?p ?o {\n\
+SELECT ?datadoc ?p ?o\n\
+WHERE {\n\
   ?datadoc ll:md5 \"";
-var datasetInfoSPARQL2 =
+var datasetInfoSparql2 =
 "\"^^xsd:string .\n\
   ?datadoc ?p ?o .\n\
 }\n";
 
-var datasetsWithCountsSPARQL =
+var termLabelSparql1 = "\
+PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
+SELECT ?label\n\
+WHERE {\n\
+  ";
+var termLabelSparql2 ="\
+rdfs:label ?label .\n\
+}\n";
+
+var datasetsWithCountsSparql =
 "PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
 SELECT ?md5 ?doc ?triples ?duplicates {\n\
   []  a ll:URL ;\n\
@@ -68,7 +79,7 @@ SELECT ?md5 ?doc ?triples ?duplicates {\n\
   FILTER(?triples > 0)\n\
 }";
 
-var parseExceptionsSPARQL =
+var parseExceptionsSparql =
 "PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
 SELECT ?exception ?message ?triples WHERE {\n\
   ?doc a ll:URL .\n\
@@ -77,7 +88,7 @@ SELECT ?exception ?message ?triples WHERE {\n\
   OPTIONAL {?doc ll:triples ?triples}\n\
 }";
 
-var serializationsPerDocSPARQL =
+var serializationsPerDocSparql =
 "PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
 SELECT ?serializationFormat (COUNT(?doc) AS ?count)\n\
 WHERE {\n\
@@ -87,7 +98,7 @@ WHERE {\n\
 }\n\
 GROUP BY ?serializationFormat\n";
 
-var serializationsPerTripleSPARQL =
+var serializationsPerTripleSparql =
 "PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
 SELECT ?serializationFormat (SUM(?triples) AS ?count)\n\
 WHERE {\n\
@@ -98,21 +109,22 @@ WHERE {\n\
 }\n\
 GROUP BY ?serializationFormat\n";
 
-var totalTripleCountSPARQL =
+var totalTripleCountSparql =
 "PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
 SELECT (SUM(?triples) AS ?totalTriples) {?dataset ll:triples ?triples}";
 
 var api = {
-  wardrobe: {
-    all: "testInput.json",
-    download: function(md5) {
+  "laundryBasket": {
+    "all": "lod_basket.txt",
+    "endpoint": "http://lodlaundry.wbeek.ops.few.vu.nl/basket"
+  },
+  "namespace": "http://lodlaundromat.org/vocab#",
+  "wardrobe": {
+    "all": "testInput.json",
+    "download": function(md5) {
       return "http://lodlaundry.wbeek.ops.few.vu.nl/data/" + md5
           + "/clean.nt.gz";
     }
-  },
-  laundryBasket: {
-    all: "lod_basket.txt",
-    endpoint: "http://lodlaundry.wbeek.ops.few.vu.nl/basket"
   }
 };
 
@@ -121,18 +133,20 @@ var sparql = {
   "url": "http://lodlaundry.wbeek.ops.few.vu.nl/sparql/",
   "mainGraph": "http://lodlaundromat.org#10",
   "queries": {
-    "totalTripleCount": totalTripleCountSPARQL,
-    "serializationsPerDoc": serializationsPerDocSPARQL,
-    "serializationsPerTriple": serializationsPerTripleSPARQL,
-    "contentTypesPerDoc": contentTypesPerDocSPARQL,
+    "totalTripleCount": totalTripleCountSparql,
+    "serializationsPerDoc": serializationsPerDocSparql,
+    "serializationsPerTriple": serializationsPerTripleSparql,
+    "contentTypesPerDoc": contentTypesPerDocSparql,
     "contentTypesVsSerializationFormats":
-        contentTypesVsSerializationFormatsSPARQL,
-    "parseExceptions": parseExceptionsSPARQL,
-    "contentLengths": contentLengthsSPARQL,
-    "datasetsWithCounts": datasetsWithCountsSPARQL,
+        contentTypesVsSerializationFormatsSparql,
+    "parseExceptions": parseExceptionsSparql,
+    "contentLengths": contentLengthsSparql,
+    "datasetsWithCounts": datasetsWithCountsSparql,
     "datasetInfo": function(md5) {
-        return datasetInfoSPARQL1 + md5 + datasetInfoSPARQL2;
-    }
+        return datasetInfoSparql1 + md5 + datasetInfoSparql2;
+    },
+    "termLabel": function(term) {
+        return termLabelSparql1 + term + termLabelSparql2;
   }
 };
 
@@ -234,50 +248,13 @@ var drawModal = function(config) {
 };
 
 var showMetadataBox = function(md5) {
-  $.ajax({
-    "data": {
-      "default-graph-uri": sparql.mainGraph,
-      "query": sparql.queries.datasetInfo(md5)
-    },
-    "headers": {
-      "Accept": "application/sparql-results+json,*/*;q=0.9"
-    },
+  var url = "http://lodlaundry.wbeek.ops.few.vu.nl/infobox?md5=" + md5;
+  $.get({
     "success": function(data) {
-      var table = $("<table class='table'></table>");
-      var addRow = function(config) {
-        var row = $("<tr></tr>").appendTo(table);
-        if (config.rowClass) row.addClass(config.rowClass);
-        if (config.midHeader) row.css("font-weight", "bold");
-        for (var i = 0; i < config.values.length; i++) {
-          var col = $("<td></td>");
-          if (config.isHeader) col = $("<th></th>");
-          if (config.midHeader) col.attr("colspan", "2");
-          row.append(col);
-          var arg = config.values[i];
-          if (typeof arg == "string") {
-            col.html(arg);
-          } else {
-            col.append(arg);
-          }
-          if (i == 0 && config.indentFirstCol) col.css("padding-left", "15px");
-        }
-      };
-      $.each(data.results.bindings, function(index, triple) {
-        addRow({values: [triple.p.value, triple.o.value]});
-      });
-      drawModal({header: "Dataset Properties", content: table});
+        drawModal({header: "Dataset Properties", content: data});
     },
-    "url": sparql.url
+    "url": url
   });
-};
-var deleteEveryDivExcept = function(divId) {
-  $("div").hide();
-  $("h1").hide();
-  $("h2").hide();
-  $("h3").hide();
-  var targetDiv = $("#" + divId);
-  targetDiv.parents().show();
-  targetDiv.show();
 };
 
 
