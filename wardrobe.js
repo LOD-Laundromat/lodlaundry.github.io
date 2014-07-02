@@ -126,9 +126,6 @@ var drawTable = function() {
             "visible": true
           }
         ],
-      "data": rows,
-      "dom": "frtipS",
-      "deferRender": true,
       "createdRow": function (row, data, dataIndex) {
         var md5 = data.md5;
         var triples = parseInt(data.triples);
@@ -162,11 +159,16 @@ var drawTable = function() {
             }
         );
       },
+      "data": rows,
+      "deferRender": true,
+      "dom": "frtipS",
+      "info": true,
       "language": {
         "decimal": ",",
         "loadingRecords": "Loading wardrobe contents...",
         "thousands": "."
       },
+      "lengthChange": true,
       "order": [3,"desc"],
       "ordering": true,
       "scrollX": "100%",
