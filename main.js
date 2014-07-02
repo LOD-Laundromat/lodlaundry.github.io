@@ -141,12 +141,7 @@ var sparql = {
         contentTypesVsSerializationFormatsSparql,
     "parseExceptions": parseExceptionsSparql,
     "contentLengths": contentLengthsSparql,
-    "datasetsWithCounts": datasetsWithCountsSparql,
-    "datasetInfo": function(md5) {
-        return datasetInfoSparql1 + md5 + datasetInfoSparql2;
-    },
-    "termLabel": function(term) {
-        return termLabelSparql1 + term + termLabelSparql2;
+    "datasetsWithCounts": datasetsWithCountsSparql
   }
 };
 
