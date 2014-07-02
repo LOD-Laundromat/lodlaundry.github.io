@@ -224,6 +224,7 @@ var drawModal = function(config) {
 var showMetadataBox = function(md5) {
   var url = "http://lodlaundry.wbeek.ops.few.vu.nl/infobox?md5=" + md5;
   $.get({
+    "dataType": "html",
     "success": function(data) {
         drawModal({header: "Dataset Properties", content: data});
     },
