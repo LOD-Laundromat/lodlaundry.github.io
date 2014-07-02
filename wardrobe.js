@@ -161,6 +161,7 @@ var drawTable = function() {
       },
       "data": rows,
       "deferRender": true,
+      "displayStart": 0,
       "dom": "frtipS",
       "info": true,
       "language": {
@@ -169,6 +170,7 @@ var drawTable = function() {
         "thousands": "."
       },
       "lengthChange": true,
+      "lengthMenu": [10,25,50,75,100,250,500,1000],
       "order": [3,"desc"],
       "ordering": true,
       "paging": true,
