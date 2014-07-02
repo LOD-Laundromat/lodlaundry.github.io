@@ -130,7 +130,6 @@ var sparql = {
     "contentTypesPerDoc": contentTypesPerDocSparql,
     "contentTypesVsSerializationFormats":
         contentTypesVsSerializationFormatsSparql,
-    "parseExceptions": parseExceptionsSparql,
     "contentLengths": contentLengthsSparql,
     "datasetsWithCounts": datasetsWithCountsSparql
   }
