@@ -225,36 +225,15 @@ var showMetadataBox = function(md5) {
   var url = "http://lodlaundry.wbeek.ops.few.vu.nl/infobox?md5=" + md5;
   $.ajax({
     "success": function(data) {
-        monkeys(data);
+        drawModal({
+          "header": "Metadata infobox",
+          "content": data
+        });
     },
     "url": url
   });
 }
 
-function monkeys(data) {
-  drawModal({
-    "header": "Monkeys",
-    "content": data
-  });
-}
-
-/*
-var showMetadataBox = function(md5) {
-  var url = "http://lodlaundry.wbeek.ops.few.vu.nl/infobox?md5=" + md5;
-  drawModal({
-    "header": "Monkeys",
-    "content": httpGet(url)
-  })
-};
-
-function httpGet(url) {
-  var xmlHttp = null;
-  xmlHttp = new XMLHttpRequest();
-  xmlHttp.open("GET", url, false);
-  xmlHttp.send(null);
-  return xmlHttp.responseText;
-}
-*/
 
 /**
  * draw header
