@@ -174,7 +174,9 @@ var drawTable = function() {
       "paging": true,
       "processing": true,
       "scrollX": false,
-      "scrollY": false
+      "scrollY": false,
+      "searching": true,
+      "stateSave": true
   };
   dataTable = table.dataTable(dTableConfig);
   
