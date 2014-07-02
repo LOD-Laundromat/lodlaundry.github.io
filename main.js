@@ -223,6 +223,19 @@ var drawModal = function(config) {
 
 var showMetadataBox = function(md5) {
   var url = "http://lodlaundry.wbeek.ops.few.vu.nl/infobox?md5=" + md5;
+  $.ajax({
+    "success": function(data) {
+        drawModal({
+          "header": "Monkeys",
+          "content": data
+        });
+    },
+    "url": url
+  });
+}
+/*
+var showMetadataBox = function(md5) {
+  var url = "http://lodlaundry.wbeek.ops.few.vu.nl/infobox?md5=" + md5;
   drawModal({
     "header": "Monkeys",
     "content": httpGet(url)
@@ -236,7 +249,7 @@ function httpGet(url) {
   xmlHttp.send(null);
   return xmlHttp.responseText;
 }
-
+*/
 
 /**
  * draw header
