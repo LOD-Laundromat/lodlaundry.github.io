@@ -225,7 +225,7 @@ var showMetadataBox = function(md5) {
   var url = "http://lodlaundry.wbeek.ops.few.vu.nl/infobox?md5=" + md5;
   drawModal({
     "header": "Monkeys",
-    "content": httpGet(url);
+    "content": httpGet(url)
   })
 };
 
