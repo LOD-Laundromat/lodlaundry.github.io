@@ -121,7 +121,8 @@ var api = {
 
 var sparql = {
   //url: "http://virtuoso.lodlaundromat.ops.few.vu.nl/sparql",
-  "url": "http://lodlaundry.wbeek.ops.few.vu.nl/sparql/",
+  //"url": "http://lodlaundry.wbeek.ops.few.vu.nl/sparql/",
+  "url": "http://d2s.labs.vu.nl:3020/sparql/",
   "mainGraph": "http://lodlaundromat.org#10",
   "queries": {
     "totalTripleCount": totalTripleCountSparql,
