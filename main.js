@@ -9,16 +9,16 @@ var sparql = {
 	url : "http://sparql.backend.lodlaundromat.org/sparql/",
 	mainGraph : "http://lodlaundromat.org#11",
 	queries : {
-		totalTripleCount :
+totalTripleCount :
 "PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
 SELECT (SUM(?triples) AS ?totalTriples) {?dataset ll:triples ?triples}",
-		serializationsPerDoc :
-"PREFIX ll: <http://lodlaundromat.org/vocab#>\
-SELECT ?contentType (COUNT(?doc) AS ?count) WHERE {\
-  ?doc ll:http_content_type ?contentTypeString\
-  BIND(REPLACE(?contentTypeString, \";.*\", \"\", \"i\") AS ?contentType)\
+serializationsPerDoc :
+"PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
+SELECT ?contentType (COUNT(?doc) AS ?count) WHERE {\n\
+  ?doc ll:content_type ?contentTypeString\n\
+  BIND(REPLACE(?contentTypeString, \";.*\", \"\", \"i\") AS ?contentType)\n\
 } GROUP BY ?contentType",
-		serializationsPerTriple :
+serializationsPerTriple :
 "PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
 SELECT ?format (SUM(?triples) AS ?count)\n\
 WHERE {\n\
@@ -26,14 +26,14 @@ WHERE {\n\
   ?datadoc ll:triples ?triples .\n\
 }\n\
 GROUP BY ?format\n",
-		contentTypesPerDoc :
+contentTypesPerDoc :
 "PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
 SELECT ?format (COUNT(?datadoc) AS ?count)\n\
 WHERE {\n\
   ?datadoc ll:serialization_format ?format .\n\
 }\n\
 GROUP BY ?format\n",
-		contentTypesVsSerializationFormats:
+contentTypesVsSerializationFormats:
 /**
  * Some explanations:
  * - Do not include documents with serialization format RDFa,
@@ -43,28 +43,28 @@ GROUP BY ?format\n",
  *   to make our matching function easier.
  */
 "PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
-SELECT ?matchType (COUNT(?doc) AS ?count)\n\
+SELECT ?matchType (COUNT(?datadoc) AS ?count)\n\
 WHERE {\n\
-  ?datadoc ll:http_content_type ?contentType .\n\
+  ?datadoc ll:content_type ?contentType .\n\
   ?datadoc ll:serialization_format ?format .\n\
   FILTER(str(?format) != \"rdfa\")\n\
   FILTER(!contains(str(?contentType), \"zip\"))\n\
   BIND(if(contains(str(?contentType), \"n3\"), \"turtle\", ?contentType) AS ?contentType)\n\
   BIND(if (contains(str(?contentType), str(?format)), \"matches\", \"does not match\") AS ?matchType)\n\
 } GROUP BY ?matchType\n",
-		contentLengths :
-"PREFIX ll: <http://lodlaundromat.org/vocab#>\
-SELECT ?clength ?bcount WHERE {\
-  ?doc ll:http_content_length ?clength ;\
-    ll:stream_byte_count ?bcount.\
-  MINUS {\
-    ?doc ll:archive_contains []\
-  }\
-  MINUS {[] ll:archive_contains ?doc}\
-  FILTER(!STRENDS(str(?doc), \".bz2\"))\
-  FILTER(!STRENDS(str(?doc), \".gz\"))\
+contentLengths :
+"PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
+SELECT ?clength ?bcount WHERE {\n\
+  ?doc ll:content_length ?clength ;\n\
+    ll:byte_count ?bcount.\n\
+  MINUS {\n\
+    ?doc ll:archive_contains []\n\
+  }\n\
+  MINUS {[] ll:archive_contains ?doc}\n\
+  FILTER(!STRENDS(str(?doc), \".bz2\"))\n\
+  FILTER(!STRENDS(str(?doc), \".gz\"))\n\
 }",
-		datasetsWithCounts :
+datasetsWithCounts :
 "PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
 SELECT ?md5 ?doc ?triples ?duplicates {\n\
   []  a ll:URL ;\n\
@@ -72,7 +72,22 @@ SELECT ?md5 ?doc ?triples ?duplicates {\n\
     ll:duplicates ?duplicates ;\n\
     ll:url ?doc .\n\
   FILTER(?triples > 0)\n\
-}"
+}",
+exceptionCounts:
+"PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
+SELECT (COUNT(?datadoc1) AS ?count1) (COUNT(?datadoc2) AS ?count2) (COUNT(?datadoc3) AS ?count3)\n\
+WHERE {\n\
+  {\n\
+    ?datadoc1 ll:status ?status .\n\
+    FILTER (str(?status) NOT IN (\"true\"))\n\
+  } UNION {\n\
+    ?datadoc2 ll:status \"true\"^^xsd:string .\n\
+    ?datadoc2 ll:message ?message2 .\n\
+  } UNION {\n\
+    ?datadoc3 ll:status \"true\"^^xsd:string .\n\
+    FILTER NOT EXISTS { ?datadoc3 ll:message ?message3 }\n\
+  }\n\
+}\n"
 	}
 };
 

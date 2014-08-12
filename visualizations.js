@@ -71,7 +71,7 @@ fetchAndDrawViz(
       data: data.results.bindings,
       isArray: true,
       sumBy: function(bindings) {
-        return formatSerialization(bindings.format.value);
+        return formatSerialization(bindings.contentType.value);
       },
       aggregate: function(bindings) {
         return bindings.count.value;
@@ -92,13 +92,15 @@ fetchAndDrawViz(sparql.queries.contentTypesPerDoc,"pieChartContentTypes", functi
     data: data.results.bindings,
     isArray: true,
     sumBy: function(bindings) {
-      return formatSerialization(bindings.contentType.value);
+      return formatSerialization(bindings.format.value);
     },
     aggregate: function(bindings){return bindings.count.value;},
   });
 });
 
-fetchAndDrawViz(sparql.queries.contentTypesVsSerializationFormats,"pieChartContentTypesVsSer", function(data, rootId) {
+fetchAndDrawViz(sparql.queries.contentTypesVsSerializationFormats,
+  "pieChartContentTypesVsSer", 
+  function(data, rootId) {
   drawPieChart({
     rootId: rootId,
     dimensions: {
@@ -116,25 +118,8 @@ fetchAndDrawViz(sparql.queries.contentTypesVsSerializationFormats,"pieChartConte
   });
 });
 
-var numberOfErrorDocsSparql = "\
-PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
-SELECT (COUNT(?datadoc1) AS ?count1) (COUNT(?datadoc2) AS ?count2) (COUNT(?datadoc3) AS ?count3)\n\
-WHERE {\n\
-  GRAPH <http://lodlaundromat.org#10> {\n\
-    {\n\
-      ?datadoc1 ll:status ?status .\n\
-      FILTER (str(?status) NOT IN (\"true\"))\n\
-    } UNION {\n\
-      ?datadoc2 ll:status \"true\"^^xsd:string .\n\
-      ?datadoc2 ll:message ?message2 .\n\
-    } UNION {\n\
-      ?datadoc3 ll:status \"true\"^^xsd:string .\n\
-      FILTER NOT EXISTS { ?datadoc3 ll:message ?message3 }\n\
-    }\n\
-  }\n\
-}\n";
 fetchAndDrawViz(
-  numberOfErrorDocsSparql,
+  sparql.queries.exceptionCounts,
   "pieChartExceptions",
   function(data, rootId) {
     drawPieChart({
@@ -147,6 +132,8 @@ fetchAndDrawViz(
       isArray: true,
       rootId: rootId,
       sumBy: function(bindings) {
+    	 
+    	  return null;
         return formatSerialization(bindings.format.value);
       },
       totalUnit: "documents",
