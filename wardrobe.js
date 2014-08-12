@@ -3,19 +3,6 @@ var wardrobeData = null;
 var hasArchiveEntry = {};
 var fromArchive = {};
 var md5 = {};
-var hideIcons = function() {
-  hoverDiv.hide();
-};
-
-var formatInt = function(origValue) {
-   var rx=  /(\d+)(\d{3})/;
-      return String(origValue).replace(/^\d+/, function(w){
-          while(rx.test(w)){
-              w= w.replace(rx, '$1.$2');
-          }
-          return w;
-      });
-};
 
 var downloadSelectedCleaned = function() {
   $("#wardrobeTable tr.selected .downloadClean").each(function(){
@@ -33,11 +20,8 @@ var updateMultiSelectDownloads = function(url) {
   if ($("#wardrobeTable tr.selected").length > 0) {
     if (!multiButtons.is(':visible')) {
       multiButtons.slideDown();
-//      multiButtons.slideDown(400, "swing", function(){$(this).remove;});
-//      multiButtons.show("slow");
     }
   } else {
-//    multiButtons.hide("slow", function(){$(this).remove;});
     if (multiButtons.is(':visible')) multiButtons.slideUp();
   }
   
@@ -56,7 +40,7 @@ var drawTable = function() {
   for (var i = 0; i < wardrobeData.results.bindings.length; i++) {
     var results = wardrobeData.results.bindings[i];
     var row = [];
-    row.push(results.md5.value);
+//    row.push(results.md5.value);
     row.push(results.url.value);
     row.push(
         "<a class='downloadClean btn btn-default' title='Download the washed and cleaned data' target='_blank'><span class='glyphicon glyphicon-download'></span> Clean</a>" +
@@ -75,42 +59,40 @@ var drawTable = function() {
             "celltype": "td",
             "targets": "_all"
           },
-          {
-            "className": "columnMd5",
-            //"name": "md5",
-            "orderable": false,
-            "searchable": false,
-            "targets": [0],
-            "title": "MD5",
-            //"type": "string",
-            "visible": false
-          },
+//          {
+//              "className": "columnMd5",
+//              "orderable": false,
+//              "searchable": false,
+//              "targets": [0],
+//              "title": "MD5",
+//              "visible": false,
+//            },
           {
             "className": "columnUrl",
             //"name": "url",
             "orderable": true,
             "searchable": true,
-            "targets": [1],
+            "targets": [0],
             "title": "URL",
             //"type": "string",
-            "visible": true
+            "visible": true,
           },
           {
             "className": "columnDownload",
             //"name": "download",
             "orderable": false,
             "searchable": false,
-            "targets": [2],
+            "targets": [1],
             "title": "Download",
             //"type": "html",
-            "visible": true
+            "visible": true,
+            width: "160px"
           },
           {
             "className": "columnTriples",
-            //"name": "triples",
             "orderable": true,
             "searchable": false,
-            "targets": [3],
+            "targets": [2],
             "title": "Triples",
             //"type": "numeric",
             "visible": true
@@ -120,7 +102,7 @@ var drawTable = function() {
             //"name": "metadata",
             "orderable": false,
             "searchable": false,
-            "targets": [4],
+            "targets": [3],
             "title": "Metadata",
             //"type": "html",
             "visible": true
@@ -158,6 +140,11 @@ var drawTable = function() {
               updateMultiSelectDownloads();
             }
         );
+        
+        //grrrrr. Somehow, the datatables 'language.thousands' setting does not work. 
+        //Fine, then we do it ourselves (fingers crossed we don't break anything...) 
+        var triplesTd = $(row).find(".columnTriples");
+        triplesTd.text(triplesTd.text().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
       },
       "data": rows,
       "deferRender": true,
@@ -166,12 +153,12 @@ var drawTable = function() {
       "info": true,
       "language": {
         "decimal": ",",
+        "thousands": ".",
         "loadingRecords": "Loading wardrobe contents...",
-        "thousands": "."
       },
       "lengthChange": true,
-      "lengthMenu": [10,25,50,75,100,250,500,1000],
-      "order": [3,"desc"],
+      "lengthMenu": [10,50,100,250,500,1000],
+      "order": [2,"desc"],
       "ordering": true,
       "paging": true,
       "processing": true,
@@ -183,7 +170,14 @@ var drawTable = function() {
   dataTable = table.dataTable(dTableConfig);
   
   multiButtons =  $("<div id='multiButtons' style='float:left; display:none'></div>");
+  
   $("#wardrobeTable_wrapper").prepend(multiButtons);
+  
+  $("<div class='sparqlQueryDiv'><button type='button' class='btn btn-default sparqlBtn'>SPARQL</button></div>")
+  .click(function() { window.open(getSparqlLink(sparql.queries.wardrobeListing)); })
+  .prependTo($("#wardrobeTable_wrapper"));
+  
+  
   $("<button style='margin-left: 10px;' class='btn btn-primary' title='Download the selected washed and cleaned data'><span class='glyphicon glyphicon-download'></span> Download selected cleaned data</button>")
       .appendTo(multiButtons)
       .click(downloadSelectedCleaned);
@@ -194,20 +188,12 @@ var drawTable = function() {
 };
 
 
-var wardrobeListingSPARQL =
-"PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
-SELECT ?md5 ?url ?triples\n\
-WHERE {\n\
-  ?datadoc ll:url ?url .\n\
-  ?datadoc ll:md5 ?md5 .\n\
-  OPTIONAL { ?datadoc ll:triples ?triples . }\n\
-}\n";
 
 $( document ).ready(function() {
   $.ajax({
     data: {
       "default-graph-uri": sparql.mainGraph,
-      query: wardrobeListingSPARQL
+      query: sparql.queries.wardrobeListing
     },
     headers: {
       "Accept": "application/sparql-results+json,*/*;q=0.9"
@@ -215,12 +201,7 @@ $( document ).ready(function() {
     success: function(data) {
       wardrobeData = data;
       drawTable();
-      $("<button type='button' class='btn btn-default sparqlBtn'>SPARQL</button>")
-          .css("position", "absolute")
-          .css("top", "-40px")
-          .css("left", "5px")
-          .click(function() { window.open(getSparqlLink(query)); })
-          .appendTo($("#wardrobeTable_wrapper"));
+      
     },
     url: sparql.url
   });

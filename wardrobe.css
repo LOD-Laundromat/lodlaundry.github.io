@@ -22,3 +22,10 @@ td {
 	margin-left: 5px;
 	margin-right: 5px;
 }
+#tableWrapper .dataTables_filter {
+	margin-right: 7px;
+}
+.sparqlQueryDiv {
+	float:left;
+	margin-left: 10px;
+}

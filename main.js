@@ -87,6 +87,14 @@ WHERE {\n\
     ?datadoc3 ll:status \"true\"^^xsd:string .\n\
     FILTER NOT EXISTS { ?datadoc3 ll:message ?message3 }\n\
   }\n\
+}\n",
+wardrobeListing:
+"PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
+SELECT ?md5 ?url ?triples\n\
+WHERE {\n\
+  ?datadoc ll:url ?url .\n\
+  ?datadoc ll:md5 ?md5 .\n\
+  OPTIONAL { ?datadoc ll:triples ?triples . }\n\
 }\n"
 	}
 };
