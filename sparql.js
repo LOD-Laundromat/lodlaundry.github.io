@@ -1,5 +1,6 @@
 $( document ).ready(function() {
-	
+	//There is some text on the HTML which we'll need to fill dynamically from javascript:
+	$("#actualEndpoint").text(sparql.url).attr("href", sparql.url);
 	
     var yasqe = YASQE(document.getElementById("sparql"), {
     	value: "PREFIX ll: <http://lodlaundromat.org/vocab#>\n"+
