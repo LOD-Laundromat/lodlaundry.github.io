@@ -1,16 +1,58 @@
-/*
-JSlint gives a whole host of errors on this one:
-  - Read only.
-  - Empty block.
-  - Expected `;` and instead saw `}`.
 // This way JS wont break on Internet Explorer when log statements
 // are still in the code.
 if (!console.log) {
-  console = {log:function(){}}
+  console = {log:function(){}};
 };
-*/
 
-var contentLengthsSparql = 
+
+var sparql = {
+	url : "http://sparql.backend.lodlaundromat.org/sparql/",
+	mainGraph : "http://lodlaundromat.org#11",
+	queries : {
+		totalTripleCount :
+"PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
+SELECT (SUM(?triples) AS ?totalTriples) {?dataset ll:triples ?triples}",
+		serializationsPerDoc :
+"PREFIX ll: <http://lodlaundromat.org/vocab#>\
+SELECT ?contentType (COUNT(?doc) AS ?count) WHERE {\
+  ?doc ll:http_content_type ?contentTypeString\
+  BIND(REPLACE(?contentTypeString, \";.*\", \"\", \"i\") AS ?contentType)\
+} GROUP BY ?contentType",
+		serializationsPerTriple :
+"PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
+SELECT ?format (SUM(?triples) AS ?count)\n\
+WHERE {\n\
+  ?datadoc ll:serialization_format ?format .\n\
+  ?datadoc ll:triples ?triples .\n\
+}\n\
+GROUP BY ?format\n",
+		contentTypesPerDoc :
+"PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
+SELECT ?format (COUNT(?datadoc) AS ?count)\n\
+WHERE {\n\
+  ?datadoc ll:serialization_format ?format .\n\
+}\n\
+GROUP BY ?format\n",
+		contentTypesVsSerializationFormats:
+/**
+ * Some explanations:
+ * - Do not include documents with serialization format RDFa,
+ *   as these should not be transferred with their own content type
+ *   (but as part of e.g. an HTTP page).
+ * - Replace the N3 content type string with Turtle
+ *   to make our matching function easier.
+ */
+"PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
+SELECT ?matchType (COUNT(?doc) AS ?count)\n\
+WHERE {\n\
+  ?datadoc ll:http_content_type ?contentType .\n\
+  ?datadoc ll:serialization_format ?format .\n\
+  FILTER(str(?format) != \"rdfa\")\n\
+  FILTER(!contains(str(?contentType), \"zip\"))\n\
+  BIND(if(contains(str(?contentType), \"n3\"), \"turtle\", ?contentType) AS ?contentType)\n\
+  BIND(if (contains(str(?contentType), str(?format)), \"matches\", \"does not match\") AS ?matchType)\n\
+} GROUP BY ?matchType\n",
+		contentLengths :
 "PREFIX ll: <http://lodlaundromat.org/vocab#>\
 SELECT ?clength ?bcount WHERE {\
   ?doc ll:http_content_length ?clength ;\
@@ -21,55 +63,8 @@ SELECT ?clength ?bcount WHERE {\
   MINUS {[] ll:archive_contains ?doc}\
   FILTER(!STRENDS(str(?doc), \".bz2\"))\
   FILTER(!STRENDS(str(?doc), \".gz\"))\
-}";
-
-var contentTypesPerDocSparql =
-"PREFIX ll: <http://lodlaundromat.org/vocab#>\
-SELECT ?contentType (COUNT(?doc) AS ?count) WHERE {\
-  ?doc ll:http_content_type ?contentTypeString\
-  BIND(REPLACE(?contentTypeString, \";.*\", \"\", \"i\") AS ?contentType)\
-} GROUP BY ?contentType";
-
-/**
- * Some explanations:
- * - Do not include documents with serialization format RDFa,
- *   as these should not be transferred with their own content type
- *   (but as part of e.g. an HTTP page).
- * - Replace the N3 content type string with Turtle
- *   to make our matching function easier.
- */
-var contentTypesVsSerializationFormatsSparql =
-"PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
-SELECT ?matchType (COUNT(?doc) AS ?count)\n\
-WHERE {\n\
-  ?datadoc ll:http_content_type ?contentType .\n\
-  ?datadoc ll:serialization_format ?format .\n\
-  FILTER(str(?format) != \"rdfa\")\n\
-  FILTER(!contains(str(?contentType), \"zip\"))\n\
-  BIND(if(contains(str(?contentType), \"n3\"), \"turtle\", ?contentType) AS ?contentType)\n\
-  BIND(if (contains(str(?contentType), str(?format)), \"matches\", \"does not match\") AS ?matchType)\n\
-} GROUP BY ?matchType\n";
-
-var datasetInfoSparql1 = "\
-PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
-SELECT ?datadoc ?p ?o\n\
-WHERE {\n\
-  ?datadoc ll:md5 \"";
-var datasetInfoSparql2 =
-"\"^^xsd:string .\n\
-  ?datadoc ?p ?o .\n\
-}\n";
-
-var termLabelSparql1 = "\
-PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
-SELECT ?label\n\
-WHERE {\n\
-  ";
-var termLabelSparql2 ="\
-rdfs:label ?label .\n\
-}\n";
-
-var datasetsWithCountsSparql =
+}",
+		datasetsWithCounts :
 "PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
 SELECT ?md5 ?doc ?triples ?duplicates {\n\
   []  a ll:URL ;\n\
@@ -77,32 +72,9 @@ SELECT ?md5 ?doc ?triples ?duplicates {\n\
     ll:duplicates ?duplicates ;\n\
     ll:url ?doc .\n\
   FILTER(?triples > 0)\n\
-}";
-
-var serializationsPerDocSparql =
-"PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
-SELECT ?format (COUNT(?datadoc) AS ?count)\n\
-WHERE {\n\
-  GRAPH <http://lodlaundromat.org#10> {\n\
-    ?datadoc ll:serialization_format ?format .\n\
-  }\n\
-}\n\
-GROUP BY ?format\n";
-
-var serializationsPerTripleSparql =
-"PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
-SELECT ?format (SUM(?triples) AS ?count)\n\
-WHERE {\n\
-  GRAPH <http://lodlaundromat.org#10> {\n\
-    ?datadoc ll:serialization_format ?format .\n\
-    ?datadoc ll:triples ?triples .\n\
-  }\n\
-}\n\
-GROUP BY ?format\n";
-
-var totalTripleCountSparql =
-"PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
-SELECT (SUM(?triples) AS ?totalTriples) {?dataset ll:triples ?triples}";
+}"
+	}
+};
 
 var api = {
   "laundryBasket": {
@@ -119,22 +91,6 @@ var api = {
   }
 };
 
-var sparql = {
-  //url: "http://virtuoso.lodlaundromat.ops.few.vu.nl/sparql",
-  //"url": "http://lodlaundry.wbeek.ops.few.vu.nl/sparql/",
-  "url": "http://d2s.labs.vu.nl:3020/sparql/",
-  "mainGraph": "http://lodlaundromat.org#10",
-  "queries": {
-    "totalTripleCount": totalTripleCountSparql,
-    "serializationsPerDoc": serializationsPerDocSparql,
-    "serializationsPerTriple": serializationsPerTripleSparql,
-    "contentTypesPerDoc": contentTypesPerDocSparql,
-    "contentTypesVsSerializationFormats":
-        contentTypesVsSerializationFormatsSparql,
-    "contentLengths": contentLengthsSparql,
-    "datasetsWithCounts": datasetsWithCountsSparql
-  }
-};
 
 var getSparqlLink = function(query) {
   return "sparql.html?query=" + encodeURIComponent(query);
@@ -223,7 +179,7 @@ var showMetadataBox = function(md5) {
     },
     "url": url
   });
-}
+};
 
 
 /**
@@ -246,7 +202,7 @@ var drawHeader = function() {
        {href: "laundryBasket.html", img: "imgs/basket.png", title: "Laundry Basket"},
        {href: "https://github.com/LODLaundry/LOD-Washing-Machine", newWindow: true, img: "imgs/washingMachine.png", title: "Washing Machine"},
        {href: "wardrobe.html", img: "imgs/wardrobe.png", title: "Wardrobe"},
-       //{href: "visualizations.html", img: "imgs/analysis.png", title: "Inventory"},
+       {href: "visualizations.html", img: "imgs/analysis.png", title: "Analysis"},
        {href: "sparql.html", img: "imgs/labels.png", title: "SPARQL"},
        
      ];
