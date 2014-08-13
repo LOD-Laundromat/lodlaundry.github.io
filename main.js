@@ -109,9 +109,10 @@ WHERE {\n\
 }\n",
 datasetInfo: function(md5) {
 return "PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
-SELECT ?datadoc ?p ?o {\n\
+SELECT ?datadoc ?p ?o ?label {\n\
   ?datadoc ll:md5 \"" + md5 + "\"^^xsd:string .\n\
   ?datadoc ?p ?o .\n\
+  OPTIONAL{?p rdfs:label ?label}\n\
 }";
 }
 	}
@@ -240,7 +241,8 @@ var showMetadataBox = function(md5) {
 	        }
 	      };
 	      $.each(data.results.bindings, function(index, triple) {
-	        addRow({values: [triple.p.value, triple.o.value]});
+	    	  var rowHeader = (triple.label && triple.label.value? triple.label.value: triple.p.value);
+	        addRow({values: [rowHeader, triple.o.value]});
 	      });
 	      drawModal({header: "Dataset Properties", content: table});
 	    },
