@@ -266,7 +266,7 @@ var drawHeader = function() {
   var items = [
        {href: "index.html", img: "imgs/laundry.png", title: "Main Page"},
        {href: "laundryBasket.html", img: "imgs/basket.png", title: "Laundry Basket"},
-       {href: "https://github.com/LODLaundry/LOD-Washing-Machine", newWindow: true, img: "imgs/washingMachine.png", title: "Washing Machine"},
+       {href: "https://github.com/LODLaundry/llWashingMachine", newWindow: true, img: "imgs/washingMachine.png", title: "Washing Machine"},
        {href: "wardrobe.html", img: "imgs/wardrobe.png", title: "Wardrobe"},
        {href: "visualizations.html", img: "imgs/analysis.png", title: "Analysis"},
        {href: "sparql.html", img: "imgs/labels.png", title: "SPARQL"},
