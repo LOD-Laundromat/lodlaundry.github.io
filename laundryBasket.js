@@ -2,23 +2,10 @@ var basketContents = null;
 var dataTable;
 
 $( document ).ready(function() {
-  var queryBasketContents = "\
-PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
-SELECT ?url ?added ?start_unpack ?end_unpack ?start_clean\n\
-WHERE {\n\
-  GRAPH <http://lodlaundromat.org#10> {\n\
-    ?datadoc ll:url ?url .\n\
-    ?datadoc ll:added ?added .\n\
-    OPTIONAL { ?datadoc ll:start_unpack ?start_unpack . }\n\
-    OPTIONAL { ?datadoc ll:end_unpack ?end_unpack . }\n\
-    OPTIONAL { ?datadoc ll:start_clean ?start_clean . }\n\
-    FILTER NOT EXISTS { ?datadoc ll:end_clean ?end_clean . }\n\
-  }\n\
-}\n";
   $.ajax({
     data: {
       "default-graph-uri": sparql.mainGraph,
-      query: queryBasketContents
+      query: sparql.queries.queryBasketContents
     },
     headers: {
       "Accept": "application/sparql-results+json,*/*;q=0.9"
@@ -76,6 +63,7 @@ var drawTable = function() {
          "decimal": ",",
          "thousands": "."
       },
+      "deferRender": true,
       "fnDrawCallback": function ( oSettings ) {
       /* Need to redo the counters if filtered or sorted */
       if ( oSettings.bSorted || oSettings.bFiltered )

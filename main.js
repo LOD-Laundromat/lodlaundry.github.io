@@ -95,6 +95,17 @@ WHERE {\n\
   ?datadoc ll:url ?url .\n\
   ?datadoc ll:md5 ?md5 .\n\
   OPTIONAL { ?datadoc ll:triples ?triples . }\n\
+}\n",
+queryBasketContents:
+"\PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
+SELECT ?url ?added ?start_unpack ?end_unpack ?start_clean\n\
+WHERE {\n\
+  ?datadoc ll:url ?url .\n\
+  ?datadoc ll:added ?added .\n\
+  OPTIONAL { ?datadoc ll:start_unpack ?start_unpack . }\n\
+  OPTIONAL { ?datadoc ll:end_unpack ?end_unpack . }\n\
+  OPTIONAL { ?datadoc ll:start_clean ?start_clean . }\n\
+  FILTER NOT EXISTS { ?datadoc ll:end_clean ?end_clean . }\n\
 }\n"
 	}
 };
