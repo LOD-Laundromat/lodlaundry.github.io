@@ -209,11 +209,9 @@ var showMetadataBox = function(md5) {
  * draw header
  */
 var drawHeader = function() {
-  var header = $("<div id='pageHeader' class='navbar navbar-default navbar-fixed-top'></div>").appendTo($("body"));
-  var container = $('<div class="container"></div>').appendTo(header);
-  var menuList = $('<ul class="nav navbar-nav"></ul>').appendTo(container);
+	var navbar = $("#topNavBar");
   var addItem = function(config) {
-    var item = $("<li></li>").appendTo(menuList);
+    var item = $("<li></li>").appendTo(topNavBar);
     if (config.active) item.addClass("active");
     var anchor = $("<a></a>").attr("href", config.href).appendTo(item);
     if (config.newWindow) anchor.attr("target", "_blank");
@@ -242,20 +240,13 @@ var drawHeader = function() {
   }
   
   if (basename.length == 0) basename = "index.html";
+  
+  
+  
   for (var i = 0; i < items.length; i++) {
     if (basename == items[i].href) items[i].active = true;
     addItem(items[i]);
   }
-//  addItem(true, "index.html", "imgs/laundry.png", "Main Page");
-//  addItem(true, "index.html", "imgs/laundry.png", "Main Page");
-  
-  
-//  header.html('<div class="container"><ul class="nav navbar-nav">'+
-//          '<li><a href="index.html"><img src="imgs/laundry.png" style="width: 60px; height: 60px;"> Main page</a></li>'+
-//          '<li><a href="index.html"><img src="imgs/laundry.png" style="width: 60px; height: 60px;"> Main page</a></li>'+
-//          '<li><a href="#">About</a></li>'+
-//          '<li><a href="#">Contact</a></li>'+
-//        '</ul></div>');
 };
 drawHeader();
 
