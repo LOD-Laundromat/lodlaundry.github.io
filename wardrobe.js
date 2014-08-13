@@ -41,7 +41,7 @@ var drawTable = function() {
     var results = wardrobeData.results.bindings[i];
     var row = [];
 //    row.push(results.md5.value);
-    row.push(results.url.value);
+    row.push(results.url.value + "<div class='md5 hidden'>" + results.md5.value + "</div>");
     row.push(
         "<a class='downloadClean btn btn-default' title='Download the washed and cleaned data' target='_blank'><span class='glyphicon glyphicon-download'></span> Clean</a>" +
         "<a class='downloadDirty btn btn-default' title='Download original dirty dataset' href='" + results.url.value + "' target='_blank'><span class='glyphicon glyphicon-download'></span> Dirty</a>"
@@ -109,7 +109,7 @@ var drawTable = function() {
           }
         ],
       "createdRow": function (row, data, dataIndex) {
-        var md5 = data[0];
+        var md5 = $(row).find(".md5").text();
         var triples = parseInt(data[3]);
         var cleanLink;
         if (triples == 0) {

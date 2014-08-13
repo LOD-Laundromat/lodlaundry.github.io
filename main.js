@@ -106,7 +106,14 @@ WHERE {\n\
   OPTIONAL { ?datadoc ll:end_unpack ?end_unpack . }\n\
   OPTIONAL { ?datadoc ll:start_clean ?start_clean . }\n\
   FILTER NOT EXISTS { ?datadoc ll:end_clean ?end_clean . }\n\
-}\n"
+}\n",
+datasetInfo: function(md5) {
+return "PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
+SELECT ?datadoc ?p ?o {\n\
+  ?datadoc ll:md5 \"" + md5 + "\"^^xsd:string .\n\
+  ?datadoc ?p ?o .\n\
+}";
+}
 	}
 };
 
@@ -202,17 +209,43 @@ var drawModal = function(config) {
   modal.modal("show");
 };
 
+
 var showMetadataBox = function(md5) {
-  var url = "http://lodlaundry.wbeek.ops.few.vu.nl/infobox?md5=" + md5;
   $.ajax({
-    "success": function(data) {
-        drawModal({
-          "header": "Metadata infobox",
-          "content": data
-        });
-    },
-    "url": url
-  });
+	    "data": {
+	      "default-graph-uri": sparql.mainGraph,
+	      "query": sparql.queries.datasetInfo(md5)
+	    },
+	    "headers": {
+	      "Accept": "application/sparql-results+json,*/*;q=0.9"
+	    },
+	    "success": function(data) {
+	      var table = $("<table class='table'></table>");
+	      var addRow = function(config) {
+	        var row = $("<tr></tr>").appendTo(table);
+	        if (config.rowClass) row.addClass(config.rowClass);
+	        if (config.midHeader) row.css("font-weight", "bold");
+	        for (var i = 0; i < config.values.length; i++) {
+	          var col = $("<td></td>");
+	          if (config.isHeader) col = $("<th></th>");
+	          if (config.midHeader) col.attr("colspan", "2");
+	          row.append(col);
+	          var arg = config.values[i];
+	          if (typeof arg == "string") {
+	            col.html(arg);
+	          } else {
+	            col.append(arg);
+	          }
+	          if (i == 0 && config.indentFirstCol) col.css("padding-left", "15px");
+	        }
+	      };
+	      $.each(data.results.bindings, function(index, triple) {
+	        addRow({values: [triple.p.value, triple.o.value]});
+	      });
+	      drawModal({header: "Dataset Properties", content: table});
+	    },
+	    "url": sparql.url
+	  });
 };
 
 
@@ -220,7 +253,6 @@ var showMetadataBox = function(md5) {
  * draw header
  */
 var drawHeader = function() {
-	var navbar = $("#topNavBar");
   var addItem = function(config) {
     var item = $("<li></li>").appendTo(topNavBar);
     if (config.active) item.addClass("active");
@@ -292,7 +324,16 @@ var getAndDrawCounter = function() {
 };
 getAndDrawCounter();
 
-
+//this function is useful for printing charts to pdf.
+var deleteEveryDivExcept = function(divId) {
+  $("div").hide();
+  $("h1").hide();
+  $("h2").hide();
+  $("h3").hide();
+  var targetDiv = $("#" + divId);
+  targetDiv.parents().show();
+  targetDiv.show();
+};
 /**
  * draw google analytics
  */
