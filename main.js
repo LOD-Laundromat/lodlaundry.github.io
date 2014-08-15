@@ -92,9 +92,11 @@ wardrobeListing:
 "PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
 SELECT ?md5 ?url ?triples\n\
 WHERE {\n\
-  ?datadoc ll:url ?url .\n\
-  ?datadoc ll:md5 ?md5 .\n\
-  OPTIONAL { ?datadoc ll:triples ?triples . }\n\
+  GRAPH <http://lodlaundromat.org#11> {\n\
+    ?datadoc ll:url ?url .\n\
+    ?datadoc ll:md5 ?md5 .\n\
+    OPTIONAL { ?datadoc ll:triples ?triples . }\n\
+  }\n\
 }\n",
 queryBasketContents:
 "\PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
