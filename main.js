@@ -6,7 +6,7 @@ if (!console.log) {
 
 
 var sparql = {
-	url : "http://sparql.backend.lodlaundromat.org/sparql/",
+	url : "http://backend.lodlaundromat.d2s.labs.vu.nl/sparql/",
 	mainGraph : "http://lodlaundromat.org#11",
 	queries : {
 totalTripleCount :
