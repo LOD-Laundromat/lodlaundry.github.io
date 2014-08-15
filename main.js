@@ -121,14 +121,13 @@ SELECT ?datadoc ?p ?o ?label {\n\
 var api = {
   "laundryBasket": {
     "all": "lod_basket.txt",
-    "endpoint": "http://lodlaundry.wbeek.ops.few.vu.nl/basket"
+    "endpoint": "http://backend.lodlaundromat.d2s.labs.vu.nl/basket"
   },
   "namespace": "http://lodlaundromat.org/vocab#",
   "wardrobe": {
     "all": "testInput.json",
     "download": function(md5) {
-      return "http://lodlaundry.wbeek.ops.few.vu.nl/data/" + md5
-          + "/clean.nt.gz";
+      return "http://backend.lodlaundromat.d2s.labs.vu.nl/data/" + md5;
     }
   }
 };
