@@ -12,9 +12,9 @@ var sparql = {
 totalTripleCount :
 "PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
 SELECT (SUM(?triples) AS ?totalTriples) {\n\
-  GRAPH <http://lodlaundromat.org#11> {\n\
+//  GRAPH <http://lodlaundromat.org#11> {\n\
     ?dataset ll:triples ?triples . \n\
-  }\n\
+//  }\n\
 }\n",
 serializationsPerDoc :
 "PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
