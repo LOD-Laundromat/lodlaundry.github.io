@@ -11,7 +11,7 @@ $( document ).ready(function() {
 		"	{[] ?properties ?x}\n"+
 		"}",
 		sparql: {
-			defaultGraphs: [sparql.mainGraph],
+			namedGraphs: [sparql.mainGraph],
 			showQueryButton: true,
 			endpoint: sparql.url,
 		}

@@ -192,7 +192,7 @@ var drawTable = function() {
 $( document ).ready(function() {
   $.ajax({
     data: {
-      "default-graph-uri": sparql.mainGraph,
+      "named-graph-uri": sparql.mainGraph,
       query: sparql.queries.wardrobeListing
     },
     headers: {

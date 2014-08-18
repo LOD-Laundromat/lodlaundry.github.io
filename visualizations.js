@@ -22,7 +22,7 @@ var formatSerialization = function(format) {
 var fetchAndDrawViz = function(query, rootId, callback) {
   $.ajax({
     data: {
-      "default-graph-uri": sparql.mainGraph,
+      "named-graph-uri": sparql.mainGraph,
       query: query
     },
     headers: {

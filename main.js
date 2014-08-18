@@ -12,9 +12,7 @@ var sparql = {
 totalTripleCount :
 "PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
 SELECT (SUM(?triples) AS ?totalTriples) {\n\
-//  GRAPH <http://lodlaundromat.org#11> {\n\
     ?dataset ll:triples ?triples . \n\
-//  }\n\
 }\n",
 serializationsPerDoc :
 "PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
@@ -219,7 +217,7 @@ var drawModal = function(config) {
 var showMetadataBox = function(md5) {
   $.ajax({
 	    "data": {
-	      "default-graph-uri": sparql.mainGraph,
+	      "named-graph-uri": sparql.mainGraph,
 	      "query": sparql.queries.datasetInfo(md5)
 	    },
 	    "headers": {
@@ -317,7 +315,7 @@ var getAndDrawCounter = function() {
   if ($('.counter').length > 0) {
     $.ajax({
       url: sparql.url,
-      data: {query:sparql.queries.totalTripleCount,"default-graph-uri": sparql.mainGraph},
+      data: {query:sparql.queries.totalTripleCount,"named-graph-uri": sparql.mainGraph},
       success: function(data) {
         if (data.results && data.results.bindings && data.results.bindings.length > 0 && data.results.bindings[0].totalTriples) {
           draw(data.results.bindings[0].totalTriples.value);
