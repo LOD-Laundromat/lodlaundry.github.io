@@ -17,7 +17,7 @@ var formatSerialization = function(format) {
     default:
       return format;
   };
-}
+};
 
 var fetchAndDrawViz = function(query, rootId, callback) {
   $.ajax({
