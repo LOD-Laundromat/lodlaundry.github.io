@@ -72,7 +72,8 @@ SELECT ?md5 ?doc ?triples ?duplicates {\n\
   []  a ll:URL ;\n\
     ll:triples ?triples;\n\
     ll:duplicates ?duplicates ;\n\
-    ll:url ?doc .\n\
+    ll:url ?doc ;\n\
+    ll:md5 ?md5 .\n\
   FILTER(?triples > 0)\n\
 }",
 exceptionCounts:
