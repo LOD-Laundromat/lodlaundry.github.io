@@ -55,6 +55,9 @@ fetchAndDrawViz(
       },
       totalUnit: "triples",
       totalLabel: "TOTAL",
+      dimensions: {
+    	  innerRadius: 60,
+      }
     });
   }
 );
@@ -75,6 +78,9 @@ fetchAndDrawViz(
       },
       aggregate: function(bindings) {
         return bindings.count.value;
+      },
+      dimensions: {
+    	  width: 800,
       }
     });
   }
