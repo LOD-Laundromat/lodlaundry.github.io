@@ -6,7 +6,7 @@ if (!console.log) {
 
 
 var sparql = {
-	url : "http://backend.lodlaundromat.d2s.labs.vu.nl/sparql/",
+	url : "http://sparql.backend.lodlaundromat.org",
 	mainGraph : "http://lodlaundromat.org#11",
 	queries : {
 totalTripleCount :
@@ -132,7 +132,7 @@ var api = {
   "wardrobe": {
     "all": "testInput.json",
     "download": function(md5) {
-      return "http://backend.lodlaundromat.d2s.labs.vu.nl/data/" + md5;
+      return "http://download.lodlaundromat.org/" + md5;
     }
   }
 };
