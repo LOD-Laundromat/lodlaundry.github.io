@@ -92,8 +92,16 @@ $("#newDirtyLaundry").keyup(function() {
 });
 
 function storeUrl() {
-  var failureMsg =
-      "<span class=\"label label-danger\">Something went wrong... Is the url correct? If this problem persists, please drop us a <a href=\"https://github.com/LODLaundry/lodlaundry.github.io/issues\">Github issue</a>!</span>";
+  var failureMsg = function(customMsg) {
+	  var msg = "<span class=\"label label-danger\">";
+	  if (customMsg && customMsg.length > 0) {
+		  msg += customMsg + ".";
+	  } else {
+		  msg += "Something went wrong. Is the url correct?"; 
+	  }
+	  msg += " If this problem persists, please drop us a <a style=\"color:#2C2C2C\" href=\"https://github.com/LODLaundry/lodlaundry.github.io/issues\">Github issue</a>!</span>";
+	  return msg;
+  };
   var successMsg =
       "<span class=\"label label-success\">Successfully received!</span>";
   
@@ -103,14 +111,15 @@ function storeUrl() {
       data: {
         url: url
       },
-      error: function() {
-        $(".submitStatus").empty().hide().append(failureMsg).show(400);
+      error: function(response,textStatus,errorThrown) {
+    	  console.log(arguments);
+        $(".submitStatus").empty().hide().append(failureMsg(errorThrown)).show(400);
       },
       success: function() {
         $(".submitStatus").empty().hide().append(successMsg).show(400);
       },
       type: "GET",
-      url: api.laundryBasket.endpoint
+      url: api.laundryBasket.seedUpdateApi
     });
   }
 }

@@ -8,6 +8,7 @@ if (!console.log) {
 var sparql = {
 	url : "http://sparql.backend.lodlaundromat.org",
 	mainGraph : "http://lodlaundromat.org#11",
+	basketGraph: "http://lodlaundromat.org#seedlist",
 	queries : {
 totalTripleCount :
 "PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
@@ -88,7 +89,7 @@ WHERE {\n\
     ?datadoc2 ll:message ?message2 .\n\
   } UNION {\n\
     ?datadoc3 ll:status \"true\"^^xsd:string .\n\
-    FILTER NOT EXISTS { ?datadoc3 ll:message ?message3 }\n\
+    FILTER NOT EXISTS { ?datadobackend.lodlaundromat.d2s.labs.vu.nl/basketc3 ll:message ?message3 }\n\
   }\n\
 }\n",
 wardrobeListing:
@@ -125,12 +126,10 @@ SELECT ?datadoc ?p ?o ?label {\n\
 
 var api = {
   "laundryBasket": {
-    "all": "lod_basket.txt",
-    "endpoint": "http://backend.lodlaundromat.d2s.labs.vu.nl/basket"
+    "seedUpdateApi": "http://backend.lodlaundromat.org"
   },
   "namespace": "http://lodlaundromat.org/vocab#",
   "wardrobe": {
-    "all": "testInput.json",
     "download": function(md5) {
       return "http://download.lodlaundromat.org/" + md5;
     }
