@@ -102,17 +102,24 @@ WHERE {\n\
     OPTIONAL { ?datadoc ll:triples ?triples . }\n\
   }\n\
 }\n",
-queryBasketContents:
-"\PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
-SELECT ?url ?added ?start_unpack ?end_unpack ?start_clean\n\
+queryBasketContents: function(basketGraph, mainGraph) {
+return "\PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
+SELECT ?url ?dateAdded ?start_unpack ?end_unpack ?start_clean ?end_clean\n\
 WHERE {\n\
-  ?datadoc ll:url ?url .\n\
-  ?datadoc ll:added ?added .\n\
-  OPTIONAL { ?datadoc ll:start_unpack ?start_unpack . }\n\
-  OPTIONAL { ?datadoc ll:end_unpack ?end_unpack . }\n\
-  OPTIONAL { ?datadoc ll:start_clean ?start_clean . }\n\
-  FILTER NOT EXISTS { ?datadoc ll:end_clean ?end_clean . }\n\
-}\n",
+  GRAPH <" + basketGraph + "> {\n\
+   	?datadoc ll:url ?url ;\n\
+      ll:added ?dateAdded .\n\
+      OPTIONAL {\n\
+	    GRAPH <http://lodlaundromat.orgg#11> {\n\
+	      OPTIONAL {?datadoc ll:start_unpack ?start_unpack}\n\
+	      OPTIONAL {?datadoc ll:end_unpack ?end_unpack}\n\
+	      OPTIONAL {?datadoc ll:start_clean ?start_clean}\n\
+	      OPTIONAL {?datadoc ll:end_clean ?end_clean}\n\
+	   }\n\
+     }\n\
+  }\n\
+}\n";
+},
 datasetInfo: function(md5) {
 return "PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
 SELECT ?datadoc ?p ?o ?label {\n\

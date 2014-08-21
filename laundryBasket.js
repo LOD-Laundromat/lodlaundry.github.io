@@ -2,11 +2,13 @@ var basketContents = null;
 var dataTable;
 
 $( document ).ready(function() {
+	console.log(sparql.queries.queryBasketContents(sparql.basketGraph, sparql.mainGraph));
   $.ajax({
-    data: {
-      "named-graph-uri": sparql.mainGraph,
-      query: sparql.queries.queryBasketContents
-    },
+    data: [
+           {name: "named-graph-uri", value: sparql.mainGraph},
+           {name: "named-graph-uri", value: sparql.basketGraph},
+           {name: "query", value: sparql.queries.queryBasketContents(sparql.basketGraph, sparql.mainGraph)},
+    ],
     headers: {
       "Accept": "application/sparql-results+json,*/*;q=0.9"
     },
@@ -81,6 +83,14 @@ var drawTable = function() {
     "aaSorting": [[2, 'desc']]
   };
   dataTable = table.dataTable(dTableConfig);
+  
+  
+  $("<div class='sparqlQueryDiv'><button type='button' class='btn btn-default sparqlBtn'>SPARQL</button></div>")
+  
+	  .click(function() {
+		  window.open(getSparqlLink(sparql.queries.queryBasketContents(sparql.basketGraph, sparql.mainGraph)) + "&named-graph-uri=" + encodeURIComponent(sparql.basketGraph) + "&named-graph-uri=" + encodeURIComponent(sparql.mainGraph));
+		  })
+	  .prependTo($("#laundryBasketTable_wrapper"));
 };
 
 $(window).on('resize', function () {
