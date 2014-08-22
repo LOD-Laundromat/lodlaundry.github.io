@@ -1,5 +1,16 @@
 var basketContents = null;
 var dataTable;
+var shortenUrl = function(url) {
+	var maxLength = 180;
+	var shortenedUrl = url;
+	if (url.length > maxLength) {
+		var offset = (url.length - maxLength) / 2;
+		var middleOfString = url.length / 2;
+		shortenedUrl = url.substring(0, middleOfString - offset) + "&nbsp;&nbsp;<strong>(.....)</strong>&nbsp;&nbsp;" + url.substring(middleOfString + offset);
+	}
+	return shortenedUrl;
+};
+
 
 $( document ).ready(function() {
 	console.log(sparql.queries.queryBasketContents(sparql.basketGraph, sparql.mainGraph));
@@ -46,8 +57,9 @@ var drawTable = function() {
   for (var i = 0; i < basketContents.results.bindings.length; i++) {
     var result = basketContents.results.bindings[i];
     var row = [];
-    row.push("");//this is where the row index comes automatically
-    row.push(result.url.value);
+//    row.push("");//this is where the row index comes automatically
+    var urlCell = "<span class='longtitle' data-toggle='tooltip' data-placement='top' title='" + result.url.value + "'>" + shortenUrl(result.url.value) + "</span>";
+    row.push(urlCell);
     row.push(status(result));
     rows.push(row);
   }
@@ -57,10 +69,11 @@ var drawTable = function() {
       "sScrollX": "100%",
       "bAutoWidth": true,
       "iDisplayLength": 25,
-      "columns":
-          [{ "title": "index" },
+      "columns":[
+//          [{ "title": "index" },
           { "title": "URL" },
-          { "title": "Status" }],
+          { "title": "Status" }
+          ],
       "language": {
          "decimal": ",",
          "thousands": "."
@@ -68,19 +81,20 @@ var drawTable = function() {
       "deferRender": true,
       "fnDrawCallback": function ( oSettings ) {
       /* Need to redo the counters if filtered or sorted */
-      if ( oSettings.bSorted || oSettings.bFiltered )
-      {
-        for ( var i=0, iLen=oSettings.aiDisplay.length ; i<iLen ; i++ )
-        {
-          $('td:eq(0)', oSettings.aoData[ oSettings.aiDisplay[i] ].nTr ).html( i+1 );
-        }
-      }
+//      if ( oSettings.bSorted || oSettings.bFiltered )
+//      {
+//        for ( var i=0, iLen=oSettings.aiDisplay.length ; i<iLen ; i++ )
+//        {
+//          $('td:eq(0)', oSettings.aoData[ oSettings.aiDisplay[i] ].nTr ).html( i+1 );
+//        }
+//      }
     },
-    "aoColumnDefs":
-        [{ "bSearchable": true, "aTargets": [1] },
-         { "bSortable": false, "aTargets": [0] },
-         { "sWidth": "30px", "aTargets": [0] }],
-    "aaSorting": [[2, 'desc']]
+    "aoColumnDefs": [
+        { "bSearchable": true, "aTargets": [0,1] },
+         { "bSortable": true, "aTargets": [0,1] },
+//         { "sWidth": "90%", "aTargets": [0] }
+         ],
+    "aaSorting": [[1, 'desc']]
   };
   dataTable = table.dataTable(dTableConfig);
   
