@@ -13,7 +13,6 @@ var shortenUrl = function(url) {
 
 
 $( document ).ready(function() {
-	console.log(sparql.queries.queryBasketContents(sparql.basketGraph, sparql.mainGraph));
   $.ajax({
     data: [
            {name: "named-graph-uri", value: sparql.mainGraph},
@@ -21,10 +20,10 @@ $( document ).ready(function() {
            {name: "query", value: sparql.queries.queryBasketContents(sparql.basketGraph, sparql.mainGraph)},
     ],
     headers: {
-      "Accept": "application/sparql-results+json,*/*;q=0.9"
+      "Accept": "text/csv,*/*;q=0.9"
     },
     success: function(data) {
-      basketContents = data;
+      basketContents = CSV.parse(data);
       drawTable();
     },
     url: sparql.url
@@ -32,13 +31,14 @@ $( document ).ready(function() {
 });
 
 function status(result) {
-  if (!result.start_unpack) {
+	 //0: url, 1: dateAdded 2: start_unpack 3: end_unpack 4: start_clean 5: end_clean
+  if (!result[2]) {
     return "pending";
-  } else if (!result.end_unpack) {
+  } else if (!result[3]) {
     return "unpacking";
-  } else if (!result.start_clean) {
+  } else if (!result[4]) {
     return "unpacked";
-  } else if (!result.end_clean) {
+  } else if (!result[5]) {
     return "cleaning";
   } else {
     return "cleaned";
@@ -49,16 +49,16 @@ var drawTable = function() {
   var table = $('<table cellpadding="0" cellspacing="0" border="0" class="display" id="laundryBasketTable"></table>');
   $('#tableWrapper').html(table);
   
-  if (!basketContents || !basketContents.results || !basketContents.results.bindings) {
+  if (!basketContents || basketContents.length == 0) {
     return;
   }
   
   var rows = [];
-  for (var i = 0; i < basketContents.results.bindings.length; i++) {
-    var result = basketContents.results.bindings[i];
+  for (var i = 0; i < basketContents.length; i++) {
+	  //0: url, 1: dateAdded 2: start_unpack 3: end_unpack 4: start_clean 5: end_clean
+    var result = basketContents[i];
     var row = [];
-//    row.push("");//this is where the row index comes automatically
-    var urlCell = "<span class='longtitle' data-toggle='tooltip' data-placement='top' title='" + result.url.value + "'>" + shortenUrl(result.url.value) + "</span>";
+    var urlCell = "<span class='longtitle' data-toggle='tooltip' data-placement='top' title='" + result[0] + "'>" + shortenUrl(result[0]) + "</span>";
     row.push(urlCell);
     row.push(status(result));
     rows.push(row);
@@ -80,19 +80,11 @@ var drawTable = function() {
       },
       "deferRender": true,
       "fnDrawCallback": function ( oSettings ) {
-      /* Need to redo the counters if filtered or sorted */
-//      if ( oSettings.bSorted || oSettings.bFiltered )
-//      {
-//        for ( var i=0, iLen=oSettings.aiDisplay.length ; i<iLen ; i++ )
-//        {
-//          $('td:eq(0)', oSettings.aoData[ oSettings.aiDisplay[i] ].nTr ).html( i+1 );
-//        }
-//      }
+    	  $('.longtitle').tooltip();
     },
     "aoColumnDefs": [
         { "bSearchable": true, "aTargets": [0,1] },
          { "bSortable": true, "aTargets": [0,1] },
-//         { "sWidth": "90%", "aTargets": [0] }
          ],
     "aaSorting": [[1, 'desc']]
   };
