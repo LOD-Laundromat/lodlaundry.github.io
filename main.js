@@ -96,11 +96,9 @@ wardrobeListing:
 "PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
 SELECT ?md5 ?url ?triples\n\
 WHERE {\n\
-  GRAPH <http://lodlaundromat.org#11> {\n\
-    ?datadoc ll:url ?url .\n\
-    ?datadoc ll:md5 ?md5 .\n\
-    OPTIONAL { ?datadoc ll:triples ?triples . }\n\
-  }\n\
+  ?datadoc ll:url ?url .\n\
+  ?datadoc ll:md5 ?md5 .\n\
+  OPTIONAL { ?datadoc ll:triples ?triples . }\n\
 }\n",
 queryBasketContents: function(basketGraph, mainGraph) {
 return "\PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
@@ -110,7 +108,7 @@ WHERE {\n\
    	?datadoc ll:url ?url ;\n\
       ll:added ?dateAdded .\n\
       OPTIONAL {\n\
-	    GRAPH <http://lodlaundromat.orgg#11> {\n\
+	    GRAPH <" + mainGraph + "> {\n\
 	      OPTIONAL {?datadoc ll:start_unpack ?start_unpack}\n\
 	      OPTIONAL {?datadoc ll:end_unpack ?end_unpack}\n\
 	      OPTIONAL {?datadoc ll:start_clean ?start_clean}\n\
@@ -328,8 +326,10 @@ var getAndDrawCounter = function() {
       url: sparql.url,
       data: {query:sparql.queries.totalTripleCount,"named-graph-uri": sparql.mainGraph},
       success: function(data) {
-        if (data.results && data.results.bindings && data.results.bindings.length > 0 && data.results.bindings[0].totalTriples) {
+        if (data.results && data.results.bindings && data.results.bindings.length > 0 && data.results.bindings[0].totalTriples && data.results.bindings[0].totalTriples.value > 0) {
           draw(data.results.bindings[0].totalTriples.value);
+        } else {
+        	$("#counterWrapper").hide();
         }
       },
       headers: {
