@@ -3,7 +3,7 @@ $( document ).ready(function() {
 	$("#actualEndpoint").text(sparql.url).attr("href", sparql.url);
 	
 	var namedGraphs = getUrlParams("named-graph-uri");
-	if (namedGraphs.length == 0) namedGraphs = [sparql.mainGraph];
+	if (namedGraphs.length == 0) namedGraphs = [sparql.mainGraph, sparql.basketGraph];
     var yasqe = YASQE(document.getElementById("sparql"), {
     	value: "PREFIX ll: <http://lodlaundromat.org/vocab#>\n"+
 		"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n"+

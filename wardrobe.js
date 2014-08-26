@@ -111,13 +111,16 @@ var drawTable = function() {
       "createdRow": function (row, data, dataIndex) {
         var md5 = $(row).find(".md5").text();
         var triples = parseInt(data[3]);
-        var cleanLink;
         if (triples == 0) {
-          cleanLink = "javascript:void(0);";
+          $(row).find(".downloadClean").attr("href", "javascript:void(0);");
         } else {
-          cleanLink = api.wardrobe.download(md5);
+          $(row).find(".downloadClean").each(function() {
+        	  //set href
+        	  $(this).attr("href", api.wardrobe.download(md5));
+        	  //what is the filename? specify it, so users won't get the long hash
+//        	  $(this).attr("download", )
+          });
         }
-        $(row).find(".downloadClean").attr("href", cleanLink);
         $(row).find(".showDatasetInfo").click(
             function(){
               showMetadataBox(md5);
