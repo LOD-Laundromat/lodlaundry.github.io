@@ -3,7 +3,10 @@ $( document ).ready(function() {
 	$("#actualEndpoint").text(sparql.url).attr("href", sparql.url);
 	
 	var namedGraphs = getUrlParams("named-graph-uri");
-	if (namedGraphs.length == 0) namedGraphs = [sparql.mainGraph, sparql.basketGraph];
+//	if (namedGraphs.length == 0) namedGraphs = [sparql.mainGraph, sparql.basketGraph];
+	var defaultGraphs = getUrlParams("default-graph-uri");
+	if (defaultGraphs.length == 0) defaultGraphs = [sparql.mainGraph, sparql.basketGraph];
+	
     var yasqe = YASQE(document.getElementById("sparql"), {
     	value: "PREFIX ll: <http://lodlaundromat.org/vocab#>\n"+
 		"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n"+
@@ -14,6 +17,7 @@ $( document ).ready(function() {
 		"}",
 		sparql: {
 			namedGraphs: namedGraphs,
+			defaultGraphs: defaultGraphs,
 			showQueryButton: true,
 			endpoint: sparql.url,
 		}
