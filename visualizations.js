@@ -21,10 +21,11 @@ var formatSerialization = function(format) {
 
 var fetchAndDrawViz = function(query, rootId, callback) {
   $.ajax({
-    data: {
-      "named-graph-uri": sparql.mainGraph,
-      query: query
-    },
+    data: [
+           {name: "default-graph-uri", value: sparql.mainGraph},
+           {name: "default-graph-uri", value: sparql.basketGraph},
+           {name: "query", value: query}
+    ],
     headers: {
       "Accept": "application/sparql-results+json,*/*;q=0.9"
     },

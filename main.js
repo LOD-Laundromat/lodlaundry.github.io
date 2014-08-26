@@ -4,36 +4,40 @@ if (!console.log) {
   console = {log:function(){}};
 };
 
-
+var llVersion = 11;
 var sparql = {
 	url : "http://sparql.backend.lodlaundromat.org",
-	mainGraph : "http://lodlaundromat.org#11",
+	mainGraph : "http://lodlaundromat.org#" + llVersion,
 	basketGraph: "http://lodlaundromat.org#seedlist",
 	queries : {
 totalTripleCount :
-"PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
+"PREFIX llo: <http://lodlaundromat.org/ontology/>\n\
+PREFIX ll: <http://lodlaundromat/org/resource/>\n\
 SELECT (SUM(?triples) AS ?totalTriples) {\n\
-    ?dataset ll:triples ?triples . \n\
+    ?dataset llo:triples ?triples . \n\
 }\n",
 serializationsPerDoc :
-"PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
+"PREFIX llo: <http://lodlaundromat.org/ontology/>\n\
+PREFIX ll: <http://lodlaundromat/org/resource/>\n\
 SELECT ?contentType (COUNT(?doc) AS ?count) WHERE {\n\
-  ?doc ll:content_type ?contentTypeString\n\
+  ?doc llo:content_type ?contentTypeString\n\
   BIND(REPLACE(?contentTypeString, \";.*\", \"\", \"i\") AS ?contentType)\n\
 } GROUP BY ?contentType",
 serializationsPerTriple :
-"PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
+"PREFIX llo: <http://lodlaundromat.org/ontology/>\n\
+PREFIX ll: <http://lodlaundromat/org/resource/>\n\
 SELECT ?format (SUM(?triples) AS ?count)\n\
 WHERE {\n\
-  ?datadoc ll:serialization_format ?format .\n\
-  ?datadoc ll:triples ?triples .\n\
+  ?datadoc llo:serialization_format ?format .\n\
+  ?datadoc llo:triples ?triples .\n\
 }\n\
 GROUP BY ?format\n",
 contentTypesPerDoc :
-"PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
+"PREFIX llo: <http://lodlaundromat.org/ontology/>\n\
+PREFIX ll: <http://lodlaundromat/org/resource/>\n\
 SELECT ?format (COUNT(?datadoc) AS ?count)\n\
 WHERE {\n\
-  ?datadoc ll:serialization_format ?format .\n\
+  ?datadoc llo:serialization_format ?format .\n\
 }\n\
 GROUP BY ?format\n",
 contentTypesVsSerializationFormats:
@@ -45,83 +49,90 @@ contentTypesVsSerializationFormats:
  * - Replace the N3 content type string with Turtle
  *   to make our matching function easier.
  */
-"PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
+"PREFIX llo: <http://lodlaundromat.org/ontology/>\n\
+PREFIX ll: <http://lodlaundromat/org/resource/>\n\
 SELECT ?matchType (COUNT(?datadoc) AS ?count)\n\
 WHERE {\n\
-  ?datadoc ll:content_type ?contentType .\n\
-  ?datadoc ll:serialization_format ?format .\n\
+  ?datadoc llo:content_type ?contentType .\n\
+  ?datadoc llo:serialization_format ?format .\n\
   FILTER(str(?format) != \"rdfa\")\n\
   FILTER(!contains(str(?contentType), \"zip\"))\n\
   BIND(if(contains(str(?contentType), \"n3\"), \"turtle\", ?contentType) AS ?contentType)\n\
   BIND(if (contains(str(?contentType), str(?format)), \"matches\", \"does not match\") AS ?matchType)\n\
 } GROUP BY ?matchType\n",
 contentLengths :
-"PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
+"PREFIX llo: <http://lodlaundromat.org/ontology/>\n\
+PREFIX ll: <http://lodlaundromat/org/resource/>\n\
 SELECT ?clength ?bcount WHERE {\n\
-  ?doc ll:content_length ?clength ;\n\
-    ll:byte_count ?bcount.\n\
+  ?doc llo:content_length ?clength ;\n\
+    llo:byte_count ?bcount.\n\
   MINUS {\n\
-    ?doc ll:archive_contains []\n\
+    ?doc llo:archive_contains []\n\
   }\n\
-  MINUS {[] ll:archive_contains ?doc}\n\
+  MINUS {[] llo:archive_contains ?doc}\n\
   FILTER(!STRENDS(str(?doc), \".bz2\"))\n\
   FILTER(!STRENDS(str(?doc), \".gz\"))\n\
 }",
 datasetsWithCounts :
-"PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
+"PREFIX llo: <http://lodlaundromat.org/ontology/>\n\
+PREFIX ll: <http://lodlaundromat/org/resource/>\n\
 SELECT ?md5 ?doc ?triples ?duplicates {\n\
-  []  a ll:URL ;\n\
-    ll:triples ?triples;\n\
-    ll:duplicates ?duplicates ;\n\
-    ll:url ?doc ;\n\
-    ll:md5 ?md5 .\n\
+  []  a llo:URL ;\n\
+    llo:triples ?triples;\n\
+    llo:duplicates ?duplicates ;\n\
+    llo:url ?doc ;\n\
+    llo:md5 ?md5 .\n\
   FILTER(?triples > 0)\n\
 }",
 exceptionCounts:
-"PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
+"PREFIX llo: <http://lodlaundromat.org/ontology/>\n\
+PREFIX ll: <http://lodlaundromat/org/resource/>\n\
 SELECT (COUNT(?datadoc1) AS ?count1) (COUNT(?datadoc2) AS ?count2) (COUNT(?datadoc3) AS ?count3)\n\
 WHERE {\n\
   {\n\
-    ?datadoc1 ll:status ?status .\n\
+    ?datadoc1 llo:status ?status .\n\
     FILTER (str(?status) NOT IN (\"true\"))\n\
   } UNION {\n\
-    ?datadoc2 ll:status \"true\"^^xsd:string .\n\
-    ?datadoc2 ll:message ?message2 .\n\
+    ?datadoc2 llo:status \"true\"^^xsd:string .\n\
+    ?datadoc2 llo:message ?message2 .\n\
   } UNION {\n\
-    ?datadoc3 ll:status \"true\"^^xsd:string .\n\
-    FILTER NOT EXISTS { ?datadobackend.lodlaundromat.d2s.labs.vu.nl/basketc3 ll:message ?message3 }\n\
+    ?datadoc3 llo:status \"true\"^^xsd:string .\n\
+    FILTER NOT EXISTS { ?datadoc3 llo:message ?message3 }\n\
   }\n\
 }\n",
 wardrobeListing:
-"PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
+"PREFIX llo: <http://lodlaundromat.org/ontology/>\n\
+PREFIX ll: <http://lodlaundromat/org/resource/>\n\
 SELECT ?md5 ?url ?triples\n\
 WHERE {\n\
-  ?datadoc ll:url ?url .\n\
-  ?datadoc ll:md5 ?md5 .\n\
-  OPTIONAL { ?datadoc ll:triples ?triples . }\n\
+  ?datadoc llo:url ?url .\n\
+  ?datadoc llo:md5 ?md5 .\n\
+  OPTIONAL { ?datadoc llo:triples ?triples . }\n\
 }\n",
 queryBasketContents: function(basketGraph, mainGraph) {
-return "\PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
+return "\PREFIX llo: <http://lodlaundromat.org/ontology/>\n\
+PREFIX ll: <http://lodlaundromat/org/resource/>\n\
 SELECT ?url ?dateAdded ?start_unpack ?end_unpack ?start_clean ?end_clean\n\
 WHERE {\n\
   GRAPH <" + basketGraph + "> {\n\
-   	?datadoc ll:url ?url ;\n\
-      ll:added ?dateAdded .\n\
+   	?datadoc llo:url ?url ;\n\
+      llo:added ?dateAdded .\n\
       OPTIONAL {\n\
 	    GRAPH <" + mainGraph + "> {\n\
-	      OPTIONAL {?datadoc ll:start_unpack ?start_unpack}\n\
-	      OPTIONAL {?datadoc ll:end_unpack ?end_unpack}\n\
-	      OPTIONAL {?datadoc ll:start_clean ?start_clean}\n\
-	      OPTIONAL {?datadoc ll:end_clean ?end_clean}\n\
+	      OPTIONAL {?datadoc llo:start_unpack ?start_unpack}\n\
+	      OPTIONAL {?datadoc llo:end_unpack ?end_unpack}\n\
+	      OPTIONAL {?datadoc llo:start_clean ?start_clean}\n\
+	      OPTIONAL {?datadoc llo:end_clean ?end_clean}\n\
 	   }\n\
      }\n\
   }\n\
 }\n";
 },
 datasetInfo: function(md5) {
-return "PREFIX ll: <http://lodlaundromat.org/vocab#>\n\
+return "PREFIX llo: <http://lodlaundromat.org/ontology/>\n\
+PREFIX ll: <http://lodlaundromat/org/resource/>\n\
 SELECT ?datadoc ?p ?o ?label {\n\
-  ?datadoc ll:md5 \"" + md5 + "\"^^xsd:string .\n\
+  ?datadoc llo:md5 \"" + md5 + "\"^^xsd:string .\n\
   ?datadoc ?p ?o .\n\
   OPTIONAL{?p rdfs:label ?label}\n\
 }";
@@ -221,10 +232,11 @@ var drawModal = function(config) {
 
 var showMetadataBox = function(md5) {
   $.ajax({
-	    "data": {
-	      "named-graph-uri": sparql.mainGraph,
-	      "query": sparql.queries.datasetInfo(md5)
-	    },
+	    data: [
+	           {name: "default-graph-uri", value: sparql.mainGraph},
+	           {name: "default-graph-uri", value: sparql.basketGraph},
+	           {name: "query", value: sparql.queries.datasetInfo(md5)}
+	    ],
 	    "headers": {
 	      "Accept": "application/sparql-results+json,*/*;q=0.9"
 	    },
@@ -324,7 +336,11 @@ var getAndDrawCounter = function() {
   if ($('.counter').length > 0) {
     $.ajax({
       url: sparql.url,
-      data: {query:sparql.queries.totalTripleCount,"named-graph-uri": sparql.mainGraph},
+      data: [
+             {name: "default-graph-uri", value: sparql.mainGraph},
+             {name: "default-graph-uri", value: sparql.basketGraph},
+             {name: "query", value: sparql.queries.totalTripleCount}
+      ],
       success: function(data) {
         if (data.results && data.results.bindings && data.results.bindings.length > 0 && data.results.bindings[0].totalTriples && data.results.bindings[0].totalTriples.value > 0) {
           draw(data.results.bindings[0].totalTriples.value);

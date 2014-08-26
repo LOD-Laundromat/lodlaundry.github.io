@@ -194,10 +194,11 @@ var drawTable = function() {
 
 $( document ).ready(function() {
   $.ajax({
-    data: {
-      "named-graph-uri": sparql.mainGraph,
-      query: sparql.queries.wardrobeListing
-    },
+    data: [
+           {name: "default-graph-uri", value: sparql.mainGraph},
+           {name: "default-graph-uri", value: sparql.basketGraph},
+           {name: "query", value: sparql.queries.wardrobeListing}
+    ],
     headers: {
       "Accept": "application/sparql-results+json,*/*;q=0.9"
     },

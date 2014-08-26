@@ -15,8 +15,8 @@ var shortenUrl = function(url) {
 $( document ).ready(function() {
   $.ajax({
     data: [
-           {name: "named-graph-uri", value: sparql.mainGraph},
-           {name: "named-graph-uri", value: sparql.basketGraph},
+           {name: "default-graph-uri", value: sparql.mainGraph},
+           {name: "default-graph-uri", value: sparql.basketGraph},
            {name: "query", value: sparql.queries.queryBasketContents(sparql.basketGraph, sparql.mainGraph)},
     ],
     headers: {
