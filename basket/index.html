@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta
+        name="description"
+        content="Contains the URLs of dirty datasets that are waiting to be cleaned by the LOD Washing Machine."
+    >
+    <meta name="author" content="Laurens Rietveld">
+    <link rel="icon" href="/imgs/laundry.ico">
+    <title>LOD Laundry Basket</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="//cdn.datatables.net/1.10.0/css/jquery.dataTables.css" rel="stylesheet">
+    <link href="/style.css" rel="stylesheet">
+    <link href="laundryBasket.css" rel="stylesheet">
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+      <link rel="stylesheet" href="bower_components/github-fork-ribbon-css/gh-fork-ribbon.ie.css">
+    <![endif]-->
+  </head>
+  <body>
+    <div id="pageHeader" class="navbar navbar-default navbar-fixed-top bs-docs-nav">
+		<div class="container">
+			<div class="navbar-header">
+			  <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			  </button>
+			</div>
+			<nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
+				<ul id='topNavBar' class="nav navbar-nav">
+				</ul>
+			</nav>
+		</div>
+	</div>
+    <!-- Header section. -->
+    <div class="jumbotron" style="height:100%;">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-4">
+            <img
+                alt="LOD Laundry Basket"
+                class="mediumLogo"
+                src="/imgs/basket.png"
+            >
+          </div>
+          <div class="col-md-8" style="vertical-align:middle;">
+            <h1>LOD Laundry Basket</h1>
+            <p>
+              The LOD Laundry Basket contains the URLs of dirty datasets
+              that are waiting to be cleaned by the
+              <a
+                href="https://github.com/LODLaundry/LOD-Washing-Machine"
+                target="_blank"
+              >
+                LOD Washing Machine
+              </a>.
+              You can add a URL to the LOD Laundry Basket
+              by using the entry field below.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    
+    <div class="container">
+      <!-- LOD Laundry Basket: Form -->
+      <div class="row">
+        <p>
+          Paste a URL that points to an online data source
+          in the text field below and press the button.
+          Data can be contained in archives and can use
+          any of the RDF serailization formats
+          (i.e., RDFa, XML/RDF, N-Triples, N-Quads, Turte, Trig).
+        </p>
+        <!-- @tbd Pressing ENTER should also send the text. -->
+        <input
+            id="newDirtyLaundry"
+            onkeydown="if (event.keyCode == 13) { storeUrl(); return false; }"
+            style="margin-bottom: 10px; width: 450px;"
+            type="text"
+        >
+        <button
+            class="submitDirtyLaundryLink btn btn-info btn-lg"
+            onclick="storeUrl()"
+            type="button"
+        >
+          <span class="glyphicon glyphicon-send"></span>
+          &nbsp;&nbsp;Send
+        </button>
+        <div class="submitStatus">
+        </div>
+      </div>
+      
+      
+      <!-- LOD Laundry Basket: Overview of contents -->
+      <div class="row">
+        <h3>Contents of the LOD Laundry Basket (i.e. dirty laundry items)</h3>
+        <div id="tableWrapper">
+        </div>
+      </div>
+    
+    
+    </div>
+    <!--
+      Bootstrap core JavaScript.
+      Placed at the end of the document so the page loads faster.
+    -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js">
+    </script>
+    <script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="/bower_components/d3/d3.min.js"></script>
+    <script src="//cdn.datatables.net/1.10.0/js/jquery.dataTables.js"></script>
+    <script src="/bower_components/csv-js/csv.js"></script>
+    <script src="/main.js"></script>
+    <script src="laundryBasket.js"></script>
+  </body>
+</html>
+

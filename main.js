@@ -157,6 +157,7 @@ var getSparqlLink = function(query) {
   return "sparql.html?query=" + encodeURIComponent(query);
 };
 
+
 // Init loader.
 $.ajaxSetup({
   beforeSend: function() {
@@ -166,10 +167,11 @@ $.ajaxSetup({
     $('#loader').hide();
     if (goToHash) goToHash();
   },
-  success: function() {}
+  success: function() {},
+  url : sparql.url,
 });
 
-$("<div id='loader'><img src='imgs/loader.gif'></div>").appendTo($("body"));
+$("<div id='loader'><img src='/imgs/loader.gif'></div>").appendTo($("body"));
 
 
 
@@ -232,11 +234,7 @@ var drawModal = function(config) {
 
 var showMetadataBox = function(md5) {
   $.ajax({
-	    data: [
-	           {name: "default-graph-uri", value: sparql.mainGraph},
-	           {name: "default-graph-uri", value: sparql.basketGraph},
-	           {name: "query", value: sparql.queries.datasetInfo(md5)}
-	    ],
+
 	    "headers": {
 	      "Accept": "application/sparql-results+json,*/*;q=0.9"
 	    },
@@ -288,12 +286,12 @@ var drawHeader = function() {
     $("<span></span>").text(config.title).appendTo(anchor);
   };
   var items = [
-       {href: "index.html", img: "imgs/laundry.png", title: "Main Page"},
-       {href: "laundryBasket.html", img: "imgs/basket.png", title: "Laundry Basket"},
-       {href: "https://github.com/LODLaundry/llWashingMachine", newWindow: true, img: "imgs/washingMachine.png", title: "Washing Machine"},
-       {href: "wardrobe.html", img: "imgs/wardrobe.png", title: "Wardrobe"},
-       {href: "visualizations.html", img: "imgs/analysis.png", title: "Analysis"},
-       {href: "sparql.html", img: "imgs/labels.png", title: "SPARQL"},
+       {href: "/", img: "/imgs/laundry.png", title: "Main Page"},
+       {href: "/basket", img: "/imgs/basket.png", title: "Laundry Basket"},
+       {href: "https://github.com/LODLaundry/llWashingMachine", newWindow: true, img: "/imgs/washingMachine.png", title: "Washing Machine"},
+       {href: "/wardrobe", img: "/imgs/wardrobe.png", title: "Wardrobe"},
+       {href: "/visualizations", img: "/imgs/analysis.png", title: "Analysis"},
+       {href: "/sparql", img: "/imgs/labels.png", title: "SPARQL"},
        
      ];
   var lastIndexOf = document.URL.lastIndexOf("/");
@@ -337,8 +335,7 @@ var getAndDrawCounter = function() {
     $.ajax({
       url: sparql.url,
       data: [
-             {name: "default-graph-uri", value: sparql.mainGraph},
-             {name: "default-graph-uri", value: sparql.basketGraph},
+//             {name: "default-graph-uri", value: sparql.basketGraph},
              {name: "query", value: sparql.queries.totalTripleCount}
       ],
       success: function(data) {
