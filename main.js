@@ -112,17 +112,17 @@ WHERE {\n\
 queryBasketContents: function(basketGraph, mainGraph) {
 return "\PREFIX llo: <http://lodlaundromat.org/ontology/>\n\
 PREFIX ll: <http://lodlaundromat/org/resource/>\n\
-SELECT ?url ?dateAdded ?start_unpack ?end_unpack ?start_clean ?end_clean\n\
+SELECT ?url ?dateAdded ?startUnpack ?endUnpack ?startClean ?endClean\n\
 WHERE {\n\
   GRAPH <" + basketGraph + "> {\n\
    	?datadoc llo:url ?url ;\n\
       llo:added ?dateAdded .\n\
       OPTIONAL {\n\
 	    GRAPH <" + mainGraph + "> {\n\
-	      OPTIONAL {?datadoc llo:startUnpack ?start_unpack}\n\
-	      OPTIONAL {?datadoc llo:endUnpack ?end_unpack}\n\
-	      OPTIONAL {?datadoc llo:startClean ?start_clean}\n\
-	      OPTIONAL {?datadoc llo:endClean ?end_clean}\n\
+	      OPTIONAL {?datadoc llo:startUnpack ?startUnpack}\n\
+	      OPTIONAL {?datadoc llo:endUnpack ?endUnpack}\n\
+	      OPTIONAL {?datadoc llo:startClean ?startClean}\n\
+	      OPTIONAL {?datadoc llo:endClean ?endClean}\n\
 	   }\n\
      }\n\
   }\n\
