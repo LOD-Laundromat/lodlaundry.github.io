@@ -20,7 +20,7 @@ serializationsPerDoc :
 "PREFIX llo: <http://lodlaundromat.org/ontology/>\n\
 PREFIX ll: <http://lodlaundromat/org/resource/>\n\
 SELECT ?contentType (COUNT(?doc) AS ?count) WHERE {\n\
-  ?doc llo:content_type ?contentTypeString\n\
+  ?doc llo:contentType ?contentTypeString\n\
   BIND(REPLACE(?contentTypeString, \";.*\", \"\", \"i\") AS ?contentType)\n\
 } GROUP BY ?contentType",
 serializationsPerTriple :
@@ -28,7 +28,7 @@ serializationsPerTriple :
 PREFIX ll: <http://lodlaundromat/org/resource/>\n\
 SELECT ?format (SUM(?triples) AS ?count)\n\
 WHERE {\n\
-  ?datadoc llo:serialization_format ?format .\n\
+  ?datadoc llo:serializationFormat ?format .\n\
   ?datadoc llo:triples ?triples .\n\
 }\n\
 GROUP BY ?format\n",
@@ -37,7 +37,7 @@ contentTypesPerDoc :
 PREFIX ll: <http://lodlaundromat/org/resource/>\n\
 SELECT ?format (COUNT(?datadoc) AS ?count)\n\
 WHERE {\n\
-  ?datadoc llo:serialization_format ?format .\n\
+  ?datadoc llo:serializationFormat ?format .\n\
 }\n\
 GROUP BY ?format\n",
 contentTypesVsSerializationFormats:
@@ -53,8 +53,8 @@ contentTypesVsSerializationFormats:
 PREFIX ll: <http://lodlaundromat/org/resource/>\n\
 SELECT ?matchType (COUNT(?datadoc) AS ?count)\n\
 WHERE {\n\
-  ?datadoc llo:content_type ?contentType .\n\
-  ?datadoc llo:serialization_format ?format .\n\
+  ?datadoc llo:contentType ?contentType .\n\
+  ?datadoc llo:serializationFormat ?format .\n\
   FILTER(str(?format) != \"rdfa\")\n\
   FILTER(!contains(str(?contentType), \"zip\"))\n\
   BIND(if(contains(str(?contentType), \"n3\"), \"turtle\", ?contentType) AS ?contentType)\n\
@@ -64,12 +64,12 @@ contentLengths :
 "PREFIX llo: <http://lodlaundromat.org/ontology/>\n\
 PREFIX ll: <http://lodlaundromat/org/resource/>\n\
 SELECT ?clength ?bcount WHERE {\n\
-  ?doc llo:content_length ?clength ;\n\
-    llo:byte_count ?bcount.\n\
+  ?doc llo:contentLength ?clength ;\n\
+    llo:byteCount ?bcount.\n\
   MINUS {\n\
-    ?doc llo:archive_contains []\n\
+    ?doc llo:archiveContains []\n\
   }\n\
-  MINUS {[] llo:archive_contains ?doc}\n\
+  MINUS {[] llo:archiveContains ?doc}\n\
   FILTER(!STRENDS(str(?doc), \".bz2\"))\n\
   FILTER(!STRENDS(str(?doc), \".gz\"))\n\
 }",
@@ -119,10 +119,10 @@ WHERE {\n\
       llo:added ?dateAdded .\n\
       OPTIONAL {\n\
 	    GRAPH <" + mainGraph + "> {\n\
-	      OPTIONAL {?datadoc llo:start_unpack ?start_unpack}\n\
-	      OPTIONAL {?datadoc llo:end_unpack ?end_unpack}\n\
-	      OPTIONAL {?datadoc llo:start_clean ?start_clean}\n\
-	      OPTIONAL {?datadoc llo:end_clean ?end_clean}\n\
+	      OPTIONAL {?datadoc llo:startUnpack ?start_unpack}\n\
+	      OPTIONAL {?datadoc llo:endUnpack ?end_unpack}\n\
+	      OPTIONAL {?datadoc llo:startClean ?start_clean}\n\
+	      OPTIONAL {?datadoc llo:endClean ?end_clean}\n\
 	   }\n\
      }\n\
   }\n\
@@ -154,7 +154,7 @@ var api = {
 
 
 var getSparqlLink = function(query) {
-  return "sparql.html?query=" + encodeURIComponent(query);
+  return "/sparql?query=" + encodeURIComponent(query);
 };
 
 
