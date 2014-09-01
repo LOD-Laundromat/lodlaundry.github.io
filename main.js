@@ -283,10 +283,10 @@ var drawHeader = function() {
   var items = [
        {href: "/", img: "/imgs/laundry.png", title: "Main Page"},
        {href: "/basket", img: "/imgs/basket.png", title: "Laundry Basket"},
-       {href: "https://github.com/LODLaundry/llWashingMachine", newWindow: true, img: "/imgs/washingMachine.png", title: "Washing Machine"},
        {href: "/wardrobe", img: "/imgs/wardrobe.png", title: "Wardrobe"},
        {href: "/visualizations", img: "/imgs/analysis.png", title: "Analysis"},
        {href: "/sparql", img: "/imgs/labels.png", title: "SPARQL"},
+       {href: "/dev", img: "/imgs/laundryLine.png", title: "Dev corner"},
        
      ];
   var lastIndexOf = document.URL.lastIndexOf("/");

@@ -112,33 +112,33 @@
     </div>
     
     
-    <!-- LOD Washing Machine -->
-    <div class="jumbotron" style="height:100%;">
-      <div class="container">
-        <div class="row">
-          <div class="col-md-8" style="vertical-align:middle;">
-            <h1>Washing Machine</h1>
-            <p>
-              The LOD Washing Machine is the code that fetches LOD, cleans it,
-              and stores it in a standards-compliant format.
-              <button
-                  class="washingMachineLink btn btn-info btn-lg"
-                  type="button"
-              >
-                <span class="glyphicon glyphicon-chevron-right"></span>
-              </button>
-            </p>
-          </div>
-          <div class="col-md-4">
-            <img
-                alt="LOD Washing Machine"
-                class="clickable largeLogo washingMachineLink"
-                src="imgs/washingMachine.png"
-            >
-          </div>
-        </div>
-      </div>
-    </div>
+<!--     LOD Washing Machine -->
+<!--     <div class="jumbotron" style="height:100%;"> -->
+<!--       <div class="container"> -->
+<!--         <div class="row"> -->
+<!--           <div class="col-md-8" style="vertical-align:middle;"> -->
+<!--             <h1>Washing Machine</h1> -->
+<!--             <p> -->
+<!--               The LOD Washing Machine is the code that fetches LOD, cleans it, -->
+<!--               and stores it in a standards-compliant format. -->
+<!--               <button -->
+<!--                   class="washingMachineLink btn btn-info btn-lg" -->
+<!--                   type="button" -->
+<!--               > -->
+<!--                 <span class="glyphicon glyphicon-chevron-right"></span> -->
+<!--               </button> -->
+<!--             </p> -->
+<!--           </div> -->
+<!--           <div class="col-md-4"> -->
+<!--             <img -->
+<!--                 alt="LOD Washing Machine" -->
+<!--                 class="clickable largeLogo washingMachineLink" -->
+<!--                 src="imgs/washingMachine.png" -->
+<!--             > -->
+<!--           </div> -->
+<!--         </div> -->
+<!--       </div> -->
+<!--     </div> -->
     
     
     <!-- LOD Wardrobe -->
@@ -227,6 +227,34 @@
     </div>
     
     
+    
+     
+<!--    Dev corner -->
+    <div class="jumbotron" style="height:100%;">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-8" style="vertical-align:middle;">
+            <h1>Dev Corner</h1>
+            <p>
+             This is great! I think.. But what do you exactly do, and how can I use it?
+              <button
+                  class="devLink btn btn-info btn-lg"
+                  type="button"
+              >
+                <span class="glyphicon glyphicon-chevron-right"></span>
+              </button>
+            </p>
+          </div>
+          <div class="col-md-4">
+            <img
+                alt="The Dev Corner"
+                class="clickable largeLogo devLink"
+                src="imgs/laundryLine.png"
+            >
+          </div>
+        </div>
+      </div>
+    </div>
     <!--
       Bootstrap core JavaScript
       Placed at the end of the document so the page loads faster.
@@ -238,20 +266,20 @@
     <script src="/bower_components/d3-tip/index.js"></script>
     <script src="main.js"></script>
     <script type="text/javascript">
-      $(".washingMachineLink").click(function() {
-        window.open("https://github.com/LODLaundry/llWashingMachine", "_blank", "");
+      $(".devLink").click(function() {
+    	  window.location = "/dev";
       });
       $(".wardrobeLink").click(function() {
-        window.location = "wardrobe.html";
+        window.location = "/wardrobe";
       });
       $(".laundryBasketLink").click(function() {
-        window.location = "laundryBasket.html";
+        window.location = "/basket";
       });
       $(".analysisLink").click(function() {
-        window.location = "visualizations.html";
+        window.location = "/visualizations";
       });
       $(".labelsLink").click(function() {
-        window.location = "sparql.html";
+        window.location = "/sparql";
       });
     </script>
   </body>
