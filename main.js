@@ -26,40 +26,35 @@ SELECT ?contentType (COUNT(?doc) AS ?count) WHERE {\n\
 serializationsPerTriple :
 "PREFIX llo: <http://lodlaundromat.org/ontology/>\n\
 PREFIX ll: <http://lodlaundromat/org/resource/>\n\
-SELECT ?format (SUM(?triples) AS ?count)\n\
+SELECT (replace(str(?formatUri),\".*/\",\"\") as ?format) (SUM(?triples) AS ?count)\n\
 WHERE {\n\
-  ?datadoc llo:serializationFormat ?format .\n\
+  ?datadoc llo:serializationFormat ?formatUri .\n\
   ?datadoc llo:triples ?triples .\n\
 }\n\
-GROUP BY ?format\n",
+GROUP BY ?formatUri\n",
 contentTypesPerDoc :
 "PREFIX llo: <http://lodlaundromat.org/ontology/>\n\
 PREFIX ll: <http://lodlaundromat/org/resource/>\n\
-SELECT ?format (COUNT(?datadoc) AS ?count)\n\
+SELECT (replace(str(?formatUri),\".*/\",\"\") as ?format) (COUNT(?datadoc) AS ?count)\n\
 WHERE {\n\
-  ?datadoc llo:serializationFormat ?format .\n\
+  ?datadoc llo:serializationFormat ?formatUri .\n\
 }\n\
-GROUP BY ?format\n",
+GROUP BY ?formatUri\n",
 contentTypesVsSerializationFormats:
-/**
- * Some explanations:
- * - Do not include documents with serialization format RDFa,
- *   as these should not be transferred with their own content type
- *   (but as part of e.g. an HTTP page).
- * - Replace the N3 content type string with Turtle
- *   to make our matching function easier.
- */
 "PREFIX llo: <http://lodlaundromat.org/ontology/>\n\
 PREFIX ll: <http://lodlaundromat/org/resource/>\n\
 SELECT ?matchType (COUNT(?datadoc) AS ?count)\n\
 WHERE {\n\
   ?datadoc llo:contentType ?contentType .\n\
-  ?datadoc llo:serializationFormat ?format .\n\
-  FILTER(str(?format) != \"rdfa\")\n\
+  ?datadoc llo:serializationFormat ?formatUri .\n\
+  MINUS {?datadoc llo:serializationFormat <http://www.w3.org/ns/formats/RDFa>}#unfair to take this one into account, as http content type of rdfa will be the html page\n\
   FILTER(!contains(str(?contentType), \"zip\"))\n\
-  BIND(if(contains(str(?contentType), \"n3\"), \"turtle\", ?contentType) AS ?contentType)\n\
-  BIND(if (contains(str(?contentType), str(?format)), \"matches\", \"does not match\") AS ?matchType)\n\
-} GROUP BY ?matchType\n",
+  BIND(if(contains(str(?contentType), \"n3\"), \"turtle\", LCASE(?contentType)) AS ?contentType)#make http content types consistent with our serialization formats\n\
+  BIND(LCASE(replace(str(?formatUri),\".*/\",\"\")) AS ?format)#only take local name of uri, and to lower case for easy comparison\n\
+  BIND(if(contains(str(?formatUri), \"RDF_XML\"), \"rdf+xml\", ?formatUri) AS ?formatUri)\n\
+  BIND(if (contains(str(?contentType), ?format), \"matches\", \"does not match\") AS ?matchType)\n\
+}\n\
+GROUP BY ?matchType",
 contentLengths :
 "PREFIX llo: <http://lodlaundromat.org/ontology/>\n\
 PREFIX ll: <http://lodlaundromat/org/resource/>\n\

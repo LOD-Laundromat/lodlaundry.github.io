@@ -48,7 +48,7 @@ fetchAndDrawViz(
         return bindings.count.value;
       },
       data: data.results.bindings,
-      //hideLabelsBelow: 0.02,
+      hideLabelsBelow: 0.05,
       isArray: true,
       rootId: rootId,
       sumBy: function(bindings) {
