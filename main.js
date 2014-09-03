@@ -286,7 +286,7 @@ var drawHeader = function() {
        {href: "/wardrobe", img: "/imgs/wardrobe.png", title: "Wardrobe"},
        {href: "/visualizations", img: "/imgs/analysis.png", title: "Analysis"},
        {href: "/sparql", img: "/imgs/labels.png", title: "SPARQL"},
-       {href: "/dev", img: "/imgs/laundryLine.png", title: "Dev corner"},
+       {href: "/about", img: "/imgs/laundryLine.png", title: "About"},
        
      ];
   var lastIndexOf = document.URL.lastIndexOf("/");
