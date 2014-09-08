@@ -32,10 +32,19 @@ $.ajax({
 		        		visible: false
                     },
 		        	{//triples
-                    	
+                    	"render": function ( count ) {
+                    		if (count && count.length) {
+                    			return ("" + count).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, function($1) { return $1 + "." ;});//add thousands separator
+                    		} else {
+                    			return "N/A";
+                    		}
+//			        		return "<span class='longtitle' data-toggle='tooltip' data-placement='top' title='" + oObj + "'>" + shortenUrl(oObj) + "</span>";
+                    		
+			        	},
+			        	"class": "a-right"
 		        	}
 		        ]
-		    }).fnFilterOnReturn();
+		    }).fnFilterOnReturn().css("display", "table");;
 		} );
     	  
       }

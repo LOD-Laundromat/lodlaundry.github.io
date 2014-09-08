@@ -39,3 +39,6 @@ td {
 	word-wrap: break-word;
 	word-break: break-all;
 }
+.a-right {
+text-align: right;	
+}
