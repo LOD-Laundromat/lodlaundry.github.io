@@ -3,7 +3,8 @@
 if (!console.log) {
   console = {log:function(){}};
 };
-
+var prefixes = "PREFIX llo: <http://lodlaundromat.org/ontology/>\n\
+PREFIX ll: <http://lodlaundromat/org/resource/>\n";
 var llVersion = 11;
 var sparql = {
 	url : "http://sparql.backend.lodlaundromat.org",
@@ -11,21 +12,17 @@ var sparql = {
 	basketGraph: "http://lodlaundromat.org#seedlist",
 	queries : {
 totalTripleCount :
-"PREFIX llo: <http://lodlaundromat.org/ontology/>\n\
-PREFIX ll: <http://lodlaundromat/org/resource/>\n\
-SELECT (SUM(?triples) AS ?totalTriples) {\n\
+
+prefixes + "SELECT (SUM(?triples) AS ?totalTriples) {\n\
     ?dataset llo:triples ?triples . \n\
 }\n",
 serializationsPerDoc :
-"PREFIX llo: <http://lodlaundromat.org/ontology/>\n\
-PREFIX ll: <http://lodlaundromat/org/resource/>\n\
-SELECT ?contentType (COUNT(?doc) AS ?count) WHERE {\n\
+prefixes + "SELECT ?contentType (COUNT(?doc) AS ?count) WHERE {\n\
   ?doc llo:contentType ?contentTypeString\n\
   BIND(REPLACE(?contentTypeString, \";.*\", \"\", \"i\") AS ?contentType)\n\
 } GROUP BY ?contentType",
 serializationsPerTriple :
-"PREFIX llo: <http://lodlaundromat.org/ontology/>\n\
-PREFIX ll: <http://lodlaundromat/org/resource/>\n\
+prefixes + "PREFIX llo: <http://lodlaundromat.org/ontology/>\n\
 SELECT (replace(str(?formatUri),\".*/\",\"\") as ?format) (SUM(?triples) AS ?count)\n\
 WHERE {\n\
   ?datadoc llo:serializationFormat ?formatUri .\n\
@@ -33,17 +30,13 @@ WHERE {\n\
 }\n\
 GROUP BY ?formatUri\n",
 contentTypesPerDoc :
-"PREFIX llo: <http://lodlaundromat.org/ontology/>\n\
-PREFIX ll: <http://lodlaundromat/org/resource/>\n\
-SELECT (replace(str(?formatUri),\".*/\",\"\") as ?format) (COUNT(?datadoc) AS ?count)\n\
+prefixes + "SELECT (replace(str(?formatUri),\".*/\",\"\") as ?format) (COUNT(?datadoc) AS ?count)\n\
 WHERE {\n\
   ?datadoc llo:serializationFormat ?formatUri .\n\
 }\n\
 GROUP BY ?formatUri\n",
 contentTypesVsSerializationFormats:
-"PREFIX llo: <http://lodlaundromat.org/ontology/>\n\
-PREFIX ll: <http://lodlaundromat/org/resource/>\n\
-SELECT ?matchType (COUNT(?datadoc) AS ?count)\n\
+prefixes + "SELECT ?matchType (COUNT(?datadoc) AS ?count)\n\
 WHERE {\n\
   ?datadoc llo:contentType ?contentType .\n\
   ?datadoc llo:serializationFormat ?formatUri .\n\
@@ -56,9 +49,7 @@ WHERE {\n\
 }\n\
 GROUP BY ?matchType",
 contentLengths :
-"PREFIX llo: <http://lodlaundromat.org/ontology/>\n\
-PREFIX ll: <http://lodlaundromat/org/resource/>\n\
-SELECT ?clength ?bcount WHERE {\n\
+prefixes + "SELECT ?clength ?bcount WHERE {\n\
   ?doc llo:contentLength ?clength ;\n\
     llo:byteCount ?bcount.\n\
   MINUS {\n\
@@ -69,9 +60,7 @@ SELECT ?clength ?bcount WHERE {\n\
   FILTER(!STRENDS(str(?doc), \".gz\"))\n\
 }",
 datasetsWithCounts :
-"PREFIX llo: <http://lodlaundromat.org/ontology/>\n\
-PREFIX ll: <http://lodlaundromat/org/resource/>\n\
-SELECT ?md5 ?doc ?triples ?duplicates {\n\
+prefixes + "SELECT ?md5 ?doc ?triples ?duplicates {\n\
   []  a llo:URL ;\n\
     llo:triples ?triples;\n\
     llo:duplicates ?duplicates ;\n\
@@ -80,9 +69,7 @@ SELECT ?md5 ?doc ?triples ?duplicates {\n\
   FILTER(?triples > 0)\n\
 }",
 exceptionCounts:
-"PREFIX llo: <http://lodlaundromat.org/ontology/>\n\
-PREFIX ll: <http://lodlaundromat/org/resource/>\n\
-SELECT (COUNT(?datadoc1) AS ?count1) (COUNT(?datadoc2) AS ?count2) (COUNT(?datadoc3) AS ?count3)\n\
+prefixes + "SELECT (COUNT(?datadoc1) AS ?count1) (COUNT(?datadoc2) AS ?count2) (COUNT(?datadoc3) AS ?count3)\n\
 WHERE {\n\
   {\n\
     ?datadoc1 llo:status ?status .\n\
@@ -95,19 +82,68 @@ WHERE {\n\
     FILTER NOT EXISTS { ?datadoc3 llo:message ?message3 }\n\
   }\n\
 }\n",
-wardrobeListing:
-"PREFIX llo: <http://lodlaundromat.org/ontology/>\n\
-PREFIX ll: <http://lodlaundromat/org/resource/>\n\
-SELECT ?md5 ?url ?triples\n\
+totalWardrobeContents: 
+prefixes + "SELECT (COUNT(?datadoc) AS ?total)\n\
 WHERE {\n\
-  ?datadoc llo:url ?url .\n\
-  ?datadoc llo:md5 ?md5 .\n\
-  OPTIONAL { ?datadoc llo:triples ?triples . }\n\
+  ?datadoc llo:url [] ;\n\
+     llo:md5 [] .\n\
 }\n",
+wardrobeListing: function(drawId, orderBy, offset, limit, filter) {
+	var colsToVar = {
+		0: "?url",
+		2: "?triples"
+	};
+	var filterClause = "";
+	filter.replace("\"", "");//very simple method to avoid injection
+	if (filter.length > 0) {
+	//	var number = !isNan(filter);
+		filterClause = "      FILTER(CONTAINS(str(?url), \"" + filter + "\")";
+		if (!isNaN(filter)) {//is  a number, so check the triples field as well
+			filterClause += " || CONTAINS(str(?triples), \"" + filter + "\")"; 
+		}
+		filterClause += ")\n";
+	}
+	var triplePatterns = 
+"      ?datadoc llo:url ?url ;\n\
+        llo:md5 ?md5 .\n" + filterClause;
+
+	var query = prefixes + "SELECT ?totalFilterCount ?drawId ?md5 ?url ?triples\n\
+WHERE {\n\
+  BIND(\"" + drawId + "\" AS ?drawId) \n\
+  {\n\
+    SELECT ?md5 ?url ?triples WHERE { \n" + triplePatterns + "\
+      OPTIONAL { ?datadoc llo:triples ?triples . }\n\
+    }";
+	var orderBys = [];
+	if (orderBy && orderBy.length > 0) {
+		for (var i = 0; i < orderBy.length; i++) {
+			if (orderBy[i].column in colsToVar) {
+				orderBys.push(orderBy[i].dir.toUpperCase() + "(" + colsToVar[orderBy[i].column] + ")");
+			}
+		}
+	}
+	if (orderBys.length > 0) {
+		query += " ORDER BY " + orderBys.join(" ");
+	}
+	
+	if (limit && limit > 0) {
+		query += " LIMIT " + limit;
+	}
+	if (offset && offset > 0) {
+		query += " OFFSET " + offset;
+	}
+	query += "\n\
+  }\n\
+  {\n\
+    SELECT (COUNT(?datadoc) AS ?totalFilterCount) WHERE {\n" + triplePatterns + "\
+    }\n\
+  }\n\
+} \n";
+	return query;
+
+},
 queryBasketContents: function(basketGraph, mainGraph) {
-return "\PREFIX llo: <http://lodlaundromat.org/ontology/>\n\
-PREFIX ll: <http://lodlaundromat/org/resource/>\n\
-SELECT ?url ?dateAdded ?startUnpack ?endUnpack ?startClean ?endClean\n\
+return prefixes + "SELECT ?url ?dateAdded ?startUnpack ?endUnpack ?startClean ?endClean\n\
 WHERE {\n\
   GRAPH <" + basketGraph + "> {\n\
    	?datadoc llo:url ?url ;\n\
@@ -124,9 +160,7 @@ WHERE {\n\
 }\n";
 },
 datasetInfo: function(md5) {
-return "PREFIX llo: <http://lodlaundromat.org/ontology/>\n\
-PREFIX ll: <http://lodlaundromat/org/resource/>\n\
-SELECT ?datadoc ?p ?o ?label {\n\
+return prefixes + "SELECT ?datadoc ?p ?o ?label {\n\
   ?datadoc llo:md5 \"" + md5 + "\"^^xsd:string .\n\
   ?datadoc ?p ?o .\n\
   OPTIONAL{?p rdfs:label ?label}\n\
@@ -347,6 +381,17 @@ var getAndDrawCounter = function() {
   }
 };
 getAndDrawCounter();
+
+var shortenUrl = function(url) {
+	var maxLength = 180;
+	var shortenedUrl = url;
+	if (url.length > maxLength) {
+		var offset = (url.length - maxLength) / 2;
+		var middleOfString = url.length / 2;
+		shortenedUrl = url.substring(0, middleOfString - offset) + "&nbsp;&nbsp;<strong>(.....)</strong>&nbsp;&nbsp;" + url.substring(middleOfString + offset);
+	}
+	return shortenedUrl;
+};
 
 //this function is useful for printing charts to pdf.
 var deleteEveryDivExcept = function(divId) {

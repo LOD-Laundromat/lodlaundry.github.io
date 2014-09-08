@@ -1,15 +1,6 @@
 var basketContents = null;
 var dataTable;
-var shortenUrl = function(url) {
-	var maxLength = 180;
-	var shortenedUrl = url;
-	if (url.length > maxLength) {
-		var offset = (url.length - maxLength) / 2;
-		var middleOfString = url.length / 2;
-		shortenedUrl = url.substring(0, middleOfString - offset) + "&nbsp;&nbsp;<strong>(.....)</strong>&nbsp;&nbsp;" + url.substring(middleOfString + offset);
-	}
-	return shortenedUrl;
-};
+
 
 
 $( document ).ready(function() {
