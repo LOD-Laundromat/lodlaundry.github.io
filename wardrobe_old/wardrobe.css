@@ -29,16 +29,6 @@ td {
 	float:left;
 	margin-left: 10px;
 }
-.md5 {
+.hidden {
 	display:none;
-}
-.tooltip-inner {
-	max-width: inherit !important;
-}
-#laundryBasetTable_wrapper td {
-	word-wrap: break-word;
-	word-break: break-all;
-}
-.a-right {
-text-align: right;	
 }

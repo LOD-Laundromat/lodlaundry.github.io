@@ -29,6 +29,29 @@ td {
 	float:left;
 	margin-left: 10px;
 }
-.hidden {
+.md5 {
 	display:none;
+}
+.tooltip-inner {
+	max-width: inherit !important;
+}
+#laundryBasetTable_wrapper td {
+	word-wrap: break-word;
+	word-break: break-all;
+}
+.tripleCol {
+text-align: right;	
+}
+th.tripleCol  {
+	text-align: center;
+}
+th.buttonCol {
+	text-align: center;
+}
+.dataTables_filter {
+	height: 35px;
+}
+#wardrobeTable a.disabled {
+	cursor: default;
+	pointer-events: auto;
 }

@@ -1,8 +1,107 @@
-var hoverDiv;
-var wardrobeData = null;
-var hasArchiveEntry = {};
-var fromArchive = {};
-var md5 = {};
+var recordsTotal;
+
+$.ajax({
+    data: [
+           {name: "default-graph-uri", value: sparql.mainGraph},
+           {name: "default-graph-uri", value: sparql.basketGraph},
+           {name: "query", value: sparql.queries.totalWardrobeContents},
+    ],
+    headers: {
+      "Accept": "application/json"
+    },
+    success: function(data) {
+      if (data.results.bindings.length > 0) {
+    	  recordsTotal = data.results.bindings[0].total.value;
+    	  
+    	  
+    	  $(document).ready(function() {
+		    var datatable = $('#wardrobeTable').dataTable( {
+		        "processing": true,
+		        "serverSide": true,
+		        "ajax": $.fn.dataTable.pipeline(),
+		        "drawCallback": function ( oSettings ) {
+		      	  $('.longtitle').tooltip();
+		        },
+		        createdRow: function(row, data, dataIndex) {
+		        	$(row).find(".showDatasetInfo").click(
+	                    function(){
+	                      showMetadataBox(data[3]);
+	                    }
+	                );
+	                $(row).find("a").click(
+	                    function(event){
+	                      event.stopPropagation();
+	                    }
+	                );
+	                $(row).find("button").click(
+	                    function(event){
+	                      event.stopPropagation();
+	                    }
+	                );
+	                $(this).toggleClass('selected');
+	                $(row).click(
+	                    function(){
+	                      $(this).toggleClass('selected');
+	                      updateMultiSelectDownloads();
+	                    }
+	                );
+		        },
+		        "columns": [
+                    {//0 URL
+			        	"render": function ( data, type, full, meta ) {
+			        		return "<span class='longtitle' data-toggle='tooltip' data-placement='top' title='" + data + "'>" + shortenUrl(data) + "</span>";
+			        	}
+		        	},
+                    {//1 buttons/url
+		        		render: function( data, type, full, meta ) {
+		        			var cleanBtn;
+		        			if (full[2]) {
+		        				//we have a clean file (as we have triples)
+		        				cleanBtn = "<a class='downloadClean btn btn-default' download='" + $('<a>').prop('href', full[0]).prop('hostname') + ".clean.nt.gz' href='"+ api.wardrobe.download(full[3]) + "' title='Download the washed and cleaned data' target='_blank'><span class='glyphicon glyphicon-download'></span> Clean</a>";
+		        			} else {
+		        				cleanBtn = "<a class='downloadClean btn btn-default disabled' href='javascript:void(0)' title='Cleaned file not available'><span class='glyphicon glyphicon-download'></span> Clean</a>";
+		        			}
+		        			var dirtyBtn;
+		        	        if (true) {
+		        	        	dirtyBtn = "<a class='downloadDirty btn btn-default' title='Download original dirty dataset' href='" + full[0] + "' target='_blank'><span class='glyphicon glyphicon-download'></span> Dirty</a>"; 
+		        	        }
+		        	        return cleanBtn + dirtyBtn;
+		        		},
+		        		width: 160,
+		        		"class": "buttonCol",
+		        		orderable: false
+                    },
+		        	{//2 triples
+                    	"render": function ( count ) {
+                    		if (count && count.length) {
+                    			return ("" + count).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, function($1) { return $1 + "." ;});//add thousands separator
+                    		} else {
+                    			return "N/A";
+                    		}
+//			        		return "<span class='longtitle' data-toggle='tooltip' data-placement='top' title='" + oObj + "'>" + shortenUrl(oObj) + "</span>";
+                    		
+			        	},
+			        	"class": "tripleCol",
+			        	width: 90
+		        	},
+		        	{//3 md5
+		        		visible: false,
+		        	},
+		        	{//4 info button
+		        		orderable: false,
+		        		width: 40
+		        	}
+		        ]
+		    }).fnFilterOnReturn().css("display", "table");
+		    $("#wardrobeTable_wrapper").prepend(multiButtons);
+		    datatable.on('draw.dt', function () { updateMultiSelectDownloads(); });
+		} );
+    	  
+    	  
+      }
+    },
+    url: sparql.url
+});
 
 var downloadSelectedCleaned = function() {
   $("#wardrobeTable tr.selected .downloadClean").each(function(){
@@ -15,204 +114,177 @@ var downloadSelectedDirty = function() {
   });
 };
 
-var multiButtons;
+
+var multiButtons =  $("<div id='multiButtons' style='float:left; display:none'></div>");
+$("<button style='margin-left: 10px;' class='btn btn-primary' title='Download the selected washed and cleaned data'><span class='glyphicon glyphicon-download'></span> Download selected cleaned data</button>")
+.appendTo(multiButtons)
+.click(downloadSelectedCleaned);
+$("<button style='margin-left: 10px;' class='btn btn-primary' title='Download the selected dirty data'><span class='glyphicon glyphicon-download'></span> Download selected dirty data</button>")
+.appendTo(multiButtons)
+.click(downloadSelectedDirty);
+
 var updateMultiSelectDownloads = function(url) {
-  if ($("#wardrobeTable tr.selected").length > 0) {
-    if (!multiButtons.is(':visible')) {
-      multiButtons.slideDown();
-    }
-  } else {
-    if (multiButtons.is(':visible')) multiButtons.slideUp();
-  }
-  
-};
-
-var dataTable;
-var drawTable = function() {
-  var table = $('<table cellpadding="0" cellspacing="0" border="0" class="display" id="wardrobeTable"></table>');
-  $('#tableWrapper').html(table);
-  
-  if (!wardrobeData || !wardrobeData.results || !wardrobeData.results.bindings) {
-    return;
-  }
-  
-  var rows = [];
-  for (var i = 0; i < wardrobeData.results.bindings.length; i++) {
-    var results = wardrobeData.results.bindings[i];
-    var row = [];
-//    row.push(results.md5.value);
-    row.push(results.url.value + "<div class='md5 hidden'>" + results.md5.value + "</div>");
-    row.push(
-        "<a class='downloadClean btn btn-default' title='Download the washed and cleaned data' target='_blank'><span class='glyphicon glyphicon-download'></span> Clean</a>" +
-        "<a class='downloadDirty btn btn-default' title='Download original dirty dataset' href='" + results.url.value + "' target='_blank'><span class='glyphicon glyphicon-download'></span> Dirty</a>"
-    );
-    row.push(results.triples ? results.triples.value : 0);
-    row.push("<button type='button' class='showDatasetInfo btn btn-default' title='Show more info'><span class='glyphicon glyphicon-info-sign'></span></button>");
-    rows.push(row);
-  }
-  
-  var dTableConfig = {
-      "autoWidth": "false",
-      "columnDefs":
-        [
-          {
-            "celltype": "td",
-            "targets": "_all"
-          },
-//          {
-//              "className": "columnMd5",
-//              "orderable": false,
-//              "searchable": false,
-//              "targets": [0],
-//              "title": "MD5",
-//              "visible": false,
-//            },
-          {
-            "className": "columnUrl",
-            //"name": "url",
-            "orderable": true,
-            "searchable": true,
-            "targets": [0],
-            "title": "URL",
-            //"type": "string",
-            "visible": true,
-          },
-          {
-            "className": "columnDownload",
-            //"name": "download",
-            "orderable": false,
-            "searchable": false,
-            "targets": [1],
-            "title": "Download",
-            //"type": "html",
-            "visible": true,
-            width: "160px"
-          },
-          {
-            "className": "columnTriples",
-            "orderable": true,
-            "searchable": false,
-            "targets": [2],
-            "title": "Triples",
-            //"type": "numeric",
-            "visible": true
-          },
-          {
-            "className": "columnMetadata",
-            //"name": "metadata",
-            "orderable": false,
-            "searchable": false,
-            "targets": [3],
-            "title": "Metadata",
-            //"type": "html",
-            "visible": true
-          }
-        ],
-      "createdRow": function (row, data, dataIndex) {
-        var md5 = $(row).find(".md5").text();
-        var triples = parseInt(data[3]);
-        if (triples == 0) {
-          $(row).find(".downloadClean").attr("href", "javascript:void(0);");
-        } else {
-          $(row).find(".downloadClean").each(function() {
-        	  //set href
-        	  $(this).attr("href", api.wardrobe.download(md5));
-        	  //what is the filename? specify it, so users won't get the long hash
-//        	  $(this).attr("download", )
-          });
+	  if ($("#wardrobeTable tr.selected").length > 0) {
+	    if (!multiButtons.is(':visible')) {
+	      multiButtons.slideDown();
+	    }
+	  } else {
+	    if (multiButtons.is(':visible')) multiButtons.slideUp();
+	  }
+	  
+	};
+//
+// Pipelining function for DataTables. To be used to the `ajax` option of DataTables
+//
+$.fn.dataTable.pipeline = function ( opts ) {
+    // Configuration options
+    var conf = $.extend( {
+        pages: 5,     // number of pages to cache
+        url: sparql.url,      // script url
+        data: function(request) {
+        	return {
+        		query: sparql.queries.wardrobeListing(request.draw, request.order, request.start, request.length, request.search.value)
+        	};
+        },
+        method: 'GET' // Ajax HTTP method
+    }, opts );
+//    console.log(opts);
+ 
+    // Private variables for storing the cache
+    var cacheLower = -1;
+    var cacheUpper = null;
+    var cacheLastRequest = null;
+    var cacheLastJson = null;
+ 
+    return function ( request, drawCallback, settings ) {
+//    	console.log(request);
+        var ajax          = false;
+        var requestStart  = request.start;
+        var drawStart     = request.start;
+        var requestLength = request.length;
+        var requestEnd    = requestStart + requestLength;
+         
+        if ( settings.clearCache ) {
+            // API requested that the cache be cleared
+            ajax = true;
+            settings.clearCache = false;
         }
-        $(row).find(".showDatasetInfo").click(
-            function(){
-              showMetadataBox(md5);
+        else if ( cacheLower < 0 || requestStart < cacheLower || requestEnd > cacheUpper ) {
+            // outside cached data - need to make a request
+            ajax = true;
+        }
+        else if ( JSON.stringify( request.order )   !== JSON.stringify( cacheLastRequest.order ) ||
+                  JSON.stringify( request.columns ) !== JSON.stringify( cacheLastRequest.columns ) ||
+                  JSON.stringify( request.search )  !== JSON.stringify( cacheLastRequest.search )
+        ) {
+            // properties changed (ordering, columns, searching)
+            ajax = true;
+        }
+         
+        // Store the request for checking next time around
+        cacheLastRequest = $.extend( true, {}, request );
+ 
+        if ( ajax ) {
+            // Need data from the server
+            if ( requestStart < cacheLower ) {
+                requestStart = requestStart - (requestLength*(conf.pages-1));
+ 
+                if ( requestStart < 0 ) {
+                    requestStart = 0;
+                }
             }
-        );
-        $(row).find("a").click(
-            function(event){
-              event.stopPropagation();
+             
+            cacheLower = requestStart;
+            cacheUpper = requestStart + (requestLength * conf.pages);
+ 
+            request.start = requestStart;
+            request.length = requestLength*conf.pages;
+ 
+            // Provide the same `data` options as DataTables.
+            if ( $.isFunction ( conf.data ) ) {
+                // As a function it is executed with the data object as an arg
+                // for manipulation. If an object is returned, it is used as the
+                // data object to submit
+                var d = conf.data( request );
+                if ( d ) {
+                    request = d;
+                }
             }
-        );
-        $(row).find("button").click(
-            function(event){
-              event.stopPropagation();
+            else if ( $.isPlainObject( conf.data ) ) {
+                // As an object, the data given extends the default
+                $.extend( request, conf.data );
             }
-        );
-        $(this).toggleClass('selected');
-        $(row).click(
-            function(){
-              $(this).toggleClass('selected');
-              updateMultiSelectDownloads();
-            }
-        );
-        
-        //grrrrr. Somehow, the datatables 'language.thousands' setting does not work. 
-        //Fine, then we do it ourselves (fingers crossed we don't break anything...) 
-        var triplesTd = $(row).find(".columnTriples");
-        triplesTd.text(triplesTd.text().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
-      },
-      "data": rows,
-      "deferRender": true,
-      "displayStart": 0,
-      "dom": "frtipS",
-      "info": true,
-      "language": {
-        "decimal": ",",
-        "thousands": ".",
-        "loadingRecords": "Loading wardrobe contents...",
-      },
-      "lengthChange": true,
-      "lengthMenu": [10,50,100,250,500,1000],
-      "order": [2,"desc"],
-      "ordering": true,
-      "paging": true,
-      "processing": true,
-      "scrollX": false,
-      "scrollY": false,
-      "searching": true,
-      "stateSave": true
-  };
-  dataTable = table.dataTable(dTableConfig);
-  
-  multiButtons =  $("<div id='multiButtons' style='float:left; display:none'></div>");
-  
-  $("#wardrobeTable_wrapper").prepend(multiButtons);
-  
-  $("<div class='sparqlQueryDiv'><button type='button' class='btn btn-default sparqlBtn'>SPARQL</button></div>")
-  .click(function() { window.open(getSparqlLink(sparql.queries.wardrobeListing)); })
-  .prependTo($("#wardrobeTable_wrapper"));
-  
-  
-  $("<button style='margin-left: 10px;' class='btn btn-primary' title='Download the selected washed and cleaned data'><span class='glyphicon glyphicon-download'></span> Download selected cleaned data</button>")
-      .appendTo(multiButtons)
-      .click(downloadSelectedCleaned);
-  $("<button style='margin-left: 10px;' class='btn btn-primary' title='Download the selected dirty data'><span class='glyphicon glyphicon-download'></span> Download selected dirty data</button>")
-      .appendTo(multiButtons)
-      .click(downloadSelectedDirty);
-  dataTable.on('draw.dt', function () { updateMultiSelectDownloads(); });
+ 
+            settings.jqXHR = $.ajax( {
+                "type":     conf.method,
+                "url":      conf.url,
+                "data":     request,
+                "dataType": "json",
+                "cache":    false,
+                "success":  function ( sparqlResult ) {
+                	var json = sparqlResultToDataTable(sparqlResult);
+                    cacheLastJson = $.extend(true, {}, json);
+                    
+                    if ( cacheLower != drawStart ) {
+                        json.data.splice( 0, drawStart-cacheLower );
+                    }
+                    json.data.splice( requestLength, json.data.length );
+                     
+                    drawCallback( json );
+                }
+            } );
+        }
+        else {
+            json = $.extend( true, {}, cacheLastJson );
+            json.draw = request.draw; // Update the echo for each response
+            json.data.splice( 0, requestStart-cacheLower );
+            json.data.splice( requestLength, json.data.length );
+ 
+            drawCallback(json);
+        }
+    };
 };
-
-
-
-$( document ).ready(function() {
-  $.ajax({
-    data: [
-           {name: "default-graph-uri", value: sparql.mainGraph},
-           {name: "default-graph-uri", value: sparql.basketGraph},
-           {name: "query", value: sparql.queries.wardrobeListing}
-    ],
-    headers: {
-      "Accept": "application/sparql-results+json,*/*;q=0.9"
-    },
-    success: function(data) {
-      wardrobeData = data;
-      drawTable();
-      
-    },
-    url: sparql.url
-  });
-});
-
-
-$(window).on('resize', function () {
-  dataTable.fnAdjustColumnSizing();
+ 
+// Register an API method that will empty the pipelined data, forcing an Ajax
+// fetch on the next draw (i.e. `table.clearPipeline().draw()`)
+$.fn.dataTable.Api.register( 'clearPipeline()', function () {
+    return this.iterator( 'table', function ( settings ) {
+        settings.clearCache = true;
+    } );
 } );
 
+var sparqlResultToDataTable = function(sparqlResult) {
+	var datatable = {
+		recordsTotal: recordsTotal,
+		data: [],
+		
+	};
+	for (var i = 0; i < sparqlResult.results.bindings.length; i++) {
+		var row = [];
+		datatable.draw = sparqlResult.results.bindings[i].drawId.value;//same for all results though
+		datatable.recordsFiltered = sparqlResult.results.bindings[i].totalFilterCount.value;//same for all results though
+		
+		//while we are at it, do some post processing as well
+		//urlCell = "<strong>bla</strong>";
+//		var urlCell = "<span class='longtitle' data-toggle='tooltip' data-placement='top' title='" + url + "'>" + shortenUrl(url) + "</span><div class='md5'>" + md5 + "</div>";
+		row.push(sparqlResult.results.bindings[i].url.value);
+		row.push(null);
+		var triples = null;
+		if (sparqlResult.results.bindings[i].triples && sparqlResult.results.bindings[i].triples.value) {
+			triples = sparqlResult.results.bindings[i].triples.value;
+		}
+		row.push(triples);
+		var md5 = sparqlResult.results.bindings[i].md5.value;
+		row.push(md5);
+//		row.push("<button type='button' class='showDatasetInfo btn btn-default' title='Show more info'><span class='glyphicon glyphicon-info-sign'></span></button>");
+		row.push("<a style='padding: 6px;' class='btn btn-default glyphicon glyphicon-info-sign' title='Show more info' href='http://lodlaundromat.org/resource/" + md5 + "' target='_blank'></a>");
+		datatable.data.push(row);
+		
+	}
+	return datatable;
+};
+
+var getHostname = function(url) {
+    var m = url.match(/^http:\/\/[^/]+/);
+    return m ? m[0] : null;
+}
