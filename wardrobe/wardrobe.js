@@ -3,7 +3,7 @@ var recordsTotal;
 $.ajax({
     data: [
            {name: "default-graph-uri", value: sparql.mainGraph},
-//           {name: "default-graph-uri", value: sparql.basketGraph},//only the main graph!
+           {name: "default-graph-uri", value: sparql.basketGraph},
            {name: "query", value: sparql.queries.totalWardrobeContents},
     ],
     headers: {
