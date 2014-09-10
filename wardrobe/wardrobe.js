@@ -3,7 +3,7 @@ var recordsTotal;
 $.ajax({
     data: [
            {name: "default-graph-uri", value: sparql.mainGraph},
-           {name: "default-graph-uri", value: sparql.basketGraph},
+//           {name: "default-graph-uri", value: sparql.basketGraph},//only the main graph!
            {name: "query", value: sparql.queries.totalWardrobeContents},
     ],
     headers: {
@@ -143,7 +143,8 @@ $.fn.dataTable.pipeline = function ( opts ) {
         url: sparql.url,      // script url
         data: function(request) {
         	return {
-        		query: sparql.queries.wardrobeListing(request.draw, request.order, request.start, request.length, request.search.value)
+        		query: sparql.queries.wardrobeListing(request.draw, request.order, request.start, request.length, request.search.value),
+        		name: "default-graph-uri", value: sparql.mainGraph,
         	};
         },
         method: 'GET' // Ajax HTTP method
