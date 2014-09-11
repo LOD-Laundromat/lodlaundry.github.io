@@ -95,14 +95,14 @@ wardrobeListing: function(drawId, orderBy, offset, limit, filter) {
 		2: "?triples"
 	};
 	var filterClause = "";
-	filter.replace("\"", "");//very simple method to avoid injection
+	filter = filter.replace("\"", "");//very simple method to avoid injection
 	if (filter.length > 0) {
-	//	var number = !isNan(filter);
-		filterClause = "      FILTER(CONTAINS(str(?url), \"" + filter + "\")";
+		filterExpressions = [];
+		filterExpressions.push("CONTAINS(str(?url), \"" + filter + "\")");
 		if (!isNaN(filter)) {//is  a number, so check the triples field as well
-			filterClause += " || CONTAINS(str(?triples), \"" + filter + "\")"; 
+			filterExpressions.push("CONTAINS(str(?triples), \"" + filter + "\")");
 		}
-		filterClause += ")\n";
+		filterClause = "      FILTER(" + filterExpressions.join(" || ") + ")\n";
 	}
 	var triplePatterns = 
 "      ?datadoc llo:url ?url ;\n\
@@ -143,22 +143,176 @@ WHERE {\n\
 	return query;
 
 },
-queryBasketContents: function(basketGraph, mainGraph) {
-return prefixes + "SELECT ?url ?dateAdded ?startUnpack ?endUnpack ?startClean ?endClean\n\
+totalBasketContents: 
+prefixes + "SELECT (COUNT(?datadoc) AS ?total)\n\
 WHERE {\n\
-  GRAPH <" + basketGraph + "> {\n\
-   	?datadoc llo:url ?url ;\n\
-      llo:added ?dateAdded .\n\
-      OPTIONAL {\n\
-	    GRAPH <" + mainGraph + "> {\n\
-	      OPTIONAL {?datadoc llo:startUnpack ?startUnpack}\n\
-	      OPTIONAL {?datadoc llo:endUnpack ?endUnpack}\n\
-	      OPTIONAL {?datadoc llo:startClean ?startClean}\n\
-	      OPTIONAL {?datadoc llo:endClean ?endClean}\n\
-	   }\n\
-     }\n\
+  ?datadoc llo:url [] ;\n\
+     llo:md5 [] .\n\
+}\n",
+
+
+//PREFIX llo: <http://lodlaundromat.org/ontology/>
+//	PREFIX ll: <http://lodlaundromat/org/resource/>
+//	SELECT ?totalFilterCount ?drawId ?datadoc ?url ?dateAdded ?startUnpack ?endUnpack ?startClean ?endClean
+//	WHERE {
+//	  BIND("drawId" AS ?drawId)
+//	  {
+//	    SELECT ?datadoc ?url ?dateAdded ?startUnpack ?endUnpack ?startClean ?endClean WHERE {
+//	      GRAPH <http://lodlaundromat.org#seedlist> {
+//	   	    ?datadoc llo:url ?url ;
+//	        llo:added ?dateAdded .
+//	        OPTIONAL {
+//		      GRAPH <http://lodlaundromat.org#11> {
+//		        OPTIONAL {?datadoc llo:startUnpack ?startUnpack}
+//		        OPTIONAL {?datadoc llo:endUnpack ?endUnpack}
+//		        OPTIONAL {?datadoc llo:startClean ?startClean}
+//		        OPTIONAL {?datadoc llo:endClean ?endClean}
+//	          }
+//	        }
+//	        
+//	      }
+//	    } LIMIT 10
+//	  } 
+//	  {
+//	    SELECT (COUNT(?datadoc) AS ?totalFilterCount) WHERE {
+//	      GRAPH <http://lodlaundromat.org#seedlist> {
+//	   	    ?datadoc llo:url ?url ;
+//	        llo:added ?dateAdded .
+//	      }
+//	    }
+//	  }
+//	    
+//	} LIMIT 10
+//	
+//	
+
+
+//blegh. use bitwise operators
+
+basketListing: function(basketGraph, mainGraph, drawId, orderBy, offset, limit, filter) {
+	var requiredClause = "";
+	var minusClause = "";
+	var getStatusBlock = function() {
+		var tPatterns = [
+            "?datadoc llo:endClean ?endClean",
+			"?datadoc llo:startClean ?startClean",
+			"?datadoc llo:endUnpack ?endUnpack",
+			"?datadoc llo:startUnpack ?startUnpack",
+		];
+		var optionalTPatterns = [];
+		var minusTPatterns = [];
+		var requiredTPatterns = [];
+		//cleaned: everything non optional
+		//cleaning: everything except end clean
+		//unpacked: everything except cleaning
+		//unpacking: everything except cleaned non optional
+		//pending: everything does not exist
+		
+		
+		if (statusFilter == null) {
+			optionalTPatterns = tPatterns;
+		} else if (statusFilter == "cleaned") {
+			requiredTPatterns = tPatterns;
+		} else if (statusFilter == "cleaning") {
+			requiredTPatterns = tPatterns.slice(1, 3);
+			minusTPatterns = [tPatterns[0]];
+		} else if (statusFilter == "unpacked") {
+			requiredTPatterns = tPatterns.slice(2,3);
+			minusTPatterns = tPatterns.slice(0,1);
+		} else if (statusFilter == "unpacking") {
+			requiredTPatterns = [tPatterns[3]];
+			minusTPatterns = tPatterns.slice(0,2);
+		} else {
+			//pending
+			minusTPatterns = tPatterns;
+		}
+		
+		var clauses = "";
+		
+		if (requiredTPatterns.length > 0 || minusTPatterns.length > 0) {
+			if (requiredTPatterns.length > 0) {
+				requiredClause += "          GRAPH <" + mainGraph + "> {\n";
+				for (var i = 0; i < requiredTPatterns.length; i++) {
+					requiredClause += "       " + requiredTPatterns[i] + " .\n";
+				}
+				requiredClause += "       }\n";
+				clauses+= requiredClause;
+			}
+			for (var i = 0; i < minusTPatterns.length; i++) {
+				minusClause += "       MINUS{GRAPH <" + mainGraph + "> {" + minusTPatterns[i] + "}}\n";
+				clauses += minusClause;
+			}
+			
+			
+			
+		}
+		if (optionalTPatterns.length > 0) {
+			clauses = "OPTIONAL {\n\
+		          GRAPH <" + mainGraph + "> {\n";
+			for (var i = 0; i < optionalTPatterns.length; i++) {
+				clauses += "       OPTIONAL{" + optionalTPatterns[i] + "}\n";
+			}
+			clauses += "     }\n   }\n";
+		}
+		
+		return clauses;
+	};
+	filter = filter.trim();
+	var statusFilter = null;
+	var urlFilter = null;
+	if (filter.length > 0) {
+		if (filter.indexOf('status:') == 0) {
+			filter = filter.substring('status:'.length);
+			statusFilter = filter.match(/([a-z]*)/)[0];
+			filter = filter.substring(statusFilter.length).trim();
+		}
+		if (filter.length) {
+			urlFilter = filter;
+		}
+	}
+	
+	var filterClause = "";
+	
+	if (urlFilter && urlFilter.length > 0) {
+		filterExpressions = [("CONTAINS(str(?url), \"" + urlFilter + "\")")];
+		filterClause = "      FILTER(" + filterExpressions.join(" || ") + ")\n";
+	}
+	var triplePatterns = 
+"         ?datadoc llo:url ?url ;\n\
+         llo:added ?dateAdded .\n" + filterClause;
+
+	var query = prefixes + "SELECT ?totalFilterCount ?drawId ?datadoc ?url ?dateAdded ?startUnpack ?endUnpack ?startClean ?endClean\n\
+WHERE {\n\
+  BIND(\"" + drawId + "\" AS ?drawId) \n\
+  {\n\
+    SELECT ?datadoc ?url ?dateAdded ?startUnpack ?endUnpack ?startClean ?endClean WHERE {\n\
+	  GRAPH <"+  basketGraph + "> {\n\
+	  "+  triplePatterns + getStatusBlock() + "\
+        " + filterClause + "\
+      }\n\
+    }";
+ /**
+  * Do not add order By! This makes the query too complex. Virtuoso rejects this query in such a case. We could change this limit,
+  * but I'm worried that when the dataset grows, we need to keep upping this value (making the endpoint venerable to complex queries from third parties as well)
+  */
+	if (limit && limit > 0) {
+		query += " LIMIT " + limit;
+	}
+	if (offset && offset > 0) {
+		query += " OFFSET " + offset;
+	}
+	query += "\n\
   }\n\
-}\n";
+  {\n\
+    SELECT (COUNT(?datadoc) AS ?totalFilterCount) WHERE {\n\
+      GRAPH <"+  basketGraph + "> {\n\
+	    "+  triplePatterns + "\n\
+	  }\n\
+	  " + filterClause + "\n" + requiredClause + minusClause + "\
+	}\n\
+  }\n\
+}";
+	return query;
 },
 datasetInfo: function(md5) {
 return prefixes + "SELECT ?datadoc ?p ?o ?label {\n\
@@ -383,16 +537,6 @@ var getAndDrawCounter = function() {
 };
 getAndDrawCounter();
 
-var shortenUrl = function(url) {
-	var maxLength = 180;
-	var shortenedUrl = url;
-	if (url.length > maxLength) {
-		var offset = (url.length - maxLength) / 2;
-		var middleOfString = url.length / 2;
-		shortenedUrl = url.substring(0, middleOfString - offset) + "&nbsp;&nbsp;<strong>(.....)</strong>&nbsp;&nbsp;" + url.substring(middleOfString + offset);
-	}
-	return shortenedUrl;
-};
 
 //this function is useful for printing charts to pdf.
 var deleteEveryDivExcept = function(divId) {

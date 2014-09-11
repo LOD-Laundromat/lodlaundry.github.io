@@ -48,9 +48,7 @@ $.ajax({
 		        },
 		        "columns": [
                     {//0 URL
-			        	"render": function ( data, type, full, meta ) {
-			        		return "<span class='longtitle' data-toggle='tooltip' data-placement='top' title='" + data + "'>" + shortenUrl(data) + "</span>";
-			        	}
+                    	"class": "urlCol"
 		        	},
                     {//1 buttons/url
 		        		render: function( data, type, full, meta ) {
@@ -142,10 +140,11 @@ $.fn.dataTable.pipeline = function ( opts ) {
         pages: 5,     // number of pages to cache
         url: sparql.url,      // script url
         data: function(request) {
-        	return {
-        		query: sparql.queries.wardrobeListing(request.draw, request.order, request.start, request.length, request.search.value),
-        		name: "default-graph-uri", value: sparql.mainGraph,
-        	};
+        	return [
+        		{name: "query", value:  sparql.queries.wardrobeListing(request.draw, request.order, request.start, request.length, request.search.value)},
+        		{name: "default-graph-uri", value: sparql.mainGraph},
+        		{name: "default-graph-uri", value: sparql.basketGraph},
+        	];
         },
         method: 'GET' // Ajax HTTP method
     }, opts );
@@ -266,8 +265,6 @@ var sparqlResultToDataTable = function(sparqlResult) {
 		datatable.recordsFiltered = sparqlResult.results.bindings[i].totalFilterCount.value;//same for all results though
 		
 		//while we are at it, do some post processing as well
-		//urlCell = "<strong>bla</strong>";
-//		var urlCell = "<span class='longtitle' data-toggle='tooltip' data-placement='top' title='" + url + "'>" + shortenUrl(url) + "</span><div class='md5'>" + md5 + "</div>";
 		row.push(sparqlResult.results.bindings[i].url.value);
 		row.push(null);
 		var triples = null;
@@ -277,7 +274,6 @@ var sparqlResultToDataTable = function(sparqlResult) {
 		row.push(triples);
 		var md5 = sparqlResult.results.bindings[i].md5.value;
 		row.push(md5);
-//		row.push("<button type='button' class='showDatasetInfo btn btn-default' title='Show more info'><span class='glyphicon glyphicon-info-sign'></span></button>");
 		row.push("<a style='padding: 6px;' class='btn btn-default glyphicon glyphicon-info-sign' title='Show more info' href='http://lodlaundromat.org/resource/" + md5 + "' target='_blank'></a>");
 		datatable.data.push(row);
 		
@@ -288,4 +284,4 @@ var sparqlResultToDataTable = function(sparqlResult) {
 var getHostname = function(url) {
     var m = url.match(/^http:\/\/[^/]+/);
     return m ? m[0] : null;
-}
+};
