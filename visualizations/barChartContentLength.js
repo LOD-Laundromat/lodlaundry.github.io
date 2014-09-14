@@ -25,7 +25,7 @@ var drawContentLengthBarChart = function(config) {
 	var totalDatasets = 0;
 	dataValues.forEach(function(bindings) {
 		totalDatasets++;
-		bindings.diff = Math.abs(bindings.clength.value - bindings.bcount.value);
+		bindings.diff = Math.abs(bindings.clength - bindings.bcount);
 		if (bindings.diff == 0) {
 			bindings.diffOrdinal = "0";
 		} else {

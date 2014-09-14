@@ -1,16 +1,15 @@
 var drawDatasetsBarChart = function(config) {
 	var dataValues = config.data;
-
 	dataValues.forEach(function(bindings) {
-		bindings.total = +(parseInt(bindings.triples.value) + parseInt(bindings.duplicates.value));
+		bindings.total = +(parseInt(bindings.triples) + parseInt(bindings.duplicates));
 		var origObject = $.extend({}, bindings);
 		bindings.counts = [ {
 			name : "# unique triples",
 			x0 : +1,
-			x1 : +bindings.triples.value
+			x1 : +bindings.triples
 		}, {
 			name : "# duplicate triples",
-			x0 : +bindings.triples.value,
+			x0 : +bindings.triples,
 			x1 : +bindings.total
 		} ];
 
@@ -35,7 +34,7 @@ var drawDatasetsBarChart = function(config) {
 
 	var y = d3.scale.ordinal().rangeBands([ 0, height ], .1).domain(
 			dataValues.map(function(d) {
-				return d.doc.value;
+				return d.doc;
 			}));
 
 	var color = d3.scale.ordinal().range([ "#ff8c00", "#98abc5" ]);
@@ -59,14 +58,14 @@ var drawDatasetsBarChart = function(config) {
 	var tip = d3.tip().attr('class', 'd3-tip').offset([ -10, 0 ]).html(
 			function(bindings) {
 
-				return "<i>" + bindings.doc.value+ ":<br> <strong>total triples: </strong>"
+				return "<i>" + bindings.doc+ ":<br> <strong>total triples: </strong>"
 						+ formatThousands(bindings.total)
 						+ "<br><Strong>unique: </strong>"
-						+ formatThousands(bindings.triples.value) + " ("
-						+ formatPercentage(bindings.triples.value / bindings.total)
+						+ formatThousands(bindings.triples) + " ("
+						+ formatPercentage(bindings.triples / bindings.total)
 						+ ")<br><Strong>duplicates: </strong>"
-						+ formatThousands(bindings.duplicates.value) + " ("
-						+ formatPercentage(bindings.duplicates.value / bindings.total) + ")";
+						+ formatThousands(bindings.duplicates) + " ("
+						+ formatPercentage(bindings.duplicates / bindings.total) + ")";
 			}).direction("e");
 	var svg = d3.select("#" + config.rootId).append("svg").attr("width",
 			width + margin.left + margin.right).attr("height",
@@ -87,10 +86,10 @@ var drawDatasetsBarChart = function(config) {
 
 	var state = svg.selectAll(".state").data(dataValues).enter().append("g")
 			.attr("class", "g").attr("transform", function(d) {
-				return "translate(0," + +y(d.doc.value) + ")";
+				return "translate(0," + +y(d.doc) + ")";
 			});
 	var handleBarClick = function(bindings) {
-		window.open("http://lodlaundromat.org/resource/" + bindings.md5.value);
+		window.open("http://lodlaundromat.org/resource/" + bindings.md5);
 	};
 	state.selectAll(".bar").data(function(d) {
 		return d.counts;

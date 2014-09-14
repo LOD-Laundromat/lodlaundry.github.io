@@ -1,6 +1,5 @@
 
 function drawDegreeBarChart(config) {
-	config.data = d3.tsv.parse(config.data);
 	var dimensions = {
 			width: 900,
 			height: 300,

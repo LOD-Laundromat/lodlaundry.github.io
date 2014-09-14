@@ -19,8 +19,7 @@ var formatSerialization = function(format) {
   };
 };
 
-var fetchAndDrawViz = function(query, rootId, callback, contentType) {
-	if (!contentType) contentType = "application/sparql-results+json,*/*;q=0.9";
+var fetchAndDrawViz = function(query, rootId, callback) {
   $.ajax({
     data: [
            {name: "default-graph-uri", value: sparql.graphs.main},
@@ -29,10 +28,10 @@ var fetchAndDrawViz = function(query, rootId, callback, contentType) {
            {name: "query", value: query}
     ],
     headers: {
-      "Accept": contentType
+      "Accept": "text/tab-separated-values",
     },
     success: function(data) {
-      callback(data, rootId);
+      callback(d3.tsv.parse(data), rootId);
       $("<button type='button' class='btn btn-default sparqlBtn'>SPARQL</button>").click(function() {
         window.open(getSparqlLink(query));
       }).appendTo($("#" + rootId));
@@ -51,9 +50,7 @@ fetchAndDrawViz(
       data: data,
       rootId: rootId,
     });
-  },
-  "text/tab-separated-values"
-);
+  });
 
 
 
@@ -63,14 +60,14 @@ fetchAndDrawViz(
   function(data, rootId) {
     drawPieChart({
       aggregate: function(bindings) {
-        return bindings.count.value;
+        return bindings.count;
       },
-      data: data.results.bindings,
+      data: data,
       hideLabelsBelow: 0.05,
       isArray: true,
       rootId: rootId,
       sumBy: function(bindings) {
-        return formatSerialization(bindings.format.value);
+        return formatSerialization(bindings.format);
       },
       totalUnit: "triples",
       totalLabel: "TOTAL",
@@ -90,13 +87,13 @@ fetchAndDrawViz(
       totalUnit: "documents",
       totalLabel: "TOTAL",
       hideLabelsBelow: 0.02,
-      data: data.results.bindings,
+      data: data,
       isArray: true,
       sumBy: function(bindings) {
-        return formatSerialization(bindings.contentType.value);
+        return formatSerialization(bindings.contentType);
       },
       aggregate: function(bindings) {
-        return bindings.count.value;
+        return bindings.count;
       },
       dimensions: {
     	  width: 800,
@@ -114,12 +111,12 @@ fetchAndDrawViz(sparql.queries.contentTypesPerDoc,"pieChartContentTypes", functi
     totalUnit: "documents",
     totalLabel: "TOTAL",
     hideLabelsBelow: 0.05,
-    data: data.results.bindings,
+    data: data,
     isArray: true,
     sumBy: function(bindings) {
-      return formatSerialization(bindings.format.value);
+      return formatSerialization(bindings.format);
     },
-    aggregate: function(bindings){return bindings.count.value;},
+    aggregate: function(bindings){return bindings.count;},
   });
 });
 
@@ -134,12 +131,12 @@ fetchAndDrawViz(sparql.queries.contentTypesVsSerializationFormats,
     totalUnit: "documents",
     totalLabel: "TOTAL",
     hideLabelsBelow: 0.05,
-    data: data.results.bindings,
+    data: data,
     isArray: true,
     sumBy: function(bindings) {
-      return bindings.matchType.value;
+      return bindings.matchType;
     },
-    aggregate: function(bindings){return bindings.count.value;},
+    aggregate: function(bindings){return bindings.count;},
   });
 });
 
@@ -149,7 +146,7 @@ fetchAndDrawViz(
   function(data, rootId) {
     drawPieChart({
       aggregate: function(bindings){return 1;},
-      data: data.results.bindings,
+      data: data,
       dimensions: {
         width: 600
       },
@@ -159,7 +156,7 @@ fetchAndDrawViz(
       sumBy: function(bindings) {
     	 
     	  return null;
-        return formatSerialization(bindings.format.value);
+        return formatSerialization(bindings.format);
       },
       totalUnit: "documents",
       totalLabel: "TOTAL",
@@ -172,7 +169,7 @@ fetchAndDrawViz(
   "barChartContentLength",
   function(data, rootId) {
     drawContentLengthBarChart({
-      data: data.results.bindings,
+      data: data,
       rootId: rootId
     });
   }
@@ -183,9 +180,8 @@ fetchAndDrawViz(
   "barChartDatasets",
   function(data, rootId) {
     drawDatasetsBarChart({
-      data: data.results.bindings,
+      data: data,
       rootId: rootId
     });
-  }
-);
+  });
 
