@@ -19,15 +19,17 @@ var formatSerialization = function(format) {
   };
 };
 
-var fetchAndDrawViz = function(query, rootId, callback) {
+var fetchAndDrawViz = function(query, rootId, callback, contentType) {
+	if (!contentType) contentType = "application/sparql-results+json,*/*;q=0.9";
   $.ajax({
     data: [
-           {name: "default-graph-uri", value: sparql.mainGraph},
-           {name: "default-graph-uri", value: sparql.basketGraph},
+           {name: "default-graph-uri", value: sparql.graphs.main},
+           {name: "default-graph-uri", value: sparql.graphs.seedlist},
+           {name: "default-graph-uri", value: sparql.graphs.metrics},
            {name: "query", value: query}
     ],
     headers: {
-      "Accept": "application/sparql-results+json,*/*;q=0.9"
+      "Accept": contentType
     },
     success: function(data) {
       callback(data, rootId);
@@ -38,6 +40,22 @@ var fetchAndDrawViz = function(query, rootId, callback) {
     url: sparql.url
   });
 };
+
+
+
+fetchAndDrawViz(
+  sparql.queries.getDegreeStats,
+  "degreeDist",
+  function(data, rootId) {
+	  drawDegreeBarChart({
+      data: data,
+      rootId: rootId,
+    });
+  },
+  "text/tab-separated-values"
+);
+
+
 
 fetchAndDrawViz(
   sparql.queries.serializationsPerTriple,

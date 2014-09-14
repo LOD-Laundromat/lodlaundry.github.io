@@ -90,7 +90,7 @@ var drawDatasetsBarChart = function(config) {
 				return "translate(0," + +y(d.doc.value) + ")";
 			});
 	var handleBarClick = function(bindings) {
-		showMetadataBox(bindings.md5.value);
+		window.open("http://lodlaundromat.org/resource/" + bindings.md5.value);
 	};
 	state.selectAll(".bar").data(function(d) {
 		return d.counts;

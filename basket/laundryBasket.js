@@ -18,8 +18,8 @@ month_names[month_names.length] = "December";
 var datatable;
 $.ajax({
     data: [
-           {name: "default-graph-uri", value: sparql.mainGraph},
-           {name: "default-graph-uri", value: sparql.basketGraph},
+           {name: "default-graph-uri", value: sparql.graphs.main},
+           {name: "default-graph-uri", value: sparql.graphs.seedlist},
            {name: "query", value: sparql.queries.totalBasketContents},
     ],
     headers: {
@@ -89,9 +89,9 @@ $.fn.dataTable.pipeline = function ( opts ) {
         url: sparql.url,      // script url
         data: function(request) {
         	return [
-        		{name: "query", value: sparql.queries.basketListing(sparql.basketGraph, sparql.mainGraph, request.draw, request.order, request.start, request.length, request.search.value)},
-        		{name: "default-graph-uri", value: sparql.mainGraph},
-        		{name: "default-graph-uri", value: sparql.basketGraph},
+        		{name: "query", value: sparql.queries.basketListing(sparql.graphs.main, sparql.graphs.main, request.draw, request.order, request.start, request.length, request.search.value)},
+        		{name: "default-graph-uri", value: sparql.graphs.main},
+        		{name: "default-graph-uri", value: sparql.graphs.seedlist},
         	];
         },
         method: 'GET' // Ajax HTTP method

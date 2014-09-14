@@ -17,8 +17,10 @@
     <link href="/bower_components/github-fork-ribbon-css/gh-fork-ribbon.css" rel="stylesheet">
     <link href="/style.css" rel="stylesheet">
     <link href="visualizations.css" rel="stylesheet">
+    <link href="lineChart.css" rel="stylesheet">
     <link href="pieChart.css" rel="stylesheet">
     <link href="datasetBarChart.css" rel="stylesheet">
+    <link href="degreeBarChart.css" rel="stylesheet">
     <link href="barChartContentLength.css" rel="stylesheet">
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -132,6 +134,19 @@
 		      </div>
 	      </div>
       </div>
+      <div class="jumbotron" style="height:100%;">
+		<div class="container">
+		    <div class="row">
+		        <div class="col-md-12">
+		          <h3 style="text-align:center">
+		            Degree Distribution
+		          </h3>
+		          <div class="vizSpace" id="degreeDist">
+		          </div>
+		        </div>
+		      </div>
+	      </div>
+      </div>
       <div class='container-fluid'>
       <div class="row">
         <div class="col-md-12">
@@ -154,7 +169,9 @@
     <script src="/main.js"></script>
     <script src="piechart.js"></script>
     <script src="datasetBarchart.js"></script>
+    <script src="degreeBarChart.js"></script>
     <script src="barChartContentLength.js"></script>
+    <script src="lineChart.js"></script>
     <script src="visualizations.js"></script>
   </body>
 </html>

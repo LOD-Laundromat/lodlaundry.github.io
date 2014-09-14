@@ -2,8 +2,8 @@ var recordsTotal;
 
 $.ajax({
     data: [
-           {name: "default-graph-uri", value: sparql.mainGraph},
-           {name: "default-graph-uri", value: sparql.basketGraph},
+           {name: "default-graph-uri", value: sparql.graphs.main},
+           {name: "default-graph-uri", value: sparql.graphs.seedlist},
            {name: "query", value: sparql.queries.totalWardrobeContents},
     ],
     headers: {
@@ -23,11 +23,6 @@ $.ajax({
 		      	  $('.longtitle').tooltip();
 		        },
 		        createdRow: function(row, data, dataIndex) {
-		        	$(row).find(".showDatasetInfo").click(
-	                    function(){
-	                      showMetadataBox(data[3]);
-	                    }
-	                );
 	                $(row).find("a").click(
 	                    function(event){
 	                      event.stopPropagation();
@@ -142,8 +137,8 @@ $.fn.dataTable.pipeline = function ( opts ) {
         data: function(request) {
         	return [
         		{name: "query", value:  sparql.queries.wardrobeListing(request.draw, request.order, request.start, request.length, request.search.value)},
-        		{name: "default-graph-uri", value: sparql.mainGraph},
-        		{name: "default-graph-uri", value: sparql.basketGraph},
+        		{name: "default-graph-uri", value: sparql.graphs.main},
+        		{name: "default-graph-uri", value: sparql.graphs.seedlist},
         	];
         },
         method: 'GET' // Ajax HTTP method

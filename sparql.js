@@ -3,9 +3,8 @@ $( document ).ready(function() {
 	$("#actualEndpoint").text(sparql.url).attr("href", sparql.url);
 	
 	var namedGraphs = getUrlParams("named-graph-uri");
-//	if (namedGraphs.length == 0) namedGraphs = [sparql.mainGraph, sparql.basketGraph];
 	var defaultGraphs = getUrlParams("default-graph-uri");
-	if (defaultGraphs.length == 0) defaultGraphs = [sparql.mainGraph, sparql.basketGraph];
+	if (defaultGraphs.length == 0) defaultGraphs = [sparql.graphs.main, sparql.graphs.seedlist, sparql.graphs.metrics];
 	
     var yasqe = YASQE(document.getElementById("sparql"), {
     	value: "PREFIX ll: <http://lodlaundromat.org/vocab#>\n"+

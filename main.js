@@ -8,8 +8,11 @@ PREFIX ll: <http://lodlaundromat/org/resource/>\n";
 var llVersion = 11;
 var sparql = {
 	url : "http://sparql.backend.lodlaundromat.org",
-	mainGraph : "http://lodlaundromat.org#" + llVersion,
-	basketGraph: "http://lodlaundromat.org#seedlist",
+	graphs: {
+		main: "http://lodlaundromat.org#" + llVersion,
+		seedlist: "http://lodlaundromat.org#seedlist",
+		metrics: "http://lodlaundromat.org#metrics-" + llVersion,
+	},
 	queries : {
 totalTripleCount :
 
@@ -149,46 +152,6 @@ WHERE {\n\
   ?datadoc llo:url [] ;\n\
      llo:md5 [] .\n\
 }\n",
-
-
-//PREFIX llo: <http://lodlaundromat.org/ontology/>
-//	PREFIX ll: <http://lodlaundromat/org/resource/>
-//	SELECT ?totalFilterCount ?drawId ?datadoc ?url ?dateAdded ?startUnpack ?endUnpack ?startClean ?endClean
-//	WHERE {
-//	  BIND("drawId" AS ?drawId)
-//	  {
-//	    SELECT ?datadoc ?url ?dateAdded ?startUnpack ?endUnpack ?startClean ?endClean WHERE {
-//	      GRAPH <http://lodlaundromat.org#seedlist> {
-//	   	    ?datadoc llo:url ?url ;
-//	        llo:added ?dateAdded .
-//	        OPTIONAL {
-//		      GRAPH <http://lodlaundromat.org#11> {
-//		        OPTIONAL {?datadoc llo:startUnpack ?startUnpack}
-//		        OPTIONAL {?datadoc llo:endUnpack ?endUnpack}
-//		        OPTIONAL {?datadoc llo:startClean ?startClean}
-//		        OPTIONAL {?datadoc llo:endClean ?endClean}
-//	          }
-//	        }
-//	        
-//	      }
-//	    } LIMIT 10
-//	  } 
-//	  {
-//	    SELECT (COUNT(?datadoc) AS ?totalFilterCount) WHERE {
-//	      GRAPH <http://lodlaundromat.org#seedlist> {
-//	   	    ?datadoc llo:url ?url ;
-//	        llo:added ?dateAdded .
-//	      }
-//	    }
-//	  }
-//	    
-//	} LIMIT 10
-//	
-//	
-
-
-//blegh. use bitwise operators
-
 basketListing: function(basketGraph, mainGraph, drawId, orderBy, offset, limit, filter) {
 	var requiredClause = "";
 	var minusClause = "";
@@ -314,13 +277,21 @@ WHERE {\n\
 }";
 	return query;
 },
-datasetInfo: function(md5) {
-return prefixes + "SELECT ?datadoc ?p ?o ?label {\n\
-  ?datadoc llo:md5 \"" + md5 + "\"^^xsd:string .\n\
-  ?datadoc ?p ?o .\n\
-  OPTIONAL{?p rdfs:label ?label}\n\
-}";
-}
+getDegreeStats: 
+prefixes + "SELECT ?doc ?outDegreeMean ?inDegreeMean ?degreeMean  ?outDegreeStd ?inDegreeStd ?degreeStd ?outDegreeMedian ?inDegreeMedian ?degreeMedian ?outDegreeRange ?inDegreeRange ?degreeRange {\n\
+  ?doc llo:outDegree/llo:mean ?outDegreeMean ;\n\
+    llo:inDegree/llo:mean ?inDegreeMean ;\n\
+    llo:degree/llo:mean ?degreeMean ;\n\
+    llo:outDegree/llo:standardDeviation ?outDegreeStd ;\n\
+    llo:inDegree/llo:standardDeviation ?inDegreeStd;\n\
+    llo:degree/llo:standardDeviation ?degreeStd ;\n\
+    llo:outDegree/llo:median ?outDegreeMedian ;\n\
+    llo:inDegree/llo:median ?inDegreeMedian ;\n\
+    llo:degree/llo:median ?degreeMedian ;\n\
+    llo:outDegree/llo:range ?outDegreeRange ;\n\
+    llo:inDegree/llo:range ?inDegreeRange;\n\
+    llo:degree/llo:range ?degreeRange .\n\
+}"
 	}
 };
 
@@ -415,46 +386,6 @@ var drawModal = function(config) {
   modal.modal("show");
 };
 
-
-var showMetadataBox = function(md5) {
-  $.ajax({
-
-	    "headers": {
-	      "Accept": "application/sparql-results+json,*/*;q=0.9"
-	    },
-	    "success": function(data) {
-	      if (!data || !data.results || !data.results.bindings || data.results.bindings.length == 0) {
-	    	  drawModal({header: "Dataset Properties", content: $('<div class="alert alert-danger" role="alert">No dataset properties found...</div>')});
-	      } else {
-		      var table = $("<table class='table'></table>");
-		      var addRow = function(config) {
-		        var row = $("<tr></tr>").appendTo(table);
-		        if (config.rowClass) row.addClass(config.rowClass);
-		        if (config.midHeader) row.css("font-weight", "bold");
-		        for (var i = 0; i < config.values.length; i++) {
-		          var col = $("<td></td>");
-		          if (config.isHeader) col = $("<th></th>");
-		          if (config.midHeader) col.attr("colspan", "2");
-		          row.append(col);
-		          var arg = config.values[i];
-		          if (typeof arg == "string") {
-		            col.html(arg);
-		          } else {
-		            col.append(arg);
-		          }
-		          if (i == 0 && config.indentFirstCol) col.css("padding-left", "15px");
-		        }
-		      };
-		      $.each(data.results.bindings, function(index, triple) {
-		    	  var rowHeader = (triple.label && triple.label.value? triple.label.value: triple.p.value);
-		        addRow({values: [rowHeader, triple.o.value]});
-		      });
-		      drawModal({header: "Dataset Properties", content: table});
-	      }
-	    },
-	    "url": sparql.url
-	  });
-};
 
 
 /**

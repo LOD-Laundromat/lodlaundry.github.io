@@ -1,0 +1,23 @@
+
+#degreeDist .bar {
+  fill: steelblue;
+}
+
+#degreeDist .bar:hover {
+  fill: brown;
+}
+
+#degreeDist .axis {
+  font: 10px sans-serif;
+}
+
+#degreeDist .axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+#degreeDist .x.axis path {
+  display: none;
+}
