@@ -114,6 +114,10 @@ thereby greatly improving the chance of data actually being (re)used.
 	            <p class="question">How can I <i>download</i> these files?</p>
 	            <p class="answer">You can either download files via the <a href="/wardrobe">website</a>, or using your own application ro script. All you need to do is query our SPARQL endpoint to retrieve the identifier (MD5 hash) of the dataset URL, and download the file from <code>http://download.lodlaundromat.org/&lt;md5&gt;</code></p>
             </div>
+             <div class="faqItem">
+                <p class="question">How can I access all the metadata?</p>
+                <p class="answer">You can either use the <a href="/sparql">SPARQL endpoint</a>, or our daily snapshots. We provide a <a href="http://download.lodlaundromat.org/main.ttl.gz">daily snapshot of all the crawling data</a> (including references to the cleaned files). Additionally, we provide a <a href="http://download.lodlaundromat.org/metrics.ttl.gz">daily snapshot containing all the VoiD descriptions</a> we calculated on these dataset</p>
+            </div>
             <div class="faqItem">
 	            <p class="question">How do I <i>use</i> these files?</p>
 	            <p class="answer">Depends on what you would like to do. If you would like to use it in a triple-store, simply unzip the data. However, if you would like to analyze the triples using your own code, make sure you take advantage of the way we publish the data.
@@ -125,6 +129,7 @@ thereby greatly improving the chance of data actually being (re)used.
 	            And even better, <a href="https://github.com/LODLaundry/GettingStarted" target="_blank">we provide a couple of parser implementations for you!</a> (in NodeJs, Java, and Python).
 	            </ol>
             </div>
+  
             
           </div>
         </div>
