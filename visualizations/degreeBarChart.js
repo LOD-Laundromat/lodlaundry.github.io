@@ -1,9 +1,13 @@
 
 function drawDegreeBarChart(config) {
+    
 	var dimensions = {
-			width: 900,
+			width: 1100,
 			height: 300,
 			margins: {top: 20, right: 20, bottom: 30, left: 40}
+	};
+	var getWidth = function(data) {
+	    return Math.max(dimensions.width, (data.length + 200));
 	};
 	if (config.dimensions) $.extend(dimensions,config.dimensions);
 	
@@ -39,62 +43,90 @@ function drawDegreeBarChart(config) {
 			
 		}).direction("n");
 	
-	
+	var x, y, yAxisText;
+	var updateWidth = function(data) {
+	    var width = getWidth(data);
+	    svg.attr("width", width + dimensions.margins.left + dimensions.margins.right);
+	    
+	    
+	    x = d3.scale.ordinal()
+	    .rangeRoundBands([10, getWidth(data)], .1);
+	    y = d3.scale.linear()
+        .range([dimensions.height, 0]);
+	    yAxis.scale(y);
+	    x.domain(config.data.map(function(d) { 
+	          return d.doc; 
+	          }));
+	    y.domain([0, d3.max(config.data, function(d) { 
+	          return +d.current; 
+	          })]);
+	    xAxis.scale(x);
+	    svg.select(".x").remove();
+	    svg.append("g")
+	      .attr("class", "x axis")
+	      .attr("transform", "translate(0," + dimensions.height + ")")
+	      .call(xAxis);
+	    
+	    svg.select(".y").remove();
+	    var yAxisSvg = svg.append("g")
+	      .attr("class", "y axis")
+	      .attr("transform", "translate(" + dimensions.margins.left + ",0)")
+	      .call(yAxis);
+	    yAxisText = yAxisSvg.append("text")
+	      .attr("transform", "rotate(-90)")
+	      .attr("y", 6)
+	      .attr("dy", ".71em")
+	      .style("text-anchor", "end")
+	      .text("Datasets");
+	    
+	    
+	};
 	var svg = d3.select("#" + config.rootId).append("svg")
-    .attr("width", dimensions.width + dimensions.margins.left + dimensions.margins.right)
-	    .attr("height", dimensions.height + dimensions.margins.top + dimensions.margins.bottom)
-	  .append("g")
-	    .attr("transform", "translate(" + dimensions.margins.left + "," + dimensions.margins.top + ")");
+//    .attr("width", getWidth(config.data) + dimensions.margins.left + dimensions.margins.right)
+	    .attr("height", dimensions.height + dimensions.margins.top + dimensions.margins.bottom);
+	    
 	
+	  svg.append("g")
+	    .attr("transform", "translate(" + dimensions.margins.left + "," + dimensions.margins.top + ")");
+//	updateWidth(config.data);
 	
 	
 	svg.call(tip);
 	
-	var x = d3.scale.ordinal()
-    .rangeRoundBands([0, dimensions.width], .1);
-	var y = d3.scale.linear()
-	    .range([dimensions.height, 0]);
+//	var x = d3.scale.ordinal()
+//    .rangeRoundBands([0, getWidth(config.data)], .1);
+
 
 	var xAxis = d3.svg.axis()
-	    .scale(x)
+//	    .scale(x)
 	    .tickFormat(function(){return "";})
 	    .orient("bottom");
 
 	var yAxis = d3.svg.axis()
-	    .scale(y)
+//	    .scale(y)
 	    .orient("left");
 	
-	x.domain(config.data.map(function(d) { 
-		  return d.doc; 
-		  }));
-	  y.domain([0, d3.max(config.data, function(d) { 
-		  return +d.current; 
-		  })]);
-	svg.append("g")
-      .attr("class", "x axis")
-      .attr("transform", "translate(0," + dimensions.height + ")")
-      .call(xAxis);
-	 svg.append("g")
-      .attr("class", "y axis")
-      .call(yAxis)
-    .append("text")
-      .attr("transform", "rotate(-90)")
-      .attr("y", 6)
-      .attr("dy", ".71em")
-      .style("text-anchor", "end")
-      .text("Datasets");
+	
+	  
+
+	
 	var update = function() {
 		var type = degreeSelect.val() + statSelect.val();
+		var limit = limitSelect.val();
+		
 		var transitionDuration = 300;
 		var delay = function(d, i) { return i * 20; };
 		config.data.forEach(function(d){
 			d.current = d[type];
 		});
+		config.data.sort(function(a, b) { return b.current - a.current; });
+		var limittedData = (limit == "all"? config.data: config.data.slice(0, limit));
+		updateWidth(limittedData);
+		yAxisText.text(degreeSelect.val().charAt(0).toUpperCase() + degreeSelect.val().slice(1) + " - " + statSelect.val());
 //		d3.scale.log().domain([1, 100]).range([dim-padding,padding]);
-		var x0 = x.domain(config.data.sort(function(a, b) { return b.current - a.current; })
-					.map(function(d) { return d.doc; }))
+		var x0 = x.domain(limittedData.map(function(d) { return d.doc; }))
 				.copy();
-		var maxY = d3.max(config.data, function(d) { 
+		var maxY = d3.max(limittedData, function(d) { 
 			  return +d.current;
 		  });
 		var y0;
@@ -107,7 +139,7 @@ function drawDegreeBarChart(config) {
 			
 
 		var bars = svg.selectAll(".bar")
-		      .data(config.data);
+		      .data(limittedData);
 		  
 		  bars.enter().append("rect")
 	      .attr("class", "bar")
@@ -116,56 +148,24 @@ function drawDegreeBarChart(config) {
 			.on('click', handleBarClick);
 		  bars
 		  .sort(sortDegrees)
-		    .transition()
-		    .duration(transitionDuration)
-		    .delay(delay)
 		      .attr("x", function(d) { 
 		    	  return x(d.doc); 
 		    	  })
-		      .attr("width", x.rangeBand())
+		      .attr("width", x.rangeBand([0, getWidth(limittedData) - dimensions.margins.left - dimensions.margins.right - 50]))
 		      .attr("y", function(d) {
 		    	  return y0(+d.current);
 		    	  })
 		      .attr("height", function(d) { return dimensions.height - y0(+d.current); });
 		  
 		  
-//		  var transition = svg.transition().duration(750),
-//	        delay = function(d, i) { return i * 5; };
-//
-//		    transition.selectAll(".bar")
-//		        .delay(delay)
-//		        .attr("x", function(d) { return x0(d.current); });
-//	console.log("sd");
-		  
 		  var transition = svg.transition().duration(transitionDuration)
 		    .select(".y.axis")
 		        .call(yAxis.scale(y0))
 		      .selectAll("g")
 		        .delay(delay);
-//		  };
 		  
 		  
 		  
-//		  bars.exit()
-//		    .transition()
-//		    .duration(300)
-//		    .ease("exp")
-//		        .attr("width", 0)
-//		        .remove();
-		    
-		    
-		    
-//		  console.log( svg.selectAll("rect"));
-//		  svg.selectAll("rect")
-//	        .sort(sortDegrees)
-//	        .transition()
-//	        .delay(function (d, i) {
-//	        return i * 50;
-//	    })
-//	        .duration(1000)
-//	        .attr("x", function (d, i) {
-//	        return x(d.doc);
-//	    });
 		  
 	};
 	var selectDiv = $("<div/>").appendTo($("#" + config.rootId));
@@ -181,6 +181,12 @@ function drawDegreeBarChart(config) {
 	$("<option value='Median' >Median</option>").appendTo(statSelect);
 	$("<option value='Min'>Min</option>").appendTo(statSelect);
 	$("<option value='Max'>Max</option>").appendTo(statSelect);
+	var limitSelect = $("<select id='limit'></select>")
+    .on("change", update).appendTo(selectDiv);
+    $("<option value='100' selected='selected'>Show top 100 datasets</option>").appendTo(limitSelect);
+    $("<option value='1000' >Show top 1.000 datasets</option>").appendTo(limitSelect);
+    $("<option value='10000' >Show top 10.000 datasets</option>").appendTo(limitSelect);
+    $("<option value='all'>Show all datasets</option>").appendTo(limitSelect);
 	update();
 	function type(d) {
 	  d.current = +d.current;

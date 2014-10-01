@@ -273,13 +273,13 @@ WHERE {\n\
 getDegreeStats: 
 prefixes + 
 "PREFIX llm: <http://lodlaundromat.org/metrics/ontology/>\n\
-SELECT ?doc ?outDegreeMean ?inDegreeMean ?degreeMean  ?outDegreeStd ?inDegreeStd ?degreeStd ?outDegreeMedian ?inDegreeMedian ?degreeMedian ?outDegreeMin ?inDegreeMin ?degreeMin ?outDegreeMax ?inDegreeMax ?degreeMax {\n\
+SELECT DISTINCT * {\n\
   ?doc llm:outDegree/llm:mean ?outDegreeMean ;\n\
     llm:inDegree/llm:mean ?inDegreeMean ;\n\
     llm:degree/llm:mean ?degreeMean ;\n\
-    llm:outDegree/llm:standardDeviation ?outDegreeStd ;\n\
-    llm:inDegree/llm:standardDeviation ?inDegreeStd;\n\
-    llm:degree/llm:standardDeviation ?degreeStd ;\n\
+    llm:outDegree/llm:std ?outDegreeStd ;\n\
+    llm:inDegree/llm:std ?inDegreeStd;\n\
+    llm:degree/llm:std ?degreeStd ;\n\
     llm:outDegree/llm:median ?outDegreeMedian ;\n\
     llm:inDegree/llm:median ?inDegreeMedian ;\n\
     llm:degree/llm:median ?degreeMedian ;\n\
@@ -289,7 +289,7 @@ SELECT ?doc ?outDegreeMean ?inDegreeMean ?degreeMean  ?outDegreeStd ?inDegreeStd
     llm:outDegree/llm:max ?outDegreeMax ;\n\
     llm:inDegree/llm:max ?inDegreeMax ;\n\
     llm:degree/llm:max ?degreeMax .\n\
-}"
+} "
 	}
 };
 

@@ -27,6 +27,7 @@ var drawDatasetsBarChart = function(config) {
 		left : 40
 	}, width = 960 - margin.left - margin.right, height = (dataValues.length * 3) - margin.top
 			- margin.bottom;
+	
 	var x = d3.scale.log().range([ 0, width ]).domain(
 			[ 1, d3.max(dataValues, function(val) {
 				return val.total;

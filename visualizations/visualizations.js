@@ -19,37 +19,47 @@ var formatSerialization = function(format) {
   };
 };
 
-var fetchAndDrawViz = function(query, rootId, callback) {
-  $.ajax({
-    data: [
-           {name: "default-graph-uri", value: sparql.graphs.main},
-           {name: "default-graph-uri", value: sparql.graphs.seedlist},
-           {name: "default-graph-uri", value: sparql.graphs.metrics},
-           {name: "query", value: query}
-    ],
-    headers: {
-      "Accept": "text/tab-separated-values",
-    },
-    success: function(data) {
-      callback(d3.tsv.parse(data), rootId);
-      $("<button type='button' class='btn btn-default sparqlBtn'>SPARQL</button>").click(function() {
-        window.open(getSparqlLink(query));
-      }).appendTo($("#" + rootId));
-    },
-    url: sparql.url
-  });
+var fetchAndDrawViz = function(query, rootId, callback, overWriteConfig) {
+    var ajaxConfig = {
+            data: [
+                   {name: "default-graph-uri", value: sparql.graphs.main},
+                   {name: "default-graph-uri", value: sparql.graphs.seedlist},
+                   {name: "default-graph-uri", value: sparql.graphs.metrics},
+                   {name: "query", value: sparql.queries.getDegreeStats}
+            ],
+            headers: {
+              "Accept": "text/tab-separated-values",
+            },
+            success: function(data) {
+              callback(d3.tsv.parse(data), rootId);
+              $("<button type='button' class='btn btn-default sparqlBtn'>SPARQL</button>").click(function() {
+                window.open(getSparqlLink(query));
+              }).appendTo($("#" + rootId));
+            },
+            url: sparql.url
+          };
+    if (overWriteConfig) {
+        $.extend(ajaxConfig, overWriteConfig);
+    }
+  $.ajax(ajaxConfig);
 };
 
 
 
 fetchAndDrawViz(
-  sparql.queries.getDegreeStats,
+  null,
   "degreeDist",
   function(data, rootId) {
 	  drawDegreeBarChart({
       data: data,
       rootId: rootId,
     });
+  },
+  {
+      data: [//optimize by -only- querying metrics graph
+             {name: "default-graph-uri", value: sparql.graphs.metrics},
+             {name: "query", value: sparql.queries.getDegreeStats}
+      ] 
   });
 
 

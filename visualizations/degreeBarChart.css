@@ -2,7 +2,9 @@
 #degreeDist .bar {
   fill: steelblue;
 }
-
+#degreeDist {
+	width: 100%;
+}
 #degreeDist .bar:hover {
   fill: brown;
 }
@@ -20,4 +22,10 @@
 
 #degreeDist .x.axis path {
   display: none;
+}
+#degreeDist .sparqlBtn {
+	margin-top: -40px;
+}
+#degreeDist .x .tick {
+	visibility:hidden;
 }
