@@ -64,8 +64,7 @@ prefixes + "SELECT ?clength ?bcount WHERE {\n\
 }",
 datasetsWithCounts :
 prefixes + "SELECT ?md5 ?doc ?triples ?duplicates {\n\
-  []  a llo:URL ;\n\
-    llo:triples ?triples;\n\
+  [] llo:triples ?triples;\n\
     llo:duplicates ?duplicates ;\n\
     llo:url ?doc ;\n\
     llo:md5 ?md5 .\n\
@@ -272,19 +271,24 @@ WHERE {\n\
 	return query;
 },
 getDegreeStats: 
-prefixes + "SELECT ?doc ?outDegreeMean ?inDegreeMean ?degreeMean  ?outDegreeStd ?inDegreeStd ?degreeStd ?outDegreeMedian ?inDegreeMedian ?degreeMedian ?outDegreeRange ?inDegreeRange ?degreeRange {\n\
-  ?doc llo:outDegree/llo:mean ?outDegreeMean ;\n\
-    llo:inDegree/llo:mean ?inDegreeMean ;\n\
-    llo:degree/llo:mean ?degreeMean ;\n\
-    llo:outDegree/llo:standardDeviation ?outDegreeStd ;\n\
-    llo:inDegree/llo:standardDeviation ?inDegreeStd;\n\
-    llo:degree/llo:standardDeviation ?degreeStd ;\n\
-    llo:outDegree/llo:median ?outDegreeMedian ;\n\
-    llo:inDegree/llo:median ?inDegreeMedian ;\n\
-    llo:degree/llo:median ?degreeMedian ;\n\
-    llo:outDegree/llo:range ?outDegreeRange ;\n\
-    llo:inDegree/llo:range ?inDegreeRange;\n\
-    llo:degree/llo:range ?degreeRange .\n\
+prefixes + 
+"PREFIX llm: <http://lodlaundromat.org/metrics/ontology/>\n\
+SELECT ?doc ?outDegreeMean ?inDegreeMean ?degreeMean  ?outDegreeStd ?inDegreeStd ?degreeStd ?outDegreeMedian ?inDegreeMedian ?degreeMedian ?outDegreeMin ?inDegreeMin ?degreeMin ?outDegreeMax ?inDegreeMax ?degreeMax {\n\
+  ?doc llm:outDegree/llm:mean ?outDegreeMean ;\n\
+    llm:inDegree/llm:mean ?inDegreeMean ;\n\
+    llm:degree/llm:mean ?degreeMean ;\n\
+    llm:outDegree/llm:standardDeviation ?outDegreeStd ;\n\
+    llm:inDegree/llm:standardDeviation ?inDegreeStd;\n\
+    llm:degree/llm:standardDeviation ?degreeStd ;\n\
+    llm:outDegree/llm:median ?outDegreeMedian ;\n\
+    llm:inDegree/llm:median ?inDegreeMedian ;\n\
+    llm:degree/llm:median ?degreeMedian ;\n\
+    llm:outDegree/llm:min ?outDegreeMin ;\n\
+    llm:inDegree/llm:min ?inDegreeMin ;\n\
+    llm:degree/llm:min ?degreeMin ;\n\
+    llm:outDegree/llm:max ?outDegreeMax ;\n\
+    llm:inDegree/llm:max ?inDegreeMax ;\n\
+    llm:degree/llm:max ?degreeMax .\n\
 }"
 	}
 };

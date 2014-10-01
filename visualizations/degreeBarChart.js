@@ -28,7 +28,8 @@ function drawDegreeBarChart(config) {
 				catHtml += "<li><i>Mean</i>: " + parseFloat(d[cat+"Mean"]).toFixed(2) + "</li>";
 				catHtml += "<li><i>Standard Deviation</i>: " + parseFloat(d[cat+"Std"]).toFixed(2) + "</li>";
 				catHtml += "<li><i>Median</i>: " + d[cat+"Median"] + "</li>";
-				catHtml += "<li><i>Range</i>: " + d[cat+"Range"] + "</li>";
+				catHtml += "<li><i>Min</i>: " + d[cat+"Min"] + "</li>";
+				catHtml += "<li><i>Max</i>: " + d[cat+"Max"] + "</li>";
 				catHtml += "</ul>";
 				return catHtml;
 			};
@@ -178,7 +179,8 @@ function drawDegreeBarChart(config) {
 	$("<option value='Mean' selected='selected'>Mean</option>").appendTo(statSelect);
 	$("<option value='Std' >Standard Deviation</option>").appendTo(statSelect);
 	$("<option value='Median' >Median</option>").appendTo(statSelect);
-	$("<option value='Range'>Range</option>").appendTo(statSelect);
+	$("<option value='Min'>Min</option>").appendTo(statSelect);
+	$("<option value='Max'>Max</option>").appendTo(statSelect);
 	update();
 	function type(d) {
 	  d.current = +d.current;
