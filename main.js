@@ -194,15 +194,13 @@ basketListing: function(basketGraph, mainGraph, drawId, orderBy, offset, limit, 
 		
 		if (requiredTPatterns.length > 0 || minusTPatterns.length > 0) {
 			if (requiredTPatterns.length > 0) {
-				requiredClause += "          GRAPH <" + mainGraph + "> {\n";
 				for (var i = 0; i < requiredTPatterns.length; i++) {
 					requiredClause += "       " + requiredTPatterns[i] + " .\n";
 				}
-				requiredClause += "       }\n";
 				clauses+= requiredClause;
 			}
 			for (var i = 0; i < minusTPatterns.length; i++) {
-				minusClause += "       MINUS{GRAPH <" + mainGraph + "> {" + minusTPatterns[i] + "}}\n";
+				minusClause += "       MINUS{" + minusTPatterns[i] + "}\n";
 				clauses += minusClause;
 			}
 			
@@ -249,10 +247,8 @@ WHERE {\n\
   BIND(\"" + drawId + "\" AS ?drawId) \n\
   {\n\
     SELECT ?datadoc ?url ?dateAdded ?startUnpack ?endUnpack ?startClean ?endClean WHERE {\n\
-	  GRAPH <"+  basketGraph + "> {\n\
 	  "+  triplePatterns + getStatusBlock() + "\
         " + filterClause + "\
-      }\n\
     }";
  /**
   * Do not add order By! This makes the query too complex. Virtuoso rejects this query in such a case. We could change this limit,
@@ -268,9 +264,7 @@ WHERE {\n\
   }\n\
   {\n\
     SELECT (COUNT(?datadoc) AS ?totalFilterCount) WHERE {\n\
-      GRAPH <"+  basketGraph + "> {\n\
 	    "+  triplePatterns + "\n\
-	  }\n\
 	  " + filterClause + "\n" + requiredClause + minusClause + "\
 	}\n\
   }\n\
