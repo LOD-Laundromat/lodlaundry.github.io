@@ -480,6 +480,6 @@ var deleteEveryDivExcept = function(divId) {
   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
   })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-  ga('create', 'UA-51130014-1', 'lodlaundry.github.io');
+  ga('create', 'UA-51130014-1', 'lodlaundromat.org');
   ga('send', 'pageview');
 
