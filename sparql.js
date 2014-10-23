@@ -1,11 +1,11 @@
 $( document ).ready(function() {
+    
 	//There is some text on the HTML which we'll need to fill dynamically from javascript:
 	$("#actualEndpoint").text(sparql.url).attr("href", sparql.url);
 	
 	var namedGraphs = getUrlParams("named-graph-uri");
 	var defaultGraphs = getUrlParams("default-graph-uri");
-	if (defaultGraphs.length == 0) defaultGraphs = [sparql.graphs.main, sparql.graphs.seedlist, sparql.graphs.metrics];
-	
+	if (defaultGraphs.length == 0) defaultGraphs = [sparql.graphs.main, sparql.graphs.seedlist, sparql.graphs.metrics, sparql.graphs.error, sparql.graphs.http];
     var yasqe = YASQE(document.getElementById("sparql"), {
     	value: "PREFIX ll: <http://lodlaundromat.org/vocab#>\n"+
 		"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n"+
@@ -24,7 +24,6 @@ $( document ).ready(function() {
     var yasr = YASR(document.getElementById("results"), {
     	getUsedPrefixes: yasqe.getPrefixesFromQuery
     });
-    
     /**
     * Set some of the hooks to link YASR and YASQE
     */
@@ -34,7 +33,7 @@ $( document ).ready(function() {
 	yasqe.options.sparql.handlers.error = function(xhr, textStatus, errorThrown) {
 		yasr.setResponse({exception: textStatus + ": " + errorThrown});
 	};
-	
+	if (getUrlParams("query").length > 0) yasqe.query();//exec query immediately when someone with link opens page
 	
 	
 	

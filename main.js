@@ -12,6 +12,8 @@ var sparql = {
 		main: "http://lodlaundromat.org#" + llVersion,
 		seedlist: "http://lodlaundromat.org#seedlist",
 		metrics: "http://lodlaundromat.org#metrics-" + llVersion,
+		error: "http://lodlaundromat.org/ontology#error",
+		http: "http://lodlaundromat.org/ontology#http"
 	},
 	queries : {
 totalTripleCount :
@@ -69,21 +71,14 @@ prefixes + "SELECT ?md5 ?doc ?triples ?duplicates {\n\
     llo:url ?doc ;\n\
     llo:md5 ?md5 .\n\
   FILTER(?triples > 0)\n\
-}",
+} ORDER BY DESC(?triples) LIMIT 1000",
 exceptionCounts:
-prefixes + "SELECT (COUNT(?datadoc1) AS ?count1) (COUNT(?datadoc2) AS ?count2) (COUNT(?datadoc3) AS ?count3)\n\
+prefixes + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n\
+PREFIX error: <http://lodlaundromat.org/error/ontology/>\n\
+SELECT DISTINCT ?exception (COUNT(?doc) AS ?count)\n\
 WHERE {\n\
-  {\n\
-    ?datadoc1 llo:status ?status .\n\
-    FILTER (str(?status) NOT IN (\"true\"))\n\
-  } UNION {\n\
-    ?datadoc2 llo:status \"true\"^^xsd:string .\n\
-    ?datadoc2 llo:message ?message2 .\n\
-  } UNION {\n\
-    ?datadoc3 llo:status \"true\"^^xsd:string .\n\
-    FILTER NOT EXISTS { ?datadoc3 llo:message ?message3 }\n\
-  }\n\
-}\n",
+  ?doc llo:exception/rdf:type/rdfs:label ?exception\n\
+} GROUP BY ?exception LIMIT 100",
 totalWardrobeContents: 
 prefixes + "SELECT (COUNT(?datadoc) AS ?total)\n\
 WHERE {\n\

@@ -1,15 +1,14 @@
 {
   "name": "YASQE",
   "homepage": "https://github.com/YASGUI/YASQE",
-  "version": "1.3.0",
-  "_release": "1.3.0",
+  "version": "1.5.2",
+  "_release": "1.5.2",
   "_resolution": {
     "type": "version",
-    "tag": "v1.3.0",
-    "commit": "a74da6a3ea843a7c13b12dd0e1a02ac7a8d0f2c1"
+    "tag": "v1.5.2",
+    "commit": "dd3a3e50a0caef034ed46a26b438ecf91495d943"
   },
   "_source": "git://github.com/YASGUI/YASQE.git",
-  "_target": "~1.3.0",
-  "_originalSource": "YASGUI/YASQE",
-  "_direct": true
+  "_target": "~1.5.2",
+  "_originalSource": "YASGUI/YASQE"
 }

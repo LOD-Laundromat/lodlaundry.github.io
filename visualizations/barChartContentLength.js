@@ -1,18 +1,10 @@
 var drawContentLengthBarChart = function(config) {
 	var dataValues = config.data;
-//	var dataValues = $.map(data, function(value, key) {
-//		return value;
-//	});
-//	dataValues = $.grep(dataValues, function(a) {
-//		var hasResponse = a.httpResponse;
-//		var hasContentLength = hasResponse && a.httpResponse.contentLength >= 0;
-//		var hasByteCount = a.stream && a.stream.byteCount >= 0;
-//		var isZip = a.hasArchiveEntry || a.fromArchive;//no zipped files! the bytecount is the -rdf- byte count, not the zip byte count
-//		return !isZip && hasContentLength && hasByteCount;
-//	});
 
 	var formatOrdinalVal = d3.format(".2s");
+	var loop = 0;
 	var getBucket = function(diff, largerThan, lessThan) {
+	    loop++;
 		if (!largerThan) largerThan = 1;
 		if (!lessThan) lessThan = 1000;
 		if (diff >= largerThan && diff <= lessThan) {
@@ -26,7 +18,7 @@ var drawContentLengthBarChart = function(config) {
 	dataValues.forEach(function(bindings) {
 		totalDatasets++;
 		bindings.diff = Math.abs(bindings.clength - bindings.bcount);
-		if (bindings.diff == 0) {
+		if (bindings.diff <= 0) {
 			bindings.diffOrdinal = "0";
 		} else {
 			bindings.diffOrdinal = getBucket(bindings.diff);

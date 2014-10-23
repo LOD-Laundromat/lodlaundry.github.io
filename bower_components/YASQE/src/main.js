@@ -1,5 +1,6 @@
 'use strict';
 var $ = require("jquery");
+require("../lib/deparam.js");
 var CodeMirror = require("codemirror");
 
 require('codemirror/addon/hint/show-hint.js');
@@ -73,6 +74,33 @@ var extendCmInstance = function(cm) {
 	cm.getPrefixesFromQuery = function() {
 		return getPrefixesFromQuery(cm);
 	};
+	
+	/**
+	 * Fetch the query type (i.e., SELECT||DESCRIBE||INSERT||DELETE||ASK||CONSTRUCT)
+	 * 
+	 * @method doc.getQueryType
+	 * @return string
+	 * 
+	 */
+	 cm.getQueryType = function() {
+		 return cm.queryType;
+	 };
+	/**
+	 * Fetch the query mode: 'query' or 'update'
+	 * 
+	 * @method doc.getQueryMode
+	 * @return string
+	 * 
+	 */
+	 cm.getQueryMode = function() {
+		 var type = cm.getQueryType();
+		 if (type=="INSERT" || type=="DELETE" || type=="LOAD" || type=="CLEAR" || type=="CREATE" || type=="DROP" || type=="COPY" || type=="MOVE" || type=="ADD") {
+			 return "update";
+		 } else {
+			 return "query";
+		 }
+				
+	 };
 	/**
 	 * Store bulk completions in memory as trie, and store these in localstorage as well (if enabled)
 	 * 
@@ -126,6 +154,7 @@ var postProcessCmElement = function(cm) {
 	
 	cm.on('cursorActivity', function(cm, eventInfo) {
 		root.autoComplete(cm, true);
+		updateButtonsTransparency(cm);
 	});
 	cm.prevQueryValid = false;
 	checkSyntax(cm);// on first load, check as well (our stored or default query might be incorrect as well)
@@ -145,7 +174,8 @@ var postProcessCmElement = function(cm) {
 	 * check url args and modify yasqe settings if needed
 	 */
 	if (cm.options.consumeShareLink) {
-		cm.options.consumeShareLink(cm);
+		var urlParams = $.deparam(window.location.search.substring(1));
+		cm.options.consumeShareLink(cm, urlParams);
 	}
 };
 
@@ -268,6 +298,45 @@ var appendToPrefixes = function(cm, prefix) {
 		});
 	}
 };
+/**
+ * Update transparency of buttons. Increase transparency when cursor is below buttons
+ */
+
+var updateButtonsTransparency = function(cm) {
+	cm.cursor = $(".CodeMirror-cursor");
+	if (cm.buttons && cm.buttons.is(":visible") && cm.cursor.length > 0) {
+		if (elementsOverlap(cm.cursor, cm.buttons)) {
+			cm.buttons.find("svg").attr("opacity", "0.2");
+		} else {
+			cm.buttons.find("svg").attr("opacity", "1.0");
+		}
+	}
+};
+
+
+var elementsOverlap = (function () {
+    function getPositions( elem ) {
+        var pos, width, height;
+        pos = $( elem ).offset();
+        width = $( elem ).width();
+        height = $( elem ).height();
+        return [ [ pos.left, pos.left + width ], [ pos.top, pos.top + height ] ];
+    }
+
+    function comparePositions( p1, p2 ) {
+        var r1, r2;
+        r1 = p1[0] < p2[0] ? p1 : p2;
+        r2 = p1[0] < p2[0] ? p2 : p1;
+        return r1[1] > r2[0] || r1[0] === r2[0];
+    }
+
+    return function ( a, b ) {
+        var pos1 = getPositions( a ),
+            pos2 = getPositions( b );
+        return comparePositions( pos1[0], pos2[0] ) && comparePositions( pos1[1], pos2[1] );
+    };
+})();
+
 
 /**
  * Get the used indentation for a certain line
@@ -292,6 +361,7 @@ var getIndentFromLine = function(cm, line, charNumber) {
 	;
 };
 
+
 var getNextNonWsToken = function(cm, lineNumber, charNumber) {
 	if (charNumber == undefined)
 		charNumber = 1;
@@ -310,6 +380,7 @@ var getNextNonWsToken = function(cm, lineNumber, charNumber) {
 
 var clearError = null;
 var checkSyntax = function(cm, deepcheck) {
+	
 	cm.queryValid = true;
 	if (clearError) {
 		clearError();
@@ -326,10 +397,12 @@ var checkSyntax = function(cm, deepcheck) {
 			// even though the syntax error might be gone already
 			precise = true;
 		}
-		state = cm.getTokenAt({
+		var token = cm.getTokenAt({
 			line : l,
 			ch : cm.getLine(l).length
-		}, precise).state;
+		}, precise);
+		var state = token.state;
+		cm.queryType = state.queryType;
 		if (state.OK == false) {
 			if (!cm.options.syntaxErrorCheck) {
 				//the library we use already marks everything as being an error. Overwrite this class attribute.
@@ -386,8 +459,7 @@ root.positionAbsoluteItems = function(cm) {
 	}
 	var completionNotification = $(cm.getWrapperElement()).find(".completionNotification");
 	if (completionNotification.is(":visible")) completionNotification.css("right", offset);
-	var buttons = $(cm.getWrapperElement()).find(".yasqe_buttons");
-	if (buttons.is(":visible")) buttons.css("right", offset);
+	if (cm.buttons.is(":visible")) cm.buttons.css("right", offset);
 };
 
 /**
@@ -408,23 +480,20 @@ root.createShareLink = function(cm) {
  * @method YASQE.consumeShareLink
  * @param {doc} YASQE document
  */
-root.consumeShareLink = function(cm) {
-	require("../lib/deparam.js");
-	var urlParams = $.deparam(window.location.search.substring(1));
+root.consumeShareLink = function(cm, urlParams) {
 	if (urlParams.query) {
 		cm.setValue(urlParams.query);
 	}
 };
-
 root.drawButtons = function(cm) {
-	var header = $("<div class='yasqe_buttons'></div>").appendTo($(cm.getWrapperElement()));
+	cm.buttons = $("<div class='yasqe_buttons'></div>").appendTo($(cm.getWrapperElement()));
 	
 	if (cm.options.createShareLink) {
 		
-		var svgShare = require("yasgui-utils").imgs.getElement({id: "share", width: "30px", height: "30px"});
+		var svgShare = $(require("yasgui-utils").imgs.getElement({id: "share", width: "30px", height: "30px"}));
 		svgShare.click(function(event){
 			event.stopPropagation();
-			var popup = $("<div class='yasqe_sharePopup'></div>").appendTo(header);
+			var popup = $("<div class='yasqe_sharePopup'></div>").appendTo(cm.buttons);
 			$('html').click(function() {
 				if (popup) popup.remove();
 			});
@@ -452,7 +521,7 @@ root.drawButtons = function(cm) {
 		})
 		.addClass("yasqe_share")
 		.attr("title", "Share your query")
-		.appendTo(header);
+		.appendTo(cm.buttons);
 		
 	}
 
@@ -470,7 +539,7 @@ root.drawButtons = function(cm) {
 		 	})
 		 	.height(height)
 		 	.width(width)
-		 	.appendTo(header);
+		 	.appendTo(cm.buttons);
 		root.updateQueryButton(cm);
 	}
 	
@@ -592,7 +661,19 @@ root.fetchFromPrefixCc = function(cm) {
 		cm.storeBulkCompletions("prefixes", prefixArray);
 	});
 };
-
+/**
+ * Get accept header for this particular query. Get JSON for regular queries, and text/plain for update queries
+ * 
+ * @param doc {YASQE}
+ * @method YASQE.getAcceptHeader
+ */
+root.getAcceptHeader = function(cm) {
+	if (cm.getQueryMode() == "update") {
+		return "text/plain";
+	} else {
+		return "application/sparql-results+json";
+	}
+};
 /**
  * Determine unique ID of the YASQE object. Useful when several objects are
  * loaded on the same page, and all have 'persistency' enabled. Currently, the
@@ -698,6 +779,7 @@ root.doAutoFormat = function(cm) {
 root.executeQuery = function(cm, callbackOrConfig) {
 	var callback = (typeof callbackOrConfig == "function" ? callbackOrConfig: null);
 	var config = (typeof callbackOrConfig == "object" ? callbackOrConfig : {});
+	var queryMode = cm.getQueryMode();
 	if (cm.options.sparql)
 		config = $.extend({}, cm.options.sparql, config);
 
@@ -708,14 +790,14 @@ root.executeQuery = function(cm, callbackOrConfig) {
 	 * initialize ajax config
 	 */
 	var ajaxConfig = {
-		url : config.endpoint,
-		type : config.requestMethod,
-		data : [ {
-			name : "query",
+		url : (typeof config.endpoint == "function"? config.endpoint(cm): config.endpoint),
+		type : (typeof config.requestMethod == "function"? config.requestMethod(cm): config.requestMethod),
+		data : [{
+			name : queryMode,
 			value : cm.getValue()
-		} ],
+		}],
 		headers : {
-			Accept : config.acceptHeader
+			Accept : (typeof config.acceptHeader == "function"? config.acceptHeader(cm): config.acceptHeader),
 		}
 	};
 
@@ -742,9 +824,10 @@ root.executeQuery = function(cm, callbackOrConfig) {
 	 * add named graphs to ajax config
 	 */
 	if (config.namedGraphs && config.namedGraphs.length > 0) {
+		var argName = (queryMode == "query" ? "named-graph-uri": "using-named-graph-uri ");
 		for (var i = 0; i < config.namedGraphs.length; i++)
 			ajaxConfig.data.push({
-				name : "named-graph-uri",
+				name : argName,
 				value : config.namedGraphs[i]
 			});
 	}
@@ -752,9 +835,10 @@ root.executeQuery = function(cm, callbackOrConfig) {
 	 * add default graphs to ajax config
 	 */
 	if (config.defaultGraphs && config.defaultGraphs.length > 0) {
+		var argName = (queryMode == "query" ? "default-graph-uri": "using-graph-uri ");
 		for (var i = 0; i < config.defaultGraphs.length; i++)
 			ajaxConfig.data.push({
-				name : "default-graph-uri",
+				name : argName,
 				value : config.defaultGraphs[i]
 			});
 	}
@@ -781,7 +865,7 @@ root.executeQuery = function(cm, callbackOrConfig) {
 			updateQueryButton();
 		};
 	} else {
-		ajaxConfig.complete = updateQueryButton();
+		ajaxConfig.complete = updateQueryButton;
 	}
 	cm.xhr = $.ajax(ajaxConfig);
 };
@@ -911,6 +995,8 @@ root.appendPrefixIfNeeded = function(cm) {
 	}
 };
 
+
+
 /**
  * When typing a query, this query is sometimes syntactically invalid, causing
  * the current tokens to be incorrect This causes problem for autocompletion.
@@ -1013,7 +1099,12 @@ root.fetchFromLov = function(cm, partialToken, type, callback) {
 				url,
 				function(data) {
 					for (var i = 0; i < data.results.length; i++) {
-						results.push(data.results[i].uri);
+						if ($.isArray(data.results[i].uri) && data.results[i].uri.length > 0) {
+							results.push(data.results[i].uri[0]);
+						} else {
+							results.push(data.results[i].uri);
+						}
+						
 					}
 					if (results.length < data.total_results
 							&& results.length < maxResults) {
@@ -1404,11 +1495,11 @@ root.defaults = $.extend(root.defaults, {
 		 */
 		showQueryButton: false,
 		
-		/**
+		/**f
 		 * Endpoint to query
 		 * 
 		 * @property sparql.endpoint
-		 * @type String
+		 * @type String|function
 		 * @default "http://dbpedia.org/sparql"
 		 */
 		endpoint : "http://dbpedia.org/sparql",
@@ -1416,19 +1507,19 @@ root.defaults = $.extend(root.defaults, {
 		 * Request method via which to access SPARQL endpoint
 		 * 
 		 * @property sparql.requestMethod
-		 * @type String
-		 * @default "GET"
+		 * @type String|function
+		 * @default "POST"
 		 */
-		requestMethod : "GET",
+		requestMethod : "POST",
 		/**
 		 * Query accept header
 		 * 
 		 * @property sparql.acceptHeader
-		 * @type String
-		 * @default application/sparql-results+json
+		 * @type String|function
+		 * @default YASQE.getAcceptHeader
 		 */
-		acceptHeader : "application/sparql-results+json",
-
+		acceptHeader : root.getAcceptHeader,
+		
 		/**
 		 * Named graphs to query.
 		 * 
@@ -1447,8 +1538,7 @@ root.defaults = $.extend(root.defaults, {
 		defaultGraphs : [],
 
 		/**
-		 * Additional request arguments. Add them in the form: {name: "name",
-		 * value: "value"}
+		 * Additional request arguments. Add them in the form: {name: "name", value: "value"}
 		 * 
 		 * @property sparql.args
 		 * @type array

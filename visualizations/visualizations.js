@@ -25,7 +25,9 @@ var fetchAndDrawViz = function(query, rootId, callback, overWriteConfig) {
                    {name: "default-graph-uri", value: sparql.graphs.main},
                    {name: "default-graph-uri", value: sparql.graphs.seedlist},
                    {name: "default-graph-uri", value: sparql.graphs.metrics},
-                   {name: "query", value: sparql.queries.getDegreeStats}
+                   {name: "default-graph-uri", value: sparql.graphs.error},
+                   {name: "default-graph-uri", value: sparql.graphs.http},
+                   {name: "query", value: query}
             ],
             headers: {
               "Accept": "text/tab-separated-values",
@@ -45,22 +47,22 @@ var fetchAndDrawViz = function(query, rootId, callback, overWriteConfig) {
 };
 
 
-
-fetchAndDrawViz(
-  null,
-  "degreeDist",
-  function(data, rootId) {
-	  drawDegreeBarChart({
-      data: data,
-      rootId: rootId,
-    });
-  },
-  {
-      data: [//optimize by -only- querying metrics graph
-             {name: "default-graph-uri", value: sparql.graphs.metrics},
-             {name: "query", value: sparql.queries.getDegreeStats}
-      ] 
-  });
+//
+//fetchAndDrawViz(
+//  null,
+//  "degreeDist",
+//  function(data, rootId) {
+//	  drawDegreeBarChart({
+//      data: data,
+//      rootId: rootId,
+//    });
+//  },
+//  {
+//      data: [//optimize by -only- querying metrics graph
+//             {name: "default-graph-uri", value: sparql.graphs.metrics},
+//             {name: "query", value: sparql.queries.getDegreeStats}
+//      ] 
+//  });
 
 
 
@@ -164,10 +166,11 @@ fetchAndDrawViz(
       isArray: true,
       rootId: rootId,
       sumBy: function(bindings) {
-    	 
-    	  return null;
-        return formatSerialization(bindings.format);
-      },
+          return bindings.exception;
+        },
+        aggregate: function(bindings) {
+          return bindings.count;
+        },
       totalUnit: "documents",
       totalLabel: "TOTAL",
     });
