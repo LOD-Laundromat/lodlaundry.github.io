@@ -88,7 +88,7 @@ WHERE {\n\
 wardrobeListing: function(drawId, orderBy, offset, limit, filter) {
 	var colsToVar = {
 		0: "?url",
-		2: "?triples"
+		3: "?triples"
 	};
 	var filterClause = "";
 	filter = filter.replace("\"", "");//very simple method to avoid injection
@@ -299,10 +299,13 @@ var api = {
   "laundryBasket": {
     "seedUpdateApi": "http://backend.lodlaundromat.org"
   },
+  "ldf" : "http://tpf.lodlaundromat.d2s.labs.vu.nl/",
   "namespace": "http://lodlaundromat.org/vocab#",
   "wardrobe": {
-    "download": function(md5) {
-      return "http://download.lodlaundromat.org/" + md5;
+    "download": function(md5, type) {
+      var url = "http://download.lodlaundromat.org/" + md5;
+      if (type) url += "?type=" + type;
+      return url;
     }
   }
 };

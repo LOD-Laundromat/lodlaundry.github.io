@@ -45,26 +45,48 @@ $.ajax({
                     {//0 URL
                     	"class": "urlCol"
 		        	},
-                    {//1 buttons/url
+	                 {//1 services buttons
+		        	    render: function( data, type, full, meta ) {
+		        	        var metaDataBtn = "<a style='padding: 6px;' class='btn btn-default' title='Show more info' href='http://lodlaundromat.org/resource/" + full[4] + "' target='_blank'><span class='glyphicon glyphicon-info-sign'></span> metadata</a>";
+		        	        var ldfButton = "<a style='padding: 6px;' class='btn btn-default' title='Query as LDF' href='" + api.ldf + full[4] + "' target='_blank'><img class='pull-left' style='height: 20px;width: 20px;' src='../imgs/logo_ldf.svg'>&nbsp;Query</a>";
+		        	        
+                            return ldfButton + '&nbsp;' + metaDataBtn;
+                        },
+                        orderable: false,
+                        width: 160
+                    },
+                    {//2 downloads buttons
 		        		render: function( data, type, full, meta ) {
 		        			var cleanBtn;
-		        			if (full[2]) {
+		        			if (full[3]) {
 		        				//we have a clean file (as we have triples)
-		        				cleanBtn = "<a class='downloadClean btn btn-default' download='" + $('<a>').prop('href', full[0]).prop('hostname') + ".clean.nt.gz' href='"+ api.wardrobe.download(full[3]) + "' title='Download the washed and cleaned data' target='_blank'><span class='glyphicon glyphicon-download'></span> Clean</a>";
+		        				cleanBtn = "<a class='downloadClean btn btn-default' download='" + $('<a>').prop('href', full[0]).prop('hostname') + ".clean.nt.gz' href='"+ api.wardrobe.download(full[4]) + "' title='Download the washed and cleaned data' target='_blank'><span class='glyphicon glyphicon-download'></span> GZIP</a>";
 		        			} else {
-		        				cleanBtn = "<a class='downloadClean btn btn-default disabled' href='javascript:void(0)' title='Cleaned file not available'><span class='glyphicon glyphicon-download'></span> Clean</a>";
+		        				cleanBtn = "<a class='downloadClean btn btn-default disabled' href='javascript:void(0)' title='Cleaned file not available'><span class='glyphicon glyphicon-download'></span> GZIP</a>";
 		        			}
 		        			var dirtyBtn;
-		        	        if (true) {
-		        	        	dirtyBtn = "<a class='downloadDirty btn btn-default' title='Download original dirty dataset' href='" + full[0] + "' target='_blank'><span class='glyphicon glyphicon-download'></span> Dirty</a>"; 
+		        	        if (full[5].length) {
+		        	            //this one is unpacked from an archive. we don't have a single dirty file...
+		        	        	dirtyBtn = "<a class='downloadDirty btn btn-default disabled' title='File is unpacked from an archive. Download the original archive in order to fetch this file' href='javascript:void(0)'><span class='glyphicon glyphicon-download'></span> Original Dirty File</a>"; 
+		        	        } else {
+		        	            dirtyBtn = "<a class='downloadDirty btn btn-default' title='Download original dirty dataset' href='" + full[0] + "' target='_blank'><span class='glyphicon glyphicon-download'></span> Original Dirty File</a>";
 		        	        }
-		        	        return cleanBtn + dirtyBtn;
+		        	        
+		        	        var hdtBtn;
+		        	        if (full[3]) {
+                                //we have a clean file (as we have triples)
+		        	            hdtBtn = "<a class='downloadHdt btn btn-default' download='" + $('<a>').prop('href', full[0]).prop('hostname') + ".clean.hdt' href='"+ api.wardrobe.download(full[4], "hdt") + "' title='Download the washed and cleaned data as HDT file' target='_blank'><img class='pull-left' style='height:20px;width: 20px;' src='../imgs/logo_hdt.png'>&nbsp;&nbsp;HDT</a>";
+                            } else {
+                                hdtBtn = "<a class='downloadHdt btn btn-default disabled' href='javascript:void(0)' title='Clean HDT file not available'><span class='glyphicon glyphicon-download'></span> Clean</a>";
+                            }
+		        	        var space = "&nbsp;";//yes UGLY. Just want this done fast
+		        	        return cleanBtn + space + hdtBtn + space + dirtyBtn;
 		        		},
-		        		width: 160,
+		        		width: 315,
 		        		"class": "buttonCol",
 		        		orderable: false
                     },
-		        	{//2 triples
+		        	{//3 triples
                     	"render": function ( count ) {
                     		if (count && count.length) {
                     			return ("" + count).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, function($1) { return $1 + "." ;});//add thousands separator
@@ -77,12 +99,12 @@ $.ajax({
 			        	"class": "tripleCol",
 			        	width: 90
 		        	},
-		        	{//3 md5
+		        	{//4 md5
 		        		visible: false,
 		        	},
-		        	{//4 info button
-		        		orderable: false,
-		        		width: 40
+
+		        	{//5 parent doc
+		        	    visible:false
 		        	}
 		        ]
 		    }).fnFilterOnReturn().css("display", "table");
@@ -256,6 +278,7 @@ var sparqlResultToDataTable = function(sparqlResult) {
 	};
 	for (var i = 0; i < sparqlResult.results.bindings.length; i++) {
 	    var binding = sparqlResult.results.bindings[i];
+	    var md5 = binding.md5.value;
 		var row = [];
 		datatable.draw = sparqlResult.results.bindings[i].drawId.value;//same for all results though
 		datatable.recordsFiltered = sparqlResult.results.bindings[i].totalFilterCount.value;//same for all results though
@@ -267,20 +290,31 @@ var sparqlResultToDataTable = function(sparqlResult) {
 		    url += ' <small>Unpacked from archive. <a href="' + binding.parent.value + '" target="_blank">show parent</a></small>';
 		}
 		row.push(url);
-		//1 buttons
+		
+		//1 services buttons
+//        row.push("<a style='padding: 6px;' class='btn btn-default glyphicon glyphicon-info-sign' title='Show more info' href='http://lodlaundromat.org/resource/" + md5 + "' target='_blank'></a>");
+		row.push('');
+        
+        
+		
+		//2 download buttons
 		row.push(null);
 		var triples = null;
 		if (sparqlResult.results.bindings[i].triples && sparqlResult.results.bindings[i].triples.value) {
 			triples = sparqlResult.results.bindings[i].triples.value;
 		}
-		//2 triples
+		//3 triples
 		row.push(triples);
-		var md5 = sparqlResult.results.bindings[i].md5.value;
-		//3 md5
-		row.push(md5);
-		//4 info button
-		row.push("<a style='padding: 6px;' class='btn btn-default glyphicon glyphicon-info-sign' title='Show more info' href='http://lodlaundromat.org/resource/" + md5 + "' target='_blank'></a>");
 		
+		//4 md5
+		row.push(md5);
+		
+		//5 parent doc
+		if (binding.parent && binding.parent.value) {
+		    row.push( binding.parent.value);
+		} else {
+		    row.push('');
+		}
 		datatable.data.push(row);
 		
 	}
