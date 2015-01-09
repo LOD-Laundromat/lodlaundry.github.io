@@ -82,8 +82,7 @@ WHERE {\n\
 totalWardrobeContents: 
 prefixes + "SELECT (COUNT(?datadoc) AS ?total)\n\
 WHERE {\n\
-  ?datadoc llo:url [] ;\n\
-     llo:md5 [] ;\n\
+  ?datadoc llo:md5 [] ;\n\
 	 llo:triples [] .\n\
 }\n",
 wardrobeListing: function(drawId, orderBy, offset, limit, filter) {
@@ -102,15 +101,22 @@ wardrobeListing: function(drawId, orderBy, offset, limit, filter) {
 		filterClause = "      FILTER(" + filterExpressions.join(" || ") + ")\n";
 	}
 	var triplePatterns = 
-"      ?datadoc llo:url ?url ;\n\
-		llo:triples ?triples ;\n\
-        llo:md5 ?md5 .\n" + filterClause;
+"      {\n\
+         ?datadoc llo:url ?url ;\n\
+		   llo:triples ?triples ;\n\
+           llo:md5 ?md5 .\n\
+        } UNION {\n\
+        ?datadoc llo:path ?url ;\n\
+           llo:triples ?triples ;\n\
+           llo:md5 ?md5 .\n\
+        ?parent llo:containsEntry ?datadoc .\n\
+        } " + filterClause;
 
-	var query = prefixes + "SELECT ?totalFilterCount ?drawId ?md5 ?url ?triples\n\
+	var query = prefixes + "SELECT ?totalFilterCount ?drawId ?md5 ?url ?triples ?parent \n\
 WHERE {\n\
   BIND(\"" + drawId + "\" AS ?drawId) \n\
   {\n\
-    SELECT ?md5 ?url ?triples WHERE { \n" + triplePatterns + "\
+    SELECT ?md5 ?url ?triples ?parent WHERE { \n" + triplePatterns + "\
     }";
 	var orderBys = [];
 	if (orderBy && orderBy.length > 0) {

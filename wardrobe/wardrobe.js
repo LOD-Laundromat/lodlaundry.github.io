@@ -255,21 +255,32 @@ var sparqlResultToDataTable = function(sparqlResult) {
 		
 	};
 	for (var i = 0; i < sparqlResult.results.bindings.length; i++) {
+	    var binding = sparqlResult.results.bindings[i];
 		var row = [];
 		datatable.draw = sparqlResult.results.bindings[i].drawId.value;//same for all results though
 		datatable.recordsFiltered = sparqlResult.results.bindings[i].totalFilterCount.value;//same for all results though
 		
 		//while we are at it, do some post processing as well
-		row.push(sparqlResult.results.bindings[i].url.value);
+		//0 url
+		var url = sparqlResult.results.bindings[i].url.value;
+		if (binding.parent && binding.parent.value) {
+		    url += ' <small>Unpacked from archive. <a href="' + binding.parent.value + '" target="_blank">show parent</a></small>';
+		}
+		row.push(url);
+		//1 buttons
 		row.push(null);
 		var triples = null;
 		if (sparqlResult.results.bindings[i].triples && sparqlResult.results.bindings[i].triples.value) {
 			triples = sparqlResult.results.bindings[i].triples.value;
 		}
+		//2 triples
 		row.push(triples);
 		var md5 = sparqlResult.results.bindings[i].md5.value;
+		//3 md5
 		row.push(md5);
+		//4 info button
 		row.push("<a style='padding: 6px;' class='btn btn-default glyphicon glyphicon-info-sign' title='Show more info' href='http://lodlaundromat.org/resource/" + md5 + "' target='_blank'></a>");
+		
 		datatable.data.push(row);
 		
 	}
