@@ -178,7 +178,7 @@ basketListing: function(basketGraph, mainGraph, drawId, orderBy, offset, limit, 
 			minusTPatterns = tPatterns.slice(0,1);
 		} else if (statusFilter == "unpacking") {
 			requiredTPatterns = [tPatterns[3]];
-			minusTPatterns = tPatterns.slice(0,2);
+			minusTPatterns = [tPatterns[2]];
 		} else {
 			//pending
 			minusTPatterns = tPatterns;
@@ -195,8 +195,9 @@ basketListing: function(basketGraph, mainGraph, drawId, orderBy, offset, limit, 
 			}
 			for (var i = 0; i < minusTPatterns.length; i++) {
 				minusClause += "       MINUS{" + minusTPatterns[i] + "}\n";
-				clauses += minusClause;
+				
 			}
+			clauses += minusClause;
 			
 			
 			
