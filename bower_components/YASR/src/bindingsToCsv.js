@@ -1,3 +1,4 @@
+'use strict';
 module.exports = function(result) {
 	var quote = "\"";
 	var delimiter = ",";
@@ -51,7 +52,7 @@ module.exports = function(result) {
 		return needQuoting;
 	};
 	
-	csvString = "";
+	var csvString = "";
 	createHeader();
 	createBody();
 	return csvString;

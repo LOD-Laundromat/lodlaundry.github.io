@@ -1,3 +1,4 @@
+'use strict';
 var $ = require("jquery");
 var root = module.exports = function(xml) {
 
@@ -56,8 +57,12 @@ var root = module.exports = function(xml) {
 			json.boolean = false;
 		}
 	};
-	
-	if (typeof xml == "string") mainXml = $.parseXML(xml);
+	var mainXml = null;
+	if (typeof xml == "string") {
+		mainXml = $.parseXML(xml);
+	} else if ($.isXMLDoc(xml)) {
+		mainXml = xml;
+	}
 	var xml = null;
 	if (mainXml.childNodes.length > 0) {
 		//enter the main 'sparql' node

@@ -1,18 +1,31 @@
 !function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.YASQE=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 'use strict';
-var $ = require("jquery");
-require("../lib/deparam.js");
-var CodeMirror = require("codemirror");
+//make sure any console statements
+window.console = window.console || {"log":function(){}};
 
+/**
+ * Load libraries
+ */
+var $ = require("jquery"),
+	CodeMirror = require("codemirror"),
+	sparql = require('./sparql.js'),
+	utils = require('./utils.js'),
+	yutils = require('yasgui-utils'),
+	imgs = require('./imgs.js');
+
+require("../lib/deparam.js");
+require('codemirror/addon/fold/foldcode.js');
+require('codemirror/addon/fold/foldgutter.js');
+require('codemirror/addon/fold/xml-fold.js');
+require('codemirror/addon/fold/brace-fold.js');
 require('codemirror/addon/hint/show-hint.js');
 require('codemirror/addon/search/searchcursor.js');
 require('codemirror/addon/edit/matchbrackets.js');
 require('codemirror/addon/runmode/runmode.js');
-
-window.console = window.console || {"log":function(){}};//make sure any console statements
-
+require('codemirror/addon/display/fullscreen.js');
 require('../lib/flint.js');
-var Trie = require('../lib/trie.js');
+
+
 
 /**
  * Main YASQE constructor. Pass a DOM element as argument to append the editor to, and (optionally) pass along config settings (see the YASQE.defaults object below, as well as the regular CodeMirror documentation, for more information on configurability)
@@ -24,10 +37,11 @@ var Trie = require('../lib/trie.js');
  * @return {doc} YASQE document
  */
 var root = module.exports = function(parent, config) {
+	var rootEl = $("<div>", {class:'yasqe'}).appendTo($(parent));
 	config = extendConfig(config);
-	var cm = extendCmInstance(CodeMirror(parent, config));
-	postProcessCmElement(cm);
-	return cm;
+	var yasqe = extendCmInstance(CodeMirror(rootEl[0], config));
+	postProcessCmElement(yasqe);
+	return yasqe;
 };
 
 /**
@@ -44,6 +58,7 @@ var extendConfig = function(config) {
 	var extendedConfig = $.extend(true, {}, root.defaults, config);
 	// I know, codemirror deals with  default options as well. 
 	//However, it does not do this recursively (i.e. the persistency option)
+	
 	return extendedConfig;
 };
 /**
@@ -52,7 +67,25 @@ var extendConfig = function(config) {
  * 
  * @private
  */
-var extendCmInstance = function(cm) {
+var extendCmInstance = function(yasqe) {
+	//instantiate autocompleters
+	yasqe.autocompleters = require('./autocompleters/autocompleterBase.js')(root, yasqe);
+	if (yasqe.options.autocompleters) {
+		yasqe.options.autocompleters.forEach(function(name) {
+			if (root.Autocompleters[name]) yasqe.autocompleters.init(name,root.Autocompleters[name]);
+		})
+	}
+	
+	yasqe.getCompleteToken = function(token, cur) {
+		return require('./tokenUtils.js').getCompleteToken(yasqe, token, cur);
+	};
+	yasqe.getPreviousNonWsToken = function(line, token) {
+		return require('./tokenUtils.js').getPreviousNonWsToken(yasqe, line, token);
+	};
+	yasqe.getNextNonWsToken = function(lineNumber, charNumber) {
+		return require('./tokenUtils.js').getNextNonWsToken(yasqe, lineNumber, charNumber);
+	};
+
 	/**
 	 * Execute query. Pass a callback function, or a configuration object (see
 	 * default settings below for possible values) I.e., you can change the
@@ -62,8 +95,8 @@ var extendCmInstance = function(cm) {
 	 * @method doc.query
 	 * @param function|object
 	 */
-	cm.query = function(callbackOrConfig) {
-		root.executeQuery(cm, callbackOrConfig);
+	yasqe.query = function(callbackOrConfig) {
+		root.executeQuery(yasqe, callbackOrConfig);
 	};
 	
 	/**
@@ -72,19 +105,25 @@ var extendCmInstance = function(cm) {
 	 * @method doc.getPrefixesFromQuery
 	 * @return object
 	 */
-	cm.getPrefixesFromQuery = function() {
-		return getPrefixesFromQuery(cm);
+	yasqe.getPrefixesFromQuery = function() {
+		return require('./prefixUtils.js').getPrefixesFromQuery(yasqe);
 	};
 	
+	yasqe.addPrefixes = function(prefixes) {
+		return require('./prefixUtils.js').addPrefixes(yasqe, prefixes);
+	};
+	yasqe.removePrefixes = function(prefixes) {
+		return require('./prefixUtils.js').removePrefixes(yasqe, prefixes);
+	};
 	/**
-	 * Fetch the query type (i.e., SELECT||DESCRIBE||INSERT||DELETE||ASK||CONSTRUCT)
+	 * Fetch the query type (e.g., SELECT||DESCRIBE||INSERT||DELETE||ASK||CONSTRUCT)
 	 * 
 	 * @method doc.getQueryType
 	 * @return string
 	 * 
 	 */
-	 cm.getQueryType = function() {
-		 return cm.queryType;
+	 yasqe.getQueryType = function() {
+		 return yasqe.queryType;
 	 };
 	/**
 	 * Fetch the query mode: 'query' or 'update'
@@ -93,8 +132,8 @@ var extendCmInstance = function(cm) {
 	 * @return string
 	 * 
 	 */
-	 cm.getQueryMode = function() {
-		 var type = cm.getQueryType();
+	 yasqe.getQueryMode = function() {
+		 var type = yasqe.getQueryType();
 		 if (type=="INSERT" || type=="DELETE" || type=="LOAD" || type=="CLEAR" || type=="CREATE" || type=="DROP" || type=="COPY" || type=="MOVE" || type=="ADD") {
 			 return "update";
 		 } else {
@@ -102,321 +141,152 @@ var extendCmInstance = function(cm) {
 		 }
 				
 	 };
-	/**
-	 * Store bulk completions in memory as trie, and store these in localstorage as well (if enabled)
-	 * 
-	 * @method doc.storeBulkCompletions
-	 * @param type {"prefixes", "properties", "classes"}
-	 * @param completions {array}
-	 */
-	cm.storeBulkCompletions = function(type, completions) {
-		// store array as trie
-		tries[type] = new Trie();
-		for (var i = 0; i < completions.length; i++) {
-			tries[type].insert(completions[i]);
-		}
-		// store in localstorage as well
-		var storageId = getPersistencyId(cm, cm.options.autocompletions[type].persistent);
-		if (storageId) require("yasgui-utils").storage.set(storageId, completions, "month");
+	
+	yasqe.setCheckSyntaxErrors = function(isEnabled) {
+		yasqe.options.syntaxErrorCheck = isEnabled;
+		checkSyntax(yasqe);
 	};
-	cm.setCheckSyntaxErrors = function(isEnabled) {
-		cm.options.syntaxErrorCheck = isEnabled;
-		checkSyntax(cm);
+	
+	yasqe.enableCompleter = function(name) {
+		addCompleterToSettings(yasqe.options, name);
+		if (root.Autocompleters[name]) yasqe.autocompleters.init(name,root.Autocompleters[name]);
 	};
-	return cm;
+	yasqe.disableCompleter = function(name) {
+		removeCompleterFromSettings(yasqe.options, name);
+	};
+	return yasqe;
 };
 
-var postProcessCmElement = function(cm) {
-	
+var addCompleterToSettings = function(settings, name) {
+	if (!settings.autocompleters) settings.autocompleters = [];
+	settings.autocompleters.push(name);
+};
+var removeCompleterFromSettings = function(settings, name) {
+	if (typeof settings.autocompleters == "object") {
+		var index = $.inArray(name, settings.autocompleters);
+		if (index>=0) {
+			settings.autocompleters.splice(index, 1);
+			removeCompleterFromSettings(settings, name);//just in case. suppose 1 completer is listed twice
+		}
+	}
+};
+var postProcessCmElement = function(yasqe) {
 	/**
 	 * Set doc value
 	 */
-	var storageId = getPersistencyId(cm, cm.options.persistent);
+	var storageId = utils.getPersistencyId(yasqe, yasqe.options.persistent);
 	if (storageId) {
-		var valueFromStorage = require("yasgui-utils").storage.get(storageId);
+		var valueFromStorage = yutils.storage.get(storageId);
 		if (valueFromStorage)
-			cm.setValue(valueFromStorage);
+			yasqe.setValue(valueFromStorage);
 	}
 	
-	root.drawButtons(cm);
+	root.drawButtons(yasqe);
 
 	/**
 	 * Add event handlers
 	 */
-	cm.on('blur', function(cm, eventInfo) {
-		root.storeQuery(cm);
+	yasqe.on('blur', function(yasqe, eventInfo) {
+		root.storeQuery(yasqe);
 	});
-	cm.on('change', function(cm, eventInfo) {
-		checkSyntax(cm);
-		root.appendPrefixIfNeeded(cm);
-		root.updateQueryButton(cm);
-		root.positionAbsoluteItems(cm);
+	yasqe.on('change', function(yasqe, eventInfo) {
+		checkSyntax(yasqe);
+		root.updateQueryButton(yasqe);
+		root.positionButtons(yasqe);
 	});
 	
-	cm.on('cursorActivity', function(cm, eventInfo) {
-		root.autoComplete(cm, true);
-		updateButtonsTransparency(cm);
+	yasqe.on('cursorActivity', function(yasqe, eventInfo) {
+		updateButtonsTransparency(yasqe);
 	});
-	cm.prevQueryValid = false;
-	checkSyntax(cm);// on first load, check as well (our stored or default query might be incorrect as well)
-	root.positionAbsoluteItems(cm);
-	/**
-	 * load bulk completions
-	 */
-	if (cm.options.autocompletions) {
-		for ( var completionType in cm.options.autocompletions) {
-			if (cm.options.autocompletions[completionType].bulk) {
-				loadBulkCompletions(cm, completionType);
-			}
-		}
-	}
+	yasqe.prevQueryValid = false;
+	checkSyntax(yasqe);// on first load, check as well (our stored or default query might be incorrect)
+	root.positionButtons(yasqe);
 	
 	/**
 	 * check url args and modify yasqe settings if needed
 	 */
-	if (cm.options.consumeShareLink) {
+	if (yasqe.options.consumeShareLink) {
 		var urlParams = $.deparam(window.location.search.substring(1));
-		cm.options.consumeShareLink(cm, urlParams);
+		yasqe.options.consumeShareLink(yasqe, urlParams);
 	}
 };
 
-/**
- * privates
- */
-// used to store bulk autocompletions in
-var tries = {};
-// this is a mapping from the class names (generic ones, for compatability with codemirror themes), to what they -actually- represent
-var tokenTypes = {
-	"string-2" : "prefixed",
-	"atom": "var"
-};
-var keyExists = function(objectToTest, key) {
-	var exists = false;
-
-	try {
-		if (objectToTest[key] !== undefined)
-			exists = true;
-	} catch (e) {
-	}
-	return exists;
-};
 
 
-var loadBulkCompletions = function(cm, type) {
-	var completions = null;
-	if (keyExists(cm.options.autocompletions[type], "get"))
-		completions = cm.options.autocompletions[type].get;
-	if (completions instanceof Array) {
-		// we don't care whether the completions are already stored in
-		// localstorage. just use this one
-		cm.storeBulkCompletions(type, completions);
-	} else {
-		// if completions are defined in localstorage, use those! (calling the
-		// function may come with overhead (e.g. async calls))
-		var completionsFromStorage = null;
-		if (getPersistencyId(cm, cm.options.autocompletions[type].persistent))
-			completionsFromStorage = require("yasgui-utils").storage.get(
-					getPersistencyId(cm,
-							cm.options.autocompletions[type].persistent));
-		if (completionsFromStorage && completionsFromStorage instanceof Array
-				&& completionsFromStorage.length > 0) {
-			cm.storeBulkCompletions(type, completionsFromStorage);
-		} else {
-			// nothing in storage. check whether we have a function via which we
-			// can get our prefixes
-			if (completions instanceof Function) {
-				var functionResult = completions(cm);
-				if (functionResult && functionResult instanceof Array
-						&& functionResult.length > 0) {
-					// function returned an array (if this an async function, we
-					// won't get a direct function result)
-					cm.storeBulkCompletions(type, functionResult);
-				}
-			}
-		}
-	}
-};
 
-/**
- * Get defined prefixes from query as array, in format {"prefix:" "uri"}
- * 
- * @param cm
- * @returns {Array}
- */
-var getPrefixesFromQuery = function(cm) {
-	var queryPrefixes = {};
-	var numLines = cm.lineCount();
-	for (var i = 0; i < numLines; i++) {
-		var firstToken = getNextNonWsToken(cm, i);
-		if (firstToken != null && firstToken.string.toUpperCase() == "PREFIX") {
-			var prefix = getNextNonWsToken(cm, i, firstToken.end + 1);
-			if (prefix) {
-				var uri = getNextNonWsToken(cm, i, prefix.end + 1);
-				if (prefix != null && prefix.string.length > 0 && uri != null
-						&& uri.string.length > 0) {
-					var uriString = uri.string;
-					if (uriString.indexOf("<") == 0)
-						uriString = uriString.substring(1);
-					if (uriString.slice(-1) == ">")
-						uriString = uriString
-								.substring(0, uriString.length - 1);
-					queryPrefixes[prefix.string] = uriString;
-				}
-			}
-		}
-	}
-	return queryPrefixes;
-};
-
-/**
- * Append prefix declaration to list of prefixes in query window.
- * 
- * @param cm
- * @param prefix
- */
-var appendToPrefixes = function(cm, prefix) {
-	var lastPrefix = null;
-	var lastPrefixLine = 0;
-	var numLines = cm.lineCount();
-	for (var i = 0; i < numLines; i++) {
-		var firstToken = getNextNonWsToken(cm, i);
-		if (firstToken != null
-				&& (firstToken.string == "PREFIX" || firstToken.string == "BASE")) {
-			lastPrefix = firstToken;
-			lastPrefixLine = i;
-		}
-	}
-
-	if (lastPrefix == null) {
-		cm.replaceRange("PREFIX " + prefix + "\n", {
-			line : 0,
-			ch : 0
-		});
-	} else {
-		var previousIndent = getIndentFromLine(cm, lastPrefixLine);
-		cm.replaceRange("\n" + previousIndent + "PREFIX " + prefix, {
-			line : lastPrefixLine
-		});
-	}
-};
 /**
  * Update transparency of buttons. Increase transparency when cursor is below buttons
  */
 
-var updateButtonsTransparency = function(cm) {
-	cm.cursor = $(".CodeMirror-cursor");
-	if (cm.buttons && cm.buttons.is(":visible") && cm.cursor.length > 0) {
-		if (elementsOverlap(cm.cursor, cm.buttons)) {
-			cm.buttons.find("svg").attr("opacity", "0.2");
+var updateButtonsTransparency = function(yasqe) {
+	yasqe.cursor = $(".CodeMirror-cursor");
+	if (yasqe.buttons && yasqe.buttons.is(":visible") && yasqe.cursor.length > 0) {
+		if (utils.elementsOverlap(yasqe.cursor, yasqe.buttons)) {
+			yasqe.buttons.find("svg").attr("opacity", "0.2");
 		} else {
-			cm.buttons.find("svg").attr("opacity", "1.0");
+			yasqe.buttons.find("svg").attr("opacity", "1.0");
 		}
 	}
 };
 
 
-var elementsOverlap = (function () {
-    function getPositions( elem ) {
-        var pos, width, height;
-        pos = $( elem ).offset();
-        width = $( elem ).width();
-        height = $( elem ).height();
-        return [ [ pos.left, pos.left + width ], [ pos.top, pos.top + height ] ];
-    }
-
-    function comparePositions( p1, p2 ) {
-        var r1, r2;
-        r1 = p1[0] < p2[0] ? p1 : p2;
-        r2 = p1[0] < p2[0] ? p2 : p1;
-        return r1[1] > r2[0] || r1[0] === r2[0];
-    }
-
-    return function ( a, b ) {
-        var pos1 = getPositions( a ),
-            pos2 = getPositions( b );
-        return comparePositions( pos1[0], pos2[0] ) && comparePositions( pos1[1], pos2[1] );
-    };
-})();
 
 
-/**
- * Get the used indentation for a certain line
- * 
- * @param cm
- * @param line
- * @param charNumber
- * @returns
- */
-var getIndentFromLine = function(cm, line, charNumber) {
-	if (charNumber == undefined)
-		charNumber = 1;
-	var token = cm.getTokenAt({
-		line : line,
-		ch : charNumber
-	});
-	if (token == null || token == undefined || token.type != "ws") {
-		return "";
-	} else {
-		return token.string + getIndentFromLine(cm, line, token.end + 1);
-	}
-	;
-};
 
 
-var getNextNonWsToken = function(cm, lineNumber, charNumber) {
-	if (charNumber == undefined)
-		charNumber = 1;
-	var token = cm.getTokenAt({
-		line : lineNumber,
-		ch : charNumber
-	});
-	if (token == null || token == undefined || token.end < charNumber) {
-		return null;
-	}
-	if (token.type == "ws") {
-		return getNextNonWsToken(cm, lineNumber, token.end + 1);
-	}
-	return token;
-};
+
+
 
 var clearError = null;
-var checkSyntax = function(cm, deepcheck) {
+var checkSyntax = function(yasqe, deepcheck) {
 	
-	cm.queryValid = true;
+	yasqe.queryValid = true;
 	if (clearError) {
 		clearError();
 		clearError = null;
 	}
-	cm.clearGutter("gutterErrorBar");
+	yasqe.clearGutter("gutterErrorBar");
 	
 	var state = null;
-	for (var l = 0; l < cm.lineCount(); ++l) {
+	for (var l = 0; l < yasqe.lineCount(); ++l) {
 		var precise = false;
-		if (!cm.prevQueryValid) {
+		if (!yasqe.prevQueryValid) {
 			// we don't want cached information in this case, otherwise the
 			// previous error sign might still show up,
 			// even though the syntax error might be gone already
 			precise = true;
 		}
-		var token = cm.getTokenAt({
+		
+		var token = yasqe.getTokenAt({
 			line : l,
-			ch : cm.getLine(l).length
+			ch : yasqe.getLine(l).length
 		}, precise);
 		var state = token.state;
-		cm.queryType = state.queryType;
+		yasqe.queryType = state.queryType;
 		if (state.OK == false) {
-			if (!cm.options.syntaxErrorCheck) {
+			if (!yasqe.options.syntaxErrorCheck) {
 				//the library we use already marks everything as being an error. Overwrite this class attribute.
-				$(cm.getWrapperElement).find(".sp-error").css("color", "black");
+				$(yasqe.getWrapperElement).find(".sp-error").css("color", "black");
 				//we don't want to gutter error, so return
 				return;
 			}
-			var error = document.createElement('span');
-			error.innerHTML = "&rarr;";
-			error.className = "gutterError";
-			cm.setGutterMarker(l, "gutterErrorBar", error);
+			
+			var warningEl = yutils.svg.getElement(imgs.warning, {width: "15px", height: "15px"});
+			if (state.possibleCurrent && state.possibleCurrent.length > 0) {
+				warningEl.style.zIndex = "99999999";
+				require('./tooltip')(yasqe, warningEl, function() {
+					var expectedEncoded = [];
+					state.possibleCurrent.forEach(function(expected){
+						expectedEncoded.push("<strong style='text-decoration:underline'>" + $("<div/>").text(expected).html() + "</strong>");
+					});
+					return "This line is invalid. Expected: " + expectedEncoded.join(", ");
+				});
+			}
+			warningEl.style.marginTop = "2px";
+			warningEl.style.marginLeft = "2px";
+			yasqe.setGutterMarker(l, "gutterErrorBar", warningEl);
 			clearError = function() {
-				cm.markText({
+				yasqe.markText({
 					line : l,
 					ch : state.errorStartPos
 				}, {
@@ -424,11 +294,11 @@ var checkSyntax = function(cm, deepcheck) {
 					ch : state.errorEndPos
 				}, "sp-error");
 			};
-			cm.queryValid = false;
+			yasqe.queryValid = false;
 			break;
 		}
 	}
-	cm.prevQueryValid = cm.queryValid;
+	yasqe.prevQueryValid = yasqe.queryValid;
 	if (deepcheck) {
 		if (state != null && state.stack != undefined) {
 			var stack = state.stack, len = state.stack.length;
@@ -436,12 +306,12 @@ var checkSyntax = function(cm, deepcheck) {
 			// it can't clear stack, so we have to check that whatever
 			// is left on the stack is nillable
 			if (len > 1)
-				cm.queryValid = false;
+				yasqe.queryValid = false;
 			else if (len == 1) {
 				if (stack[0] != "solutionModifier"
 						&& stack[0] != "?limitOffsetClauses"
 						&& stack[0] != "?offsetClause")
-					cm.queryValid = false;
+					yasqe.queryValid = false;
 			}
 		}
 	}
@@ -452,15 +322,32 @@ var checkSyntax = function(cm, deepcheck) {
 // first take all CodeMirror references and store them in the YASQE object
 $.extend(root, CodeMirror);
 
-root.positionAbsoluteItems = function(cm) {
-	var scrollBar = $(cm.getWrapperElement()).find(".CodeMirror-vscrollbar");
+
+//add registrar for autocompleters
+root.Autocompleters = {};
+root.registerAutocompleter = function(name, constructor) {
+	root.Autocompleters[name] = constructor;
+	addCompleterToSettings(root.defaults, name);
+}
+
+root.autoComplete = function(yasqe) {
+	//this function gets called when pressing the keyboard shortcut. I.e., autoShow = false
+	yasqe.autocompleters.autoComplete(false);
+};
+//include the autocompleters we provide out-of-the-box
+root.registerAutocompleter("prefixes", require("./autocompleters/prefixes.js"));
+root.registerAutocompleter("properties", require("./autocompleters/properties.js"));
+root.registerAutocompleter("classes", require("./autocompleters/classes.js"));
+root.registerAutocompleter("variables", require("./autocompleters/variables.js"));
+
+
+root.positionButtons = function(yasqe) {
+	var scrollBar = $(yasqe.getWrapperElement()).find(".CodeMirror-vscrollbar");
 	var offset = 0;
 	if (scrollBar.is(":visible")) {
 		offset = scrollBar.outerWidth();
 	}
-	var completionNotification = $(cm.getWrapperElement()).find(".completionNotification");
-	if (completionNotification.is(":visible")) completionNotification.css("right", offset);
-	if (cm.buttons.is(":visible")) cm.buttons.css("right", offset);
+	if (yasqe.buttons.is(":visible")) yasqe.buttons.css("right", offset);
 };
 
 /**
@@ -471,8 +358,11 @@ root.positionAbsoluteItems = function(cm) {
  * @default {query: doc.getValue()}
  * @return object
  */
-root.createShareLink = function(cm) {
-	return {query: cm.getValue()};
+root.createShareLink = function(yasqe) {
+	//extend existing link, so first fetch current arguments
+	var urlParams = $.deparam(window.location.search.substring(1));
+	urlParams['query'] = yasqe.getValue();
+	return urlParams;
 };
 
 /**
@@ -481,20 +371,20 @@ root.createShareLink = function(cm) {
  * @method YASQE.consumeShareLink
  * @param {doc} YASQE document
  */
-root.consumeShareLink = function(cm, urlParams) {
+root.consumeShareLink = function(yasqe, urlParams) {
 	if (urlParams.query) {
-		cm.setValue(urlParams.query);
+		yasqe.setValue(urlParams.query);
 	}
 };
-root.drawButtons = function(cm) {
-	cm.buttons = $("<div class='yasqe_buttons'></div>").appendTo($(cm.getWrapperElement()));
+root.drawButtons = function(yasqe) {
+	yasqe.buttons = $("<div class='yasqe_buttons'></div>").appendTo($(yasqe.getWrapperElement()));
 	
-	if (cm.options.createShareLink) {
+	if (yasqe.options.createShareLink) {
 		
-		var svgShare = $(require("yasgui-utils").imgs.getElement({id: "share", width: "30px", height: "30px"}));
+		var svgShare = $(yutils.svg.getElement(imgs.share, {width: "30px", height: "30px"}));
 		svgShare.click(function(event){
 			event.stopPropagation();
-			var popup = $("<div class='yasqe_sharePopup'></div>").appendTo(cm.buttons);
+			var popup = $("<div class='yasqe_sharePopup'></div>").appendTo(yasqe.buttons);
 			$('html').click(function() {
 				if (popup) popup.remove();
 			});
@@ -502,7 +392,7 @@ root.drawButtons = function(cm) {
 			popup.click(function(event) {
 				event.stopPropagation();
 			});
-			var textAreaLink = $("<textarea></textarea>").val(location.protocol + '//' + location.host + location.pathname + "?" + $.param(cm.options.createShareLink(cm)));
+			var textAreaLink = $("<textarea></textarea>").val(location.protocol + '//' + location.host + location.pathname + "?" + $.param(yasqe.options.createShareLink(yasqe)));
 			
 			textAreaLink.focus(function() {
 			    var $this = $(this);
@@ -522,26 +412,26 @@ root.drawButtons = function(cm) {
 		})
 		.addClass("yasqe_share")
 		.attr("title", "Share your query")
-		.appendTo(cm.buttons);
+		.appendTo(yasqe.buttons);
 		
 	}
 
-	if (cm.options.sparql.showQueryButton) {
+	if (yasqe.options.sparql.showQueryButton) {
 		var height = 40;
 		var width = 40;
 		$("<div class='yasqe_queryButton'></div>")
 		 	.click(function(){
 		 		if ($(this).hasClass("query_busy")) {
-		 			if (cm.xhr) cm.xhr.abort();
-		 			root.updateQueryButton(cm);
+		 			if (yasqe.xhr) yasqe.xhr.abort();
+		 			root.updateQueryButton(yasqe);
 		 		} else {
-		 			cm.query();
+		 			yasqe.query();
 		 		}
 		 	})
 		 	.height(height)
 		 	.width(width)
-		 	.appendTo(cm.buttons);
-		root.updateQueryButton(cm);
+		 	.appendTo(yasqe.buttons);
+		root.updateQueryButton(yasqe);
 	}
 	
 };
@@ -559,16 +449,16 @@ var queryButtonIds = {
  * @param {doc} YASQE document
  * @param status {string|null, "busy"|"valid"|"error"}
  */
-root.updateQueryButton = function(cm, status) {
-	var queryButton = $(cm.getWrapperElement()).find(".yasqe_queryButton");
+root.updateQueryButton = function(yasqe, status) {
+	var queryButton = $(yasqe.getWrapperElement()).find(".yasqe_queryButton");
 	if (queryButton.length == 0) return;//no query button drawn
 	
 	//detect status
 	if (!status) {
 		status = "valid";
-		if (cm.queryValid === false) status = "error";
+		if (yasqe.queryValid === false) status = "error";
 	}
-	if (status != cm.queryStatus && (status == "busy" || status=="valid" || status == "error")) {
+	if (status != yasqe.queryStatus && (status == "busy" || status=="valid" || status == "error")) {
 		queryButton
 			.empty()
 			.removeClass (function (index, classNames) {
@@ -578,8 +468,8 @@ root.updateQueryButton = function(cm, status) {
 				}).join(" ");
 			})
 			.addClass("query_" + status)
-			.append(require("yasgui-utils").imgs.getElement({id: queryButtonIds[status], width: "100%", height: "100%"}));
-		cm.queryStatus = status;
+			.append(yutils.svg.getElement(imgs[queryButtonIds[status]], {width: "100%", height: "100%"}));
+		yasqe.queryStatus = status;
 	}
 };
 /**
@@ -592,117 +482,31 @@ root.updateQueryButton = function(cm, status) {
  */
 root.fromTextArea = function(textAreaEl, config) {
 	config = extendConfig(config);
-	var cm = extendCmInstance(CodeMirror.fromTextArea(textAreaEl, config));
-	postProcessCmElement(cm);
-	return cm;
+	//add yasqe div as parent (needed for styles to be manageable and scoped). 
+	//In this case, I -also- put it as parent el of the text area. This is wrapped in a div now
+	var rootEl = $("<div>", {class:'yasqe'}).insertBefore($(textAreaEl)).append($(textAreaEl));
+	var yasqe = extendCmInstance(CodeMirror.fromTextArea(textAreaEl, config));
+	postProcessCmElement(yasqe);
+	return yasqe;
 };
 
-/**
- * Fetch all the used variables names from this query
- * 
- * @method YASQE.getAllVariableNames
- * @param {doc} YASQE document
- * @param token {object}
- * @returns variableNames {array}
- */
 
-root.autocompleteVariables = function(cm, token) {
-	if (token.trim().length == 0) return [];//nothing to autocomplete
-	var distinctVars = {};
-	//do this outside of codemirror. I expect jquery to be faster here (just finding dom elements with classnames)
-	$(cm.getWrapperElement()).find(".cm-atom").each(function() {
-		var variable = this.innerHTML;
-		if (variable.indexOf("?") == 0) {
-			//ok, lets check if the next element in the div is an atom as well. In that case, they belong together (may happen sometimes when query is not syntactically valid)
-			var nextEl = $(this).next();
-			var nextElClass = nextEl.attr('class');
-			if (nextElClass && nextEl.attr('class').indexOf("cm-atom") >= 0) {
-				variable += nextEl.text();			
-			}
-			
-			//skip single questionmarks
-			if (variable.length <= 1) return;
-			
-			//it should match our token ofcourse
-			if (variable.indexOf(token) !== 0) return;
-			
-			//skip exact matches
-			if (variable == token) return;
-			
-			//store in map so we have a unique list 
-			distinctVars[variable] = true;
-			
-			
-		}
-	});
-	var variables = [];
-	for (var variable in distinctVars) {
-		variables.push(variable);
-	}
-	variables.sort();
-	return variables;
-};
-/**
- * Fetch prefixes from prefix.cc, and store in the YASQE object
- * 
- * @param doc {YASQE}
- * @method YASQE.fetchFromPrefixCc
- */
-root.fetchFromPrefixCc = function(cm) {
-	$.get("http://prefix.cc/popular/all.file.json", function(data) {
-		var prefixArray = [];
-		for ( var prefix in data) {
-			if (prefix == "bif")
-				continue;// skip this one! see #231
-			var completeString = prefix + ": <" + data[prefix] + ">";
-			prefixArray.push(completeString);// the array we want to store in localstorage
-		}
-		
-		prefixArray.sort();
-		cm.storeBulkCompletions("prefixes", prefixArray);
-	});
-};
-/**
- * Get accept header for this particular query. Get JSON for regular queries, and text/plain for update queries
- * 
- * @param doc {YASQE}
- * @method YASQE.getAcceptHeader
- */
-root.getAcceptHeader = function(cm) {
-	if (cm.getQueryMode() == "update") {
-		return "text/plain";
-	} else {
-		return "application/sparql-results+json";
-	}
-};
-/**
- * Determine unique ID of the YASQE object. Useful when several objects are
- * loaded on the same page, and all have 'persistency' enabled. Currently, the
- * ID is determined by selecting the nearest parent in the DOM with an ID set
- * 
- * @param doc {YASQE}
- * @method YASQE.determineId
- */
-root.determineId = function(cm) {
-	return $(cm.getWrapperElement()).closest('[id]').attr('id');
-};
-
-root.storeQuery = function(cm) {
-	var storageId = getPersistencyId(cm, cm.options.persistent);
+root.storeQuery = function(yasqe) {
+	var storageId = utils.getPersistencyId(yasqe, yasqe.options.persistent);
 	if (storageId) {
-		require("yasgui-utils").storage.set(storageId, cm.getValue(), "month");
+		yutils.storage.set(storageId, yasqe.getValue(), "month");
 	}
 };
-root.commentLines = function(cm) {
-	var startLine = cm.getCursor(true).line;
-	var endLine = cm.getCursor(false).line;
+root.commentLines = function(yasqe) {
+	var startLine = yasqe.getCursor(true).line;
+	var endLine = yasqe.getCursor(false).line;
 	var min = Math.min(startLine, endLine);
 	var max = Math.max(startLine, endLine);
 	
 	// if all lines start with #, remove this char. Otherwise add this char
 	var linesAreCommented = true;
 	for (var i = min; i <= max; i++) {
-		var line = cm.getLine(i);
+		var line = yasqe.getLine(i);
 		if (line.length == 0 || line.substring(0, 1) != "#") {
 			linesAreCommented = false;
 			break;
@@ -711,7 +515,7 @@ root.commentLines = function(cm) {
 	for (var i = min; i <= max; i++) {
 		if (linesAreCommented) {
 			// lines are commented, so remove comments
-			cm.replaceRange("", {
+			yasqe.replaceRange("", {
 				line : i,
 				ch : 0
 			}, {
@@ -720,7 +524,7 @@ root.commentLines = function(cm) {
 			});
 		} else {
 			// Not all lines are commented, so add comments
-			cm.replaceRange("#", {
+			yasqe.replaceRange("#", {
 				line : i,
 				ch : 0
 			});
@@ -729,44 +533,44 @@ root.commentLines = function(cm) {
 	}
 };
 
-root.copyLineUp = function(cm) {
-	var cursor = cm.getCursor();
-	var lineCount = cm.lineCount();
+root.copyLineUp = function(yasqe) {
+	var cursor = yasqe.getCursor();
+	var lineCount = yasqe.lineCount();
 	// First create new empty line at end of text
-	cm.replaceRange("\n", {
+	yasqe.replaceRange("\n", {
 		line : lineCount - 1,
-		ch : cm.getLine(lineCount - 1).length
+		ch : yasqe.getLine(lineCount - 1).length
 	});
 	// Copy all lines to their next line
 	for (var i = lineCount; i > cursor.line; i--) {
-		var line = cm.getLine(i - 1);
-		cm.replaceRange(line, {
+		var line = yasqe.getLine(i - 1);
+		yasqe.replaceRange(line, {
 			line : i,
 			ch : 0
 		}, {
 			line : i,
-			ch : cm.getLine(i).length
+			ch : yasqe.getLine(i).length
 		});
 	}
 };
-root.copyLineDown = function(cm) {
-	root.copyLineUp(cm);
+root.copyLineDown = function(yasqe) {
+	root.copyLineUp(yasqe);
 	// Make sure cursor goes one down (we are copying downwards)
-	var cursor = cm.getCursor();
+	var cursor = yasqe.getCursor();
 	cursor.line++;
-	cm.setCursor(cursor);
+	yasqe.setCursor(cursor);
 };
-root.doAutoFormat = function(cm) {
-	if (cm.somethingSelected()) {
+root.doAutoFormat = function(yasqe) {
+	if (yasqe.somethingSelected()) {
 		var to = {
-			line : cm.getCursor(false).line,
-			ch : cm.getSelection().length
+			line : yasqe.getCursor(false).line,
+			ch : yasqe.getSelection().length
 		};
-		autoFormatRange(cm, cm.getCursor(true), to);
+		autoFormatRange(yasqe, yasqe.getCursor(true), to);
 	} else {
-		var totalLines = cm.lineCount();
-		var totalChars = cm.getTextArea().value.length;
-		autoFormatRange(cm, {
+		var totalLines = yasqe.lineCount();
+		var totalChars = yasqe.getTextArea().value.length;
+		autoFormatRange(yasqe, {
 			line : 0,
 			ch : 0
 		}, {
@@ -777,548 +581,21 @@ root.doAutoFormat = function(cm) {
 
 };
 
-root.executeQuery = function(cm, callbackOrConfig) {
-	var callback = (typeof callbackOrConfig == "function" ? callbackOrConfig: null);
-	var config = (typeof callbackOrConfig == "object" ? callbackOrConfig : {});
-	var queryMode = cm.getQueryMode();
-	if (cm.options.sparql)
-		config = $.extend({}, cm.options.sparql, config);
 
-	if (!config.endpoint || config.endpoint.length == 0)
-		return;// nothing to query!
-
-	/**
-	 * initialize ajax config
-	 */
-	var ajaxConfig = {
-		url : (typeof config.endpoint == "function"? config.endpoint(cm): config.endpoint),
-		type : (typeof config.requestMethod == "function"? config.requestMethod(cm): config.requestMethod),
-		data : [{
-			name : queryMode,
-			value : cm.getValue()
-		}],
-		headers : {
-			Accept : (typeof config.acceptHeader == "function"? config.acceptHeader(cm): config.acceptHeader),
-		}
-	};
-
-	/**
-	 * add complete, beforesend, etc handlers (if specified)
-	 */
-	var handlerDefined = false;
-	if (config.handlers) {
-		for ( var handler in config.handlers) {
-			if (config.handlers[handler]) {
-				handlerDefined = true;
-				ajaxConfig[handler] = config.handlers[handler];
-			}
-		}
-	}
-	if (!handlerDefined && !callback)
-		return; // ok, we can query, but have no callbacks. just stop now
-	
-	// if only callback is passed as arg, add that on as 'onComplete' callback
-	if (callback)
-		ajaxConfig.complete = callback;
-
-	/**
-	 * add named graphs to ajax config
-	 */
-	if (config.namedGraphs && config.namedGraphs.length > 0) {
-		var argName = (queryMode == "query" ? "named-graph-uri": "using-named-graph-uri ");
-		for (var i = 0; i < config.namedGraphs.length; i++)
-			ajaxConfig.data.push({
-				name : argName,
-				value : config.namedGraphs[i]
-			});
-	}
-	/**
-	 * add default graphs to ajax config
-	 */
-	if (config.defaultGraphs && config.defaultGraphs.length > 0) {
-		var argName = (queryMode == "query" ? "default-graph-uri": "using-graph-uri ");
-		for (var i = 0; i < config.defaultGraphs.length; i++)
-			ajaxConfig.data.push({
-				name : argName,
-				value : config.defaultGraphs[i]
-			});
-	}
-
-	/**
-	 * merge additional request headers
-	 */
-	if (config.headers && !$.isEmptyObject(config.headers))
-		$.extend(ajaxConfig.headers, config.headers);
-	/**
-	 * add additional request args
-	 */
-	if (config.args && config.args.length > 0) $.merge(ajaxConfig.data, config.args);
-	root.updateQueryButton(cm, "busy");
-	
-	var updateQueryButton = function() {
-		root.updateQueryButton(cm);
-	};
-	//Make sure the query button is updated again on complete
-	if (ajaxConfig.complete) {
-		var customComplete = ajaxConfig.complete;
-		ajaxConfig.complete = function(arg1, arg2) {
-			customComplete(arg1, arg2);
-			updateQueryButton();
-		};
-	} else {
-		ajaxConfig.complete = updateQueryButton;
-	}
-	cm.xhr = $.ajax(ajaxConfig);
-};
-var completionNotifications = {};
-
-/**
- * Show notification
- * 
- * @param doc {YASQE}
- * @param autocompletionType {string}
- * @method YASQE.showCompletionNotification
- */
-root.showCompletionNotification = function(cm, type) {
-	//only draw when the user needs to use a keypress to summon autocompletions
-	if (!cm.options.autocompletions[type].autoshow) {
-		if (!completionNotifications[type]) completionNotifications[type] = $("<div class='completionNotification'></div>");
-		completionNotifications[type]
-			.show()
-			.text("Press " + (navigator.userAgent.indexOf('Mac OS X') != -1? "CMD": "CTRL") + " - <spacebar> to autocomplete")
-			.appendTo($(cm.getWrapperElement()));
-	}
-};
-
-/**
- * Hide completion notification
- * 
- * @param doc {YASQE}
- * @param autocompletionType {string}
- * @method YASQE.hideCompletionNotification
- */
-root.hideCompletionNotification = function(cm, type) {
-	if (completionNotifications[type]) {
-		completionNotifications[type].hide();
-	}
-};
-
-
-
-root.autoComplete = function(cm, fromAutoShow) {
-	if (cm.somethingSelected())
-		return;
-	if (!cm.options.autocompletions)
-		return;
-	var tryHintType = function(type) {
-		if (fromAutoShow // from autoShow, i.e. this gets called each time the editor content changes
-				&& (!cm.options.autocompletions[type].autoShow // autoshow for  this particular type of autocompletion is -not- enabled
-				|| cm.options.autocompletions[type].async) // async is enabled (don't want to re-do ajax-like request for every editor change)
-		) {
-			return false;
-		}
-
-		var hintConfig = {
-			closeCharacters : /(?=a)b/,
-			type : type,
-			completeSingle: false
-		};
-		if (cm.options.autocompletions[type].async) {
-			hintConfig.async = true;
-		}
-		var wrappedHintCallback = function(cm, callback) {
-			return getCompletionHintsObject(cm, type, callback);
-		};
-		var result = root.showHint(cm, wrappedHintCallback, hintConfig);
-		return true;
-	};
-	for ( var type in cm.options.autocompletions) {
-		if (!cm.options.autocompletions[type].isValidCompletionPosition) continue; //no way to check whether we are in a valid position
-		
-		if (!cm.options.autocompletions[type].isValidCompletionPosition(cm)) {
-			//if needed, fire handler for when we are -not- in valid completion position
-			if (cm.options.autocompletions[type].handlers && cm.options.autocompletions[type].handlers.invalidPosition) {
-				cm.options.autocompletions[type].handlers.invalidPosition(cm, type);
-			}
-			//not in a valid position, so continue to next completion candidate type
-			continue;
-		}
-		// run valid position handler, if there is one (if it returns false, stop the autocompletion!)
-		if (cm.options.autocompletions[type].handlers && cm.options.autocompletions[type].handlers.validPosition) {
-			if (cm.options.autocompletions[type].handlers.validPosition(cm, type) === false)
-				continue;
-		}
-
-		var success = tryHintType(type);
-		if (success)
-			break;
-	}
-};
-
-/**
- * Check whether typed prefix is declared. If not, automatically add declaration
- * using list from prefix.cc
- * 
- * @param cm
- */
-root.appendPrefixIfNeeded = function(cm) {
-	if (!tries["prefixes"])
-		return;// no prefixed defined. just stop
-	var cur = cm.getCursor();
-
-	var token = cm.getTokenAt(cur);
-	if (tokenTypes[token.type] == "prefixed") {
-		var colonIndex = token.string.indexOf(":");
-		if (colonIndex !== -1) {
-			// check first token isnt PREFIX, and previous token isnt a '<'
-			// (i.e. we are in a uri)
-			var firstTokenString = getNextNonWsToken(cm, cur.line).string
-					.toUpperCase();
-			var previousToken = cm.getTokenAt({
-				line : cur.line,
-				ch : token.start
-			});// needs to be null (beginning of line), or whitespace
-			if (firstTokenString != "PREFIX"
-					&& (previousToken.type == "ws" || previousToken.type == null)) {
-				// check whether it isnt defined already (saves us from looping
-				// through the array)
-				var currentPrefix = token.string.substring(0, colonIndex + 1);
-				var queryPrefixes = getPrefixesFromQuery(cm);
-				if (queryPrefixes[currentPrefix] == null) {
-					// ok, so it isnt added yet!
-					var completions = tries["prefixes"].autoComplete(currentPrefix);
-					if (completions.length > 0) {
-						appendToPrefixes(cm, completions[0]);
-					}
-				}
-			}
-		}
-	}
-};
-
-
-
-/**
- * When typing a query, this query is sometimes syntactically invalid, causing
- * the current tokens to be incorrect This causes problem for autocompletion.
- * http://bla might result in two tokens: http:// and bla. We'll want to combine
- * these
- * 
- * @param yasqe {doc}
- * @param token {object}
- * @param cursor {object}
- * @return token {object}
- * @method YASQE.getCompleteToken
- */
-root.getCompleteToken = function(cm, token, cur) {
-	if (!cur) {
-		cur = cm.getCursor();
-	}
-	if (!token) {
-		token = cm.getTokenAt(cur);
-	}
-	var prevToken = cm.getTokenAt({
-		line : cur.line,
-		ch : token.start
-	});
-	// not start of line, and not whitespace
-	if (
-			prevToken.type != null && prevToken.type != "ws"
-			&& token.type != null && token.type != "ws"
-		) {
-		token.start = prevToken.start;
-		token.string = prevToken.string + token.string;
-		return root.getCompleteToken(cm, token, {
-			line : cur.line,
-			ch : prevToken.start
-		});// recursively, might have multiple tokens which it should include
-	} else if (token.type != null && token.type == "ws") {
-		//always keep 1 char of whitespace between tokens. Otherwise, autocompletions might end up next to the previous node, without whitespace between them
-		token.start = token.start + 1;
-		token.string = token.string.substring(1);
-		return token;
-	} else {
-		return token;
-	}
-};
-function getPreviousNonWsToken(cm, line, token) {
-	var previousToken = cm.getTokenAt({
-		line : line,
-		ch : token.start
-	});
-	if (previousToken != null && previousToken.type == "ws") {
-		previousToken = getPreviousNonWsToken(cm, line, previousToken);
-	}
-	return previousToken;
-}
-
-
-/**
- * Fetch property and class autocompletions the Linked Open Vocabulary services. Issues an async autocompletion call
- * 
- * @param doc {YASQE}
- * @param partialToken {object}
- * @param type {"properties" | "classes"}
- * @param callback {function} 
- * 
- * @method YASQE.fetchFromLov
- */
-root.fetchFromLov = function(cm, partialToken, type, callback) {
-	
-	if (!partialToken || !partialToken.string || partialToken.string.trim().length == 0) {
-		if (completionNotifications[type]) {
-			completionNotifications[type]
-				.empty()
-				.append("Nothing to autocomplete yet!");
-		}
-		return false;
-	}
-	var maxResults = 50;
-
-	var args = {
-		q : partialToken.uri,
-		page : 1
-	};
-	if (type == "classes") {
-		args.type = "class";
-	} else {
-		args.type = "property";
-	}
-	var results = [];
-	var url = "";
-	var updateUrl = function() {
-		url = "http://lov.okfn.org/dataset/lov/api/v2/autocomplete/terms?"
-				+ $.param(args);
-	};
-	updateUrl();
-	var increasePage = function() {
-		args.page++;
-		updateUrl();
-	};
-	var doRequests = function() {
-		$.get(
-				url,
-				function(data) {
-					for (var i = 0; i < data.results.length; i++) {
-						if ($.isArray(data.results[i].uri) && data.results[i].uri.length > 0) {
-							results.push(data.results[i].uri[0]);
-						} else {
-							results.push(data.results[i].uri);
-						}
-						
-					}
-					if (results.length < data.total_results
-							&& results.length < maxResults) {
-						increasePage();
-						doRequests();
-					} else {
-						//if notification bar is there, show feedback, or close
-						if (completionNotifications[type]) {
-							if (results.length > 0) {
-								completionNotifications[type].hide();
-							} else {
-								completionNotifications[type].text("0 matches found...");
-							}
-						}
-						callback(results);
-						// requests done! Don't call this function again
-					}
-				}).fail(function(jqXHR, textStatus, errorThrown) {
-					if (completionNotifications[type]) {
-						completionNotifications[type]
-							.empty()
-							.append("Failed fetching suggestions..");
-					}
-					
-		});
-	};
-	//if notification bar is there, show a loader
-	if (completionNotifications[type]) {
-		completionNotifications[type]
-		.empty()
-		.append($("<span>Fetchting autocompletions &nbsp;</span>"))
-		.append(require("yasgui-utils").imgs.getElement({id: "loader", width: "18px", height: "18px"}).css("vertical-align", "middle"));
-	}
-	doRequests();
-};
-/**
- * function which fires after the user selects a completion. this function checks whether we actually need to store this one (if completion is same as current token, don't do anything)
- */
-var selectHint = function(cm, data, completion) {
-	if (completion.text != cm.getTokenAt(cm.getCursor()).string) {
-		cm.replaceRange(completion.text, data.from, data.to);
-	}
-};
-
-/**
- * Converts rdf:type to http://.../type and converts <http://...> to http://...
- * Stores additional info such as the used namespace and prefix in the token object
- */
-var preprocessResourceTokenForCompletion = function(cm, token) {
-	var queryPrefixes = getPrefixesFromQuery(cm);
-	if (!token.string.indexOf("<") == 0) {
-		token.tokenPrefix = token.string.substring(0,	token.string.indexOf(":") + 1);
-
-		if (queryPrefixes[token.tokenPrefix] != null) {
-			token.tokenPrefixUri = queryPrefixes[token.tokenPrefix];
-		}
-	}
-
-	token.uri = token.string.trim();
-	if (!token.string.indexOf("<") == 0 && token.string.indexOf(":") > -1) {
-		// hmm, the token is prefixed. We still need the complete uri for autocompletions. generate this!
-		for (var prefix in queryPrefixes) {
-			if (queryPrefixes.hasOwnProperty(prefix)) {
-				if (token.string.indexOf(prefix) == 0) {
-					token.uri = queryPrefixes[prefix];
-					token.uri += token.string.substring(prefix.length);
-					break;
-				}
-			}
-		}
-	}
-
-	if (token.uri.indexOf("<") == 0)	token.uri = token.uri.substring(1);
-	if (token.uri.indexOf(">", token.length - 1) !== -1) token.uri = token.uri.substring(0,	token.uri.length - 1);
-	return token;
-};
-
-var postprocessResourceTokenForCompletion = function(cm, token, suggestedString) {
-	if (token.tokenPrefix && token.uri && token.tokenPrefixUri) {
-		// we need to get the suggested string back to prefixed form
-		suggestedString = suggestedString.substring(token.tokenPrefixUri.length);
-		suggestedString = token.tokenPrefix + suggestedString;
-	} else {
-		// it is a regular uri. add '<' and '>' to string
-		suggestedString = "<" + suggestedString + ">";
-	}
-	return suggestedString;
-};
-var preprocessPrefixTokenForCompletion = function(cm, token) {
-	var previousToken = getPreviousNonWsToken(cm, cm.getCursor().line, token);
-	if (previousToken && previousToken.string && previousToken.string.slice(-1) == ":") {
-		//combine both tokens! In this case we have the cursor at the end of line "PREFIX bla: <".
-		//we want the token to be "bla: <", en not "<"
-		token = {
-			start: previousToken.start,
-			end: token.end,
-			string: previousToken.string + " " + token.string,
-			state: token.state
-		};
-	}
-	return token;
-};
-var getSuggestionsFromToken = function(cm, type, partialToken) {
-	var suggestions = [];
-	if (tries[type]) {
-		suggestions = tries[type].autoComplete(partialToken.string);
-	} else if (typeof cm.options.autocompletions[type].get == "function" && cm.options.autocompletions[type].async == false) {
-		suggestions = cm.options.autocompletions[type].get(cm, partialToken.string, type);
-	} else if (typeof cm.options.autocompletions[type].get == "object") {
-		var partialTokenLength = partialToken.string.length;
-		for (var i = 0; i < cm.options.autocompletions[type].get.length; i++) {
-			var completion = cm.options.autocompletions[type].get[i];
-			if (completion.slice(0, partialTokenLength) == partialToken.string) {
-				suggestions.push(completion);
-			}
-		}
-	}
-	return getSuggestionsAsHintObject(cm, suggestions, type, partialToken);
-	
-};
-
-/**
- *  get our array of suggestions (strings) in the codemirror hint format
- */
-var getSuggestionsAsHintObject = function(cm, suggestions, type, token) {
-	var hintList = [];
-	for (var i = 0; i < suggestions.length; i++) {
-		var suggestedString = suggestions[i];
-		if (cm.options.autocompletions[type].postProcessToken) {
-			suggestedString = cm.options.autocompletions[type].postProcessToken(cm, token, suggestedString);
-		}
-		hintList.push({
-			text : suggestedString,
-			displayText : suggestedString,
-			hint : selectHint,
-			className : type + "Hint"
-		});
-	}
-	
-	var cur = cm.getCursor();
-	var returnObj = {
-		completionToken : token.string,
-		list : hintList,
-		from : {
-			line : cur.line,
-			ch : token.start
-		},
-		to : {
-			line : cur.line,
-			ch : token.end
-		}
-	};
-	//if we have some autocompletion handlers specified, add these these to the object. Codemirror will take care of firing these
-	if (cm.options.autocompletions[type].handlers) {
-		for ( var handler in cm.options.autocompletions[type].handlers) {
-			if (cm.options.autocompletions[type].handlers[handler]) 
-				root.on(returnObj, handler, cm.options.autocompletions[type].handlers[handler]);
-		}
-	}
-	return returnObj;
-};
-
-
-var getCompletionHintsObject = function(cm, type, callback) {
-	var token = root.getCompleteToken(cm);
-	if (cm.options.autocompletions[type].preProcessToken) {
-		token = cm.options.autocompletions[type].preProcessToken(cm, token, type);
-	}
-	
-	if (token) {
-		// use custom completionhint function, to avoid reaching a loop when the
-		// completionhint is the same as the current token
-		// regular behaviour would keep changing the codemirror dom, hence
-		// constantly calling this callback
-		if (cm.options.autocompletions[type].async) {
-			var wrappedCallback = function(suggestions) {
-				callback(getSuggestionsAsHintObject(cm, suggestions, type, token));
-			};
-			cm.options.autocompletions[type].get(cm, token, type, wrappedCallback);
-		} else {
-			return getSuggestionsFromToken(cm, type, token);
-
-		}
-	}
-};
-
-var getPersistencyId = function(cm, persistentIdCreator) {
-	var persistencyId = null;
-
-	if (persistentIdCreator) {
-		if (typeof persistentIdCreator == "string") {
-			persistencyId = persistentIdCreator;
-		} else {
-			persistencyId = persistentIdCreator(cm);
-		}
-	}
-	return persistencyId;
-};
-
-var autoFormatRange = function(cm, from, to) {
-	var absStart = cm.indexFromPos(from);
-	var absEnd = cm.indexFromPos(to);
+var autoFormatRange = function(yasqe, from, to) {
+	var absStart = yasqe.indexFromPos(from);
+	var absEnd = yasqe.indexFromPos(to);
 	// Insert additional line breaks where necessary according to the
 	// mode's syntax
-	var res = autoFormatLineBreaks(cm.getValue(), absStart, absEnd);
+	var res = autoFormatLineBreaks(yasqe.getValue(), absStart, absEnd);
 
 	// Replace and auto-indent the range
-	cm.operation(function() {
-		cm.replaceRange(res, from, to);
-		var startLine = cm.posFromIndex(absStart).line;
-		var endLine = cm.posFromIndex(absStart + res.length).line;
+	yasqe.operation(function() {
+		yasqe.replaceRange(res, from, to);
+		var startLine = yasqe.posFromIndex(absStart).line;
+		var endLine = yasqe.posFromIndex(absStart + res.length).line;
 		for (var i = startLine; i <= endLine; i++) {
-			cm.indentLine(i, "smart");
+			yasqe.indentLine(i, "smart");
 		}
 	});
 };
@@ -1376,1021 +653,18 @@ var autoFormatLineBreaks = function(text, start, end) {
 	});
 	return $.trim(formattedQuery.replace(/\n\s*\n/g, '\n'));
 };
+require('./sparql.js').use(root);
+require('./defaults.js').use(root);
 
-/**
- * The default options of YASQE (check the CodeMirror documentation for even
- * more options, such as disabling line numbers, or changing keyboard shortcut
- * keys). Either change the default options by setting YASQE.defaults, or by
- * passing your own options as second argument to the YASQE constructor
- * 
- * @attribute
- * @attribute YASQE.defaults
- */
-root.defaults = $.extend(root.defaults, {
-	mode : "sparql11",
-	/**
-	 * Query string
-	 * 
-	 * @property value
-	 * @type String
-	 * @default "SELECT * WHERE {\n  ?sub ?pred ?obj .\n} \nLIMIT 10"
-	 */
-	value : "SELECT * WHERE {\n  ?sub ?pred ?obj .\n} \nLIMIT 10",
-	highlightSelectionMatches : {
-		showToken : /\w/
-	},
-	tabMode : "indent",
-	lineNumbers : true,
-	gutters : [ "gutterErrorBar", "CodeMirror-linenumbers" ],
-	matchBrackets : true,
-	fixedGutter : true,
-	syntaxErrorCheck: true,
-	/**
-	 * Extra shortcut keys. Check the CodeMirror manual on how to add your own
-	 * 
-	 * @property extraKeys
-	 * @type object
-	 */
-	extraKeys : {
-		"Ctrl-Space" : root.autoComplete,
-		"Cmd-Space" : root.autoComplete,
-		"Ctrl-D" : root.deleteLine,
-		"Ctrl-K" : root.deleteLine,
-		"Cmd-D" : root.deleteLine,
-		"Cmd-K" : root.deleteLine,
-		"Ctrl-/" : root.commentLines,
-		"Cmd-/" : root.commentLines,
-		"Ctrl-Alt-Down" : root.copyLineDown,
-		"Ctrl-Alt-Up" : root.copyLineUp,
-		"Cmd-Alt-Down" : root.copyLineDown,
-		"Cmd-Alt-Up" : root.copyLineUp,
-		"Shift-Ctrl-F" : root.doAutoFormat,
-		"Shift-Cmd-F" : root.doAutoFormat,
-		"Ctrl-]" : root.indentMore,
-		"Cmd-]" : root.indentMore,
-		"Ctrl-[" : root.indentLess,
-		"Cmd-[" : root.indentLess,
-		"Ctrl-S" : root.storeQuery,
-		"Cmd-S" : root.storeQuery,
-		"Ctrl-Enter" : root.executeQuery,
-		"Cmd-Enter" : root.executeQuery
-	},
-	cursorHeight : 0.9,
-
-	// non CodeMirror options
-
-	
-	/**
-	 * Show a button with which users can create a link to this query. Set this value to null to disable this functionality.
-	 * By default, this feature is enabled, and the only the query value is appended to the link.
-	 * ps. This function should return an object which is parseable by jQuery.param (http://api.jquery.com/jQuery.param/)
-	 * 
-	 * @property createShareLink
-	 * @type function
-	 * @default YASQE.createShareLink
-	 */
-	createShareLink: root.createShareLink,
-	
-	/**
-	 * Consume links shared by others, by checking the url for arguments coming from a query link. Defaults by only checking the 'query=' argument in the url
-	 * 
-	 * @property consumeShareLink
-	 * @type function
-	 * @default YASQE.consumeShareLink
-	 */
-	consumeShareLink: root.consumeShareLink,
-	
-	
-	
-	
-	/**
-	 * Change persistency settings for the YASQE query value. Setting the values
-	 * to null, will disable persistancy: nothing is stored between browser
-	 * sessions Setting the values to a string (or a function which returns a
-	 * string), will store the query in localstorage using the specified string.
-	 * By default, the ID is dynamically generated using the determineID
-	 * function, to avoid collissions when using multiple YASQE items on one
-	 * page
-	 * 
-	 * @property persistent
-	 * @type function|string
-	 */
-	persistent : function(cm) {
-		return "queryVal_" + root.determineId(cm);
-	},
-
-	
-	/**
-	 * Settings for querying sparql endpoints
-	 * 
-	 * @property sparql
-	 * @type object
-	 */
-	sparql : {
-		/**
-		 * Show a query button. You don't like it? Then disable this setting, and create your button which calls the query() function of the yasqe document
-		 * 
-		 * @property sparql.showQueryButton
-		 * @type boolean
-		 * @default false
-		 */
-		showQueryButton: false,
-		
-		/**f
-		 * Endpoint to query
-		 * 
-		 * @property sparql.endpoint
-		 * @type String|function
-		 * @default "http://dbpedia.org/sparql"
-		 */
-		endpoint : "http://dbpedia.org/sparql",
-		/**
-		 * Request method via which to access SPARQL endpoint
-		 * 
-		 * @property sparql.requestMethod
-		 * @type String|function
-		 * @default "POST"
-		 */
-		requestMethod : "POST",
-		/**
-		 * Query accept header
-		 * 
-		 * @property sparql.acceptHeader
-		 * @type String|function
-		 * @default YASQE.getAcceptHeader
-		 */
-		acceptHeader : root.getAcceptHeader,
-		
-		/**
-		 * Named graphs to query.
-		 * 
-		 * @property sparql.namedGraphs
-		 * @type array
-		 * @default []
-		 */
-		namedGraphs : [],
-		/**
-		 * Default graphs to query.
-		 * 
-		 * @property sparql.defaultGraphs
-		 * @type array
-		 * @default []
-		 */
-		defaultGraphs : [],
-
-		/**
-		 * Additional request arguments. Add them in the form: {name: "name", value: "value"}
-		 * 
-		 * @property sparql.args
-		 * @type array
-		 * @default []
-		 */
-		args : [],
-
-		/**
-		 * Additional request headers
-		 * 
-		 * @property sparql.headers
-		 * @type array
-		 * @default {}
-		 */
-		headers : {},
-
-		/**
-		 * Set of ajax handlers
-		 * 
-		 * @property sparql.handlers
-		 * @type object
-		 */
-		handlers : {
-			/**
-			 * See https://api.jquery.com/jQuery.ajax/ for more information on
-			 * these handlers, and their arguments.
-			 * 
-			 * @property sparql.handlers.beforeSend
-			 * @type function
-			 * @default null
-			 */
-			beforeSend : null,
-			/**
-			 * See https://api.jquery.com/jQuery.ajax/ for more information on
-			 * these handlers, and their arguments.
-			 * 
-			 * @property sparql.handlers.complete
-			 * @type function
-			 * @default null
-			 */
-			complete : null,
-			/**
-			 * See https://api.jquery.com/jQuery.ajax/ for more information on
-			 * these handlers, and their arguments.
-			 * 
-			 * @property sparql.handlers.error
-			 * @type function
-			 * @default null
-			 */
-			error : null,
-			/**
-			 * See https://api.jquery.com/jQuery.ajax/ for more information on
-			 * these handlers, and their arguments.
-			 * 
-			 * @property sparql.handlers.success
-			 * @type function
-			 * @default null
-			 */
-			success : null
-		}
-	},
-	/**
-	 * Types of completions. Setting the value to null, will disable
-	 * autocompletion for this particular type. By default, only prefix
-	 * autocompletions are fetched from prefix.cc, and property and class
-	 * autocompletions are fetched from the Linked Open Vocabularies API
-	 * 
-	 * @property autocompletions
-	 * @type object
-	 */
-	autocompletions : {
-		/**
-		 * Prefix autocompletion settings
-		 * 
-		 * @property autocompletions.prefixes
-		 * @type object
-		 */
-		prefixes : {
-			/**
-			 * Check whether the cursor is in a proper position for this autocompletion.
-			 * 
-			 * @property autocompletions.prefixes.isValidCompletionPosition
-			 * @type function
-			 * @param yasqe doc
-			 * @return boolean
-			 */
-			isValidCompletionPosition : function(cm) {
-				var cur = cm.getCursor(), token = cm.getTokenAt(cur);
-
-				// not at end of line
-				if (cm.getLine(cur.line).length > cur.ch)
-					return false;
-
-				if (token.type != "ws") {
-					// we want to complete token, e.g. when the prefix starts with an a
-					// (treated as a token in itself..)
-					// but we to avoid including the PREFIX tag. So when we have just
-					// typed a space after the prefix tag, don't get the complete token
-					token = root.getCompleteToken(cm);
-				}
-
-				// we shouldnt be at the uri part the prefix declaration
-				// also check whether current token isnt 'a' (that makes codemirror
-				// thing a namespace is a possiblecurrent
-				if (!token.string.indexOf("a") == 0
-						&& $.inArray("PNAME_NS", token.state.possibleCurrent) == -1)
-					return false;
-
-				// First token of line needs to be PREFIX,
-				// there should be no trailing text (otherwise, text is wrongly inserted
-				// in between)
-				var firstToken = getNextNonWsToken(cm, cur.line);
-				if (firstToken == null || firstToken.string.toUpperCase() != "PREFIX")
-					return false;
-				return true;
-			},
-			    
-			/**
-			 * Get the autocompletions. Either a function which returns an
-			 * array, or an actual array. The array should be in the form ["rdf: <http://....>"]
-			 * 
-			 * @property autocompletions.prefixes.get
-			 * @type function|array
-			 * @param doc {YASQE}
-			 * @param token {object|string} When bulk is disabled, use this token to autocomplete
-			 * @param completionType {string} what type of autocompletion we try to attempt. Classes, properties, or prefixes)
-			 * @param callback {function} In case async is enabled, use this callback
-			 * @default function (YASQE.fetchFromPrefixCc)
-			 */
-			get : root.fetchFromPrefixCc,
-			
-			/**
-			 * Preprocesses the codemirror token before matching it with our autocompletions list.
-			 * Use this for e.g. autocompleting prefixed resources when your autocompletion list contains only full-length URIs
-			 * I.e., foaf:name -> http://xmlns.com/foaf/0.1/name
-			 * 
-			 * @property autocompletions.properties.preProcessToken
-			 * @type function
-			 * @param doc {YASQE}
-			 * @param token {object} The CodeMirror token, including the position of this token in the query, as well as the actual string
-			 * @return token {object} Return the same token (possibly with more data added to it, which you can use in the postProcessing step)
-			 * @default function
-			 */
-			preProcessToken: preprocessPrefixTokenForCompletion,
-			/**
-			 * Postprocesses the autocompletion suggestion.
-			 * Use this for e.g. returning a prefixed URI based on a full-length URI suggestion
-			 * I.e., http://xmlns.com/foaf/0.1/name -> foaf:name
-			 * 
-			 * @property autocompletions.properties.postProcessToken
-			 * @type function
-			 * @param doc {YASQE}
-			 * @param token {object} The CodeMirror token, including the position of this token in the query, as well as the actual string
-			 * @param suggestion {string} The suggestion which you are post processing
-			 * @return post-processed suggestion {string}
-			 * @default null
-			 */
-			postProcessToken: null,
-			
-			/**
-			 * The get function is asynchronous
-			 * 
-			 * @property autocompletions.prefixes.async
-			 * @type boolean
-			 * @default false
-			 */
-			async : false,
-			/**
-			 * Use bulk loading of prefixes: all prefixes are retrieved onLoad
-			 * using the get() function. Alternatively, disable bulk loading, to
-			 * call the get() function whenever a token needs autocompletion (in
-			 * this case, the completion token is passed on to the get()
-			 * function) whenever you have an autocompletion list that is static, and that easily
-			 * fits in memory, we advice you to enable bulk for performance
-			 * reasons (especially as we store the autocompletions in a trie)
-			 * 
-			 * @property autocompletions.prefixes.bulk
-			 * @type boolean
-			 * @default true
-			 */
-			bulk : true,
-			/**
-			 * Auto-show the autocompletion dialog. Disabling this requires the
-			 * user to press [ctrl|cmd]-space to summon the dialog. Note: this
-			 * only works when completions are not fetched asynchronously
-			 * 
-			 * @property autocompletions.prefixes.autoShow
-			 * @type boolean
-			 * @default true
-			 */
-			autoShow : true,
-			/**
-			 * Auto-add prefix declaration: when prefixes are loaded in memory
-			 * (bulk: true), and the user types e.g. 'rdf:' in a triple pattern,
-			 * the editor automatically add this particular PREFIX definition to
-			 * the query
-			 * 
-			 * @property autocompletions.prefixes.autoAddDeclaration
-			 * @type boolean
-			 * @default true
-			 */
-			autoAddDeclaration : true,
-			/**
-			 * Automatically store autocompletions in localstorage. This is
-			 * particularly useful when the get() function is an expensive ajax
-			 * call. Autocompletions are stored for a period of a month. Set
-			 * this property to null (or remove it), to disable the use of
-			 * localstorage. Otherwise, set a string value (or a function
-			 * returning a string val), returning the key in which to store the
-			 * data Note: this feature only works combined with completions
-			 * loaded in memory (i.e. bulk: true)
-			 * 
-			 * @property autocompletions.prefixes.persistent
-			 * @type string|function
-			 * @default "prefixes"
-			 */
-			persistent : "prefixes",
-			/**
-			 * A set of handlers. Most, taken from the CodeMirror showhint
-			 * plugin: http://codemirror.net/doc/manual.html#addon_show-hint
-			 * 
-			 * @property autocompletions.prefixes.handlers
-			 * @type object
-			 */
-			handlers : {
-				
-				/**
-				 * Fires when a codemirror change occurs in a position where we
-				 * can show this particular type of autocompletion
-				 * 
-				 * @property autocompletions.classes.handlers.validPosition
-				 * @type function
-				 * @default null
-				 */
-				validPosition : null,
-				/**
-				 * Fires when a codemirror change occurs in a position where we
-				 * can -not- show this particular type of autocompletion
-				 * 
-				 * @property autocompletions.classes.handlers.invalidPosition
-				 * @type function
-				 * @default null
-				 */
-				invalidPosition : null,
-				/**
-				 * See http://codemirror.net/doc/manual.html#addon_show-hint
-				 * 
-				 * @property autocompletions.classes.handlers.showHint
-				 * @type function
-				 * @default null
-				 */
-				shown : null,
-				/**
-				 * See http://codemirror.net/doc/manual.html#addon_show-hint
-				 * 
-				 * @property autocompletions.classes.handlers.select
-				 * @type function
-				 * @default null
-				 */
-				select : null,
-				/**
-				 * See http://codemirror.net/doc/manual.html#addon_show-hint
-				 * 
-				 * @property autocompletions.classes.handlers.pick
-				 * @type function
-				 * @default null
-				 */
-				pick : null,
-				/**
-				 * See http://codemirror.net/doc/manual.html#addon_show-hint
-				 * 
-				 * @property autocompletions.classes.handlers.close
-				 * @type function
-				 * @default null
-				 */
-				close : null,
-			}
-		},
-		/**
-		 * Property autocompletion settings
-		 * 
-		 * @property autocompletions.properties
-		 * @type object
-		 */
-		properties : {
-			/**
-			 * Check whether the cursor is in a proper position for this autocompletion.
-			 * 
-			 * @property autocompletions.properties.isValidCompletionPosition
-			 * @type function
-			 * @param yasqe doc
-			 * @return boolean
-			 */
-			isValidCompletionPosition : function(cm) {
-				
-				var token = root.getCompleteToken(cm);
-				if (token.string.length == 0) 
-					return false; //we want -something- to autocomplete
-				if (token.string.indexOf("?") == 0)
-					return false; // we are typing a var
-				if ($.inArray("a", token.state.possibleCurrent) >= 0)
-					return true;// predicate pos
-				var cur = cm.getCursor();
-				var previousToken = getPreviousNonWsToken(cm, cur.line, token);
-				if (previousToken.string == "rdfs:subPropertyOf")
-					return true;
-
-				// hmm, we would like -better- checks here, e.g. checking whether we are
-				// in a subject, and whether next item is a rdfs:subpropertyof.
-				// difficult though... the grammar we use is unreliable when the query
-				// is invalid (i.e. during typing), and often the predicate is not typed
-				// yet, when we are busy writing the subject...
-				return false;
-			},
-			/**
-			 * Get the autocompletions. Either a function which returns an
-			 * array, or an actual array. The array should be in the form ["http://...",....]
-			 * 
-			 * @property autocompletions.properties.get
-			 * @type function|array
-			 * @param doc {YASQE}
-			 * @param token {object|string} When bulk is disabled, use this token to autocomplete
-			 * @param completionType {string} what type of autocompletion we try to attempt. Classes, properties, or prefixes)
-			 * @param callback {function} In case async is enabled, use this callback
-			 * @default function (YASQE.fetchFromLov)
-			 */
-			get : root.fetchFromLov,
-			/**
-			 * Preprocesses the codemirror token before matching it with our autocompletions list.
-			 * Use this for e.g. autocompleting prefixed resources when your autocompletion list contains only full-length URIs
-			 * I.e., foaf:name -> http://xmlns.com/foaf/0.1/name
-			 * 
-			 * @property autocompletions.properties.preProcessToken
-			 * @type function
-			 * @param doc {YASQE}
-			 * @param token {object} The CodeMirror token, including the position of this token in the query, as well as the actual string
-			 * @return token {object} Return the same token (possibly with more data added to it, which you can use in the postProcessing step)
-			 * @default function
-			 */
-			preProcessToken: preprocessResourceTokenForCompletion,
-			/**
-			 * Postprocesses the autocompletion suggestion.
-			 * Use this for e.g. returning a prefixed URI based on a full-length URI suggestion
-			 * I.e., http://xmlns.com/foaf/0.1/name -> foaf:name
-			 * 
-			 * @property autocompletions.properties.postProcessToken
-			 * @type function
-			 * @param doc {YASQE}
-			 * @param token {object} The CodeMirror token, including the position of this token in the query, as well as the actual string
-			 * @param suggestion {string} The suggestion which you are post processing
-			 * @return post-processed suggestion {string}
-			 * @default function
-			 */
-			postProcessToken: postprocessResourceTokenForCompletion,
-
-			/**
-			 * The get function is asynchronous
-			 * 
-			 * @property autocompletions.properties.async
-			 * @type boolean
-			 * @default true
-			 */
-			async : true,
-			/**
-			 * Use bulk loading of properties: all properties are retrieved
-			 * onLoad using the get() function. Alternatively, disable bulk
-			 * loading, to call the get() function whenever a token needs
-			 * autocompletion (in this case, the completion token is passed on
-			 * to the get() function) whenever you have an autocompletion list that is static, and 
-			 * that easily fits in memory, we advice you to enable bulk for
-			 * performance reasons (especially as we store the autocompletions
-			 * in a trie)
-			 * 
-			 * @property autocompletions.properties.bulk
-			 * @type boolean
-			 * @default false
-			 */
-			bulk : false,
-			/**
-			 * Auto-show the autocompletion dialog. Disabling this requires the
-			 * user to press [ctrl|cmd]-space to summon the dialog. Note: this
-			 * only works when completions are not fetched asynchronously
-			 * 
-			 * @property autocompletions.properties.autoShow
-			 * @type boolean
-			 * @default false
-			 */
-			autoShow : false,
-			/**
-			 * Automatically store autocompletions in localstorage. This is
-			 * particularly useful when the get() function is an expensive ajax
-			 * call. Autocompletions are stored for a period of a month. Set
-			 * this property to null (or remove it), to disable the use of
-			 * localstorage. Otherwise, set a string value (or a function
-			 * returning a string val), returning the key in which to store the
-			 * data Note: this feature only works combined with completions
-			 * loaded in memory (i.e. bulk: true)
-			 * 
-			 * @property autocompletions.properties.persistent
-			 * @type string|function
-			 * @default "properties"
-			 */
-			persistent : "properties",
-			/**
-			 * A set of handlers. Most, taken from the CodeMirror showhint
-			 * plugin: http://codemirror.net/doc/manual.html#addon_show-hint
-			 * 
-			 * @property autocompletions.properties.handlers
-			 * @type object
-			 */
-			handlers : {
-				/**
-				 * Fires when a codemirror change occurs in a position where we
-				 * can show this particular type of autocompletion
-				 * 
-				 * @property autocompletions.properties.handlers.validPosition
-				 * @type function
-				 * @default YASQE.showCompletionNotification
-				 */
-				validPosition : root.showCompletionNotification,
-				/**
-				 * Fires when a codemirror change occurs in a position where we
-				 * can -not- show this particular type of autocompletion
-				 * 
-				 * @property autocompletions.properties.handlers.invalidPosition
-				 * @type function
-				 * @default YASQE.hideCompletionNotification
-				 */
-				invalidPosition : root.hideCompletionNotification,
-				/**
-				 * See http://codemirror.net/doc/manual.html#addon_show-hint
-				 * 
-				 * @property autocompletions.properties.handlers.shown
-				 * @type function
-				 * @default null
-				 */
-				shown : null,
-				/**
-				 * See http://codemirror.net/doc/manual.html#addon_show-hint
-				 * 
-				 * @property autocompletions.classes.handlers.select
-				 * @type function
-				 * @default null
-				 */
-				select : null,
-				/**
-				 * See http://codemirror.net/doc/manual.html#addon_show-hint
-				 * 
-				 * @property autocompletions.properties.handlers.pick
-				 * @type function
-				 * @default null
-				 */
-				pick : null,
-				/**
-				 * See http://codemirror.net/doc/manual.html#addon_show-hint
-				 * 
-				 * @property autocompletions.properties.handlers.close
-				 * @type function
-				 * @default null
-				 */
-				close : null,
-			}
-		},
-		/**
-		 * Class autocompletion settings
-		 * 
-		 * @property autocompletions.classes
-		 * @type object
-		 */
-		classes : {
-			/**
-			 * Check whether the cursor is in a proper position for this autocompletion.
-			 * 
-			 * @property autocompletions.classes.isValidCompletionPosition
-			 * @type function
-			 * @param yasqe doc
-			 * @return boolean
-			 */
-			isValidCompletionPosition : function(cm) {
-				var token = root.getCompleteToken(cm);
-				if (token.string.indexOf("?") == 0)
-					return false;
-				var cur = cm.getCursor();
-				var previousToken = getPreviousNonWsToken(cm, cur.line, token);
-				if (previousToken.string == "a")
-					return true;
-				if (previousToken.string == "rdf:type")
-					return true;
-				if (previousToken.string == "rdfs:domain")
-					return true;
-				if (previousToken.string == "rdfs:range")
-					return true;
-				return false;
-			},
-			/**
-			 * Get the autocompletions. Either a function which returns an
-			 * array, or an actual array. The array should be in the form ["http://...",....]
-			 * 
-			 * @property autocompletions.classes.get
-			 * @type function|array
-			 * @param doc {YASQE}
-			 * @param token {object|string} When bulk is disabled, use this token to autocomplete
-			 * @param completionType {string} what type of autocompletion we try to attempt. Classes, properties, or prefixes)
-			 * @param callback {function} In case async is enabled, use this callback
-			 * @default function (YASQE.fetchFromLov)
-			 */
-			get : root.fetchFromLov,
-			
-			/**
-			 * Preprocesses the codemirror token before matching it with our autocompletions list.
-			 * Use this for e.g. autocompleting prefixed resources when your autocompletion list contains only full-length URIs
-			 * I.e., foaf:name -> http://xmlns.com/foaf/0.1/name
-			 * 
-			 * @property autocompletions.properties.preProcessToken
-			 * @type function
-			 * @param doc {YASQE}
-			 * @param token {object} The CodeMirror token, including the position of this token in the query, as well as the actual string
-			 * @return token {object} Return the same token (possibly with more data added to it, which you can use in the postProcessing step)
-			 * @default function
-			 */
-			preProcessToken: preprocessResourceTokenForCompletion,
-			/**
-			 * Postprocesses the autocompletion suggestion.
-			 * Use this for e.g. returning a prefixed URI based on a full-length URI suggestion
-			 * I.e., http://xmlns.com/foaf/0.1/name -> foaf:name
-			 * 
-			 * @property autocompletions.properties.postProcessToken
-			 * @type function
-			 * @param doc {YASQE}
-			 * @param token {object} The CodeMirror token, including the position of this token in the query, as well as the actual string
-			 * @param suggestion {string} The suggestion which you are post processing
-			 * @return post-processed suggestion {string}
-			 * @default function
-			 */
-			postProcessToken: postprocessResourceTokenForCompletion,
-			/**
-			 * The get function is asynchronous
-			 * 
-			 * @property autocompletions.classes.async
-			 * @type boolean
-			 * @default true
-			 */
-			async : true,
-			/**
-			 * Use bulk loading of classes: all classes are retrieved onLoad
-			 * using the get() function. Alternatively, disable bulk loading, to
-			 * call the get() function whenever a token needs autocompletion (in
-			 * this case, the completion token is passed on to the get()
-			 * function) whenever you have an autocompletion list that is static, and that easily
-			 * fits in memory, we advice you to enable bulk for performance
-			 * reasons (especially as we store the autocompletions in a trie)
-			 * 
-			 * @property autocompletions.classes.bulk
-			 * @type boolean
-			 * @default false
-			 */
-			bulk : false,
-			/**
-			 * Auto-show the autocompletion dialog. Disabling this requires the
-			 * user to press [ctrl|cmd]-space to summon the dialog. Note: this
-			 * only works when completions are not fetched asynchronously
-			 * 
-			 * @property autocompletions.classes.autoShow
-			 * @type boolean
-			 * @default false
-			 */
-			autoShow : false,
-			/**
-			 * Automatically store autocompletions in localstorage (only works when 'bulk' is set to true)
-			 * This is particularly useful when the get() function is an expensive ajax
-			 * call. Autocompletions are stored for a period of a month. Set
-			 * this property to null (or remove it), to disable the use of
-			 * localstorage. Otherwise, set a string value (or a function
-			 * returning a string val), returning the key in which to store the
-			 * data Note: this feature only works combined with completions
-			 * loaded in memory (i.e. bulk: true)
-			 * 
-			 * @property autocompletions.classes.persistent
-			 * @type string|function
-			 * @default "classes"
-			 */
-			persistent : "classes",
-			/**
-			 * A set of handlers. Most, taken from the CodeMirror showhint
-			 * plugin: http://codemirror.net/doc/manual.html#addon_show-hint
-			 * 
-			 * @property autocompletions.classes.handlers
-			 * @type object
-			 */
-			handlers : {
-				/**
-				 * Fires when a codemirror change occurs in a position where we
-				 * can show this particular type of autocompletion
-				 * 
-				 * @property autocompletions.classes.handlers.validPosition
-				 * @type function
-				 * @default YASQE.showCompletionNotification
-				 */
-				validPosition : root.showCompletionNotification,
-				/**
-				 * Fires when a codemirror change occurs in a position where we
-				 * can -not- show this particular type of autocompletion
-				 * 
-				 * @property autocompletions.classes.handlers.invalidPosition
-				 * @type function
-				 * @default YASQE.hideCompletionNotification
-				 */
-				invalidPosition : root.hideCompletionNotification,
-				/**
-				 * See http://codemirror.net/doc/manual.html#addon_show-hint
-				 * 
-				 * @property autocompletions.classes.handlers.shown
-				 * @type function
-				 * @default null
-				 */
-				shown : null,
-				/**
-				 * See http://codemirror.net/doc/manual.html#addon_show-hint
-				 * 
-				 * @property autocompletions.classes.handlers.select
-				 * @type function
-				 * @default null
-				 */
-				select : null,
-				/**
-				 * See http://codemirror.net/doc/manual.html#addon_show-hint
-				 * 
-				 * @property autocompletions.classes.handlers.pick
-				 * @type function
-				 * @default null
-				 */
-				pick : null,
-				/**
-				 * See http://codemirror.net/doc/manual.html#addon_show-hint
-				 * 
-				 * @property autocompletions.classes.handlers.close
-				 * @type function
-				 * @default null
-				 */
-				close : null,
-			}
-		},
-		/**
-		 * Variable names autocompletion settings
-		 * 
-		 * @property autocompletions.properties
-		 * @type object
-		 */
-		variableNames : {
-			/**
-			 * Check whether the cursor is in a proper position for this autocompletion.
-			 * 
-			 * @property autocompletions.variableNames.isValidCompletionPosition
-			 * @type function
-			 * @param yasqe {doc}
-			 * @return boolean
-			 */
-			isValidCompletionPosition : function(cm) {
-				var token = cm.getTokenAt(cm.getCursor());
-				if (token.type != "ws") {
-					token = root.getCompleteToken(cm, token);
-					if (token && token.string.indexOf("?") == 0) {
-						return true;
-					}
-				}
-				return false;
-			},
-			/**
-			 * Get the autocompletions. Either a function which returns an
-			 * array, or an actual array. The array should be in the form ["http://...",....]
-			 * 
-			 * @property autocompletions.variableNames.get
-			 * @type function|array
-			 * @param doc {YASQE}
-			 * @param token {object|string} When bulk is disabled, use this token to autocomplete
-			 * @param completionType {string} what type of autocompletion we try to attempt. Classes, properties, or prefixes)
-			 * @param callback {function} In case async is enabled, use this callback
-			 * @default function (YASQE.autocompleteVariables)
-			 */
-			get : root.autocompleteVariables,
-						
-			/**
-			 * Preprocesses the codemirror token before matching it with our autocompletions list.
-			 * Use this for e.g. autocompleting prefixed resources when your autocompletion list contains only full-length URIs
-			 * I.e., foaf:name -> http://xmlns.com/foaf/0.1/name
-			 * 
-			 * @property autocompletions.variableNames.preProcessToken
-			 * @type function
-			 * @param doc {YASQE}
-			 * @param token {object} The CodeMirror token, including the position of this token in the query, as well as the actual string
-			 * @return token {object} Return the same token (possibly with more data added to it, which you can use in the postProcessing step)
-			 * @default null
-			 */
-			preProcessToken: null,
-			/**
-			 * Postprocesses the autocompletion suggestion.
-			 * Use this for e.g. returning a prefixed URI based on a full-length URI suggestion
-			 * I.e., http://xmlns.com/foaf/0.1/name -> foaf:name
-			 * 
-			 * @property autocompletions.variableNames.postProcessToken
-			 * @type function
-			 * @param doc {YASQE}
-			 * @param token {object} The CodeMirror token, including the position of this token in the query, as well as the actual string
-			 * @param suggestion {string} The suggestion which you are post processing
-			 * @return post-processed suggestion {string}
-			 * @default null
-			 */
-			postProcessToken: null,
-			/**
-			 * The get function is asynchronous
-			 * 
-			 * @property autocompletions.variableNames.async
-			 * @type boolean
-			 * @default false
-			 */
-			async : false,
-			/**
-			 * Use bulk loading of variableNames: all variable names are retrieved
-			 * onLoad using the get() function. Alternatively, disable bulk
-			 * loading, to call the get() function whenever a token needs
-			 * autocompletion (in this case, the completion token is passed on
-			 * to the get() function) whenever you have an autocompletion list that is static, and 
-			 * that easily fits in memory, we advice you to enable bulk for
-			 * performance reasons (especially as we store the autocompletions
-			 * in a trie)
-			 * 
-			 * @property autocompletions.variableNames.bulk
-			 * @type boolean
-			 * @default false
-			 */
-			bulk : false,
-			/**
-			 * Auto-show the autocompletion dialog. Disabling this requires the
-			 * user to press [ctrl|cmd]-space to summon the dialog. Note: this
-			 * only works when completions are not fetched asynchronously
-			 * 
-			 * @property autocompletions.variableNames.autoShow
-			 * @type boolean
-			 * @default false
-			 */
-			autoShow : true,
-			/**
-			 * Automatically store autocompletions in localstorage. This is
-			 * particularly useful when the get() function is an expensive ajax
-			 * call. Autocompletions are stored for a period of a month. Set
-			 * this property to null (or remove it), to disable the use of
-			 * localstorage. Otherwise, set a string value (or a function
-			 * returning a string val), returning the key in which to store the
-			 * data Note: this feature only works combined with completions
-			 * loaded in memory (i.e. bulk: true)
-			 * 
-			 * @property autocompletions.variableNames.persistent
-			 * @type string|function
-			 * @default null
-			 */
-			persistent : null,
-			/**
-			 * A set of handlers. Most, taken from the CodeMirror showhint
-			 * plugin: http://codemirror.net/doc/manual.html#addon_show-hint
-			 * 
-			 * @property autocompletions.variableNames.handlers
-			 * @type object
-			 */
-			handlers : {
-				/**
-				 * Fires when a codemirror change occurs in a position where we
-				 * can show this particular type of autocompletion
-				 * 
-				 * @property autocompletions.variableNames.handlers.validPosition
-				 * @type function
-				 * @default null
-				 */
-				validPosition : null,
-				/**
-				 * Fires when a codemirror change occurs in a position where we
-				 * can -not- show this particular type of autocompletion
-				 * 
-				 * @property autocompletions.variableNames.handlers.invalidPosition
-				 * @type function
-				 * @default null
-				 */
-				invalidPosition : null,
-				/**
-				 * See http://codemirror.net/doc/manual.html#addon_show-hint
-				 * 
-				 * @property autocompletions.variableNames.handlers.shown
-				 * @type function
-				 * @default null
-				 */
-				shown : null,
-				/**
-				 * See http://codemirror.net/doc/manual.html#addon_show-hint
-				 * 
-				 * @property autocompletions.variableNames.handlers.select
-				 * @type function
-				 * @default null
-				 */
-				select : null,
-				/**
-				 * See http://codemirror.net/doc/manual.html#addon_show-hint
-				 * 
-				 * @property autocompletions.variableNames.handlers.pick
-				 * @type function
-				 * @default null
-				 */
-				pick : null,
-				/**
-				 * See http://codemirror.net/doc/manual.html#addon_show-hint
-				 * 
-				 * @property autocompletions.variableNames.handlers.close
-				 * @type function
-				 * @default null
-				 */
-				close : null,
-			}
-		},
-	}
-});
 root.version = {
 	"CodeMirror" : CodeMirror.version,
 	"YASQE" : require("../package.json").version,
 	"jquery": $.fn.jquery,
-	"yasgui-utils": require("yasgui-utils").version
+	"yasgui-utils": yutils.version
 };
 
-// end with some documentation stuff we'd like to include in the documentation
-// (yes, ugly, but easier than messing about and adding it manually to the
-// generated html ;))
-/**
- * Set query value in editor (see http://codemirror.net/doc/manual.html#setValue)
- * 
- * @method doc.setValue
- * @param query {string}
- */
-
-/**
- * Get query value from editor (see http://codemirror.net/doc/manual.html#getValue)
- * 
- * @method doc.getValue
- * @return query {string}
- */
-
-/**
- * Set size. Use null value to leave width or height unchanged. To resize the editor to fit its content, see http://codemirror.net/demo/resize.html
- * 
- * @param width {number|string}
- * @param height {number|string}
- * @method doc.setSize
- */
-
-},{"../lib/deparam.js":2,"../lib/flint.js":3,"../lib/trie.js":4,"../package.json":17,"codemirror":9,"codemirror/addon/edit/matchbrackets.js":5,"codemirror/addon/hint/show-hint.js":6,"codemirror/addon/runmode/runmode.js":7,"codemirror/addon/search/searchcursor.js":8,"jquery":10,"yasgui-utils":15}],2:[function(require,module,exports){
+},{"../lib/deparam.js":2,"../lib/flint.js":3,"../package.json":21,"./autocompleters/autocompleterBase.js":22,"./autocompleters/classes.js":23,"./autocompleters/prefixes.js":24,"./autocompleters/properties.js":25,"./autocompleters/variables.js":27,"./defaults.js":28,"./imgs.js":29,"./prefixUtils.js":30,"./sparql.js":31,"./tokenUtils.js":32,"./tooltip":33,"./utils.js":34,"codemirror":14,"codemirror/addon/display/fullscreen.js":5,"codemirror/addon/edit/matchbrackets.js":6,"codemirror/addon/fold/brace-fold.js":7,"codemirror/addon/fold/foldcode.js":8,"codemirror/addon/fold/foldgutter.js":9,"codemirror/addon/fold/xml-fold.js":10,"codemirror/addon/hint/show-hint.js":11,"codemirror/addon/runmode/runmode.js":12,"codemirror/addon/search/searchcursor.js":13,"jquery":15,"yasgui-utils":18}],2:[function(require,module,exports){
+'use strict';
 /*
   jQuery deparam is an extraction of the deparam method from Ben Alman's jQuery BBQ
   http://benalman.com/projects/jquery-bbq-plugin/
@@ -2488,7 +762,7 @@ $.each(params.replace(/\+/g, ' ').split('&'), function (j,v) {
 return obj;
 };
 
-},{"jquery":10}],3:[function(require,module,exports){
+},{"jquery":15}],3:[function(require,module,exports){
 (function(mod) {
   if (typeof exports == "object" && typeof module == "object") // CommonJS
     mod(require("codemirror"));
@@ -6849,7 +5123,7 @@ return obj;
 	CodeMirror.defineMIME("application/x-sparql-query", "sparql11");
 });
 
-},{"codemirror":9}],4:[function(require,module,exports){
+},{"codemirror":14}],4:[function(require,module,exports){
 /*
 * TRIE implementation in Javascript
 * Copyright (c) 2010 Saurabh Odhyan | http://odhyan.com
@@ -6886,7 +5160,7 @@ return obj;
 * @class Trie
 * @constructor
 */  
-module.exports = Trie = function() {
+var Trie = module.exports = function() {
     this.words = 0;
     this.prefixes = 0;
     this.children = [];
@@ -7137,6 +5411,49 @@ Trie.prototype = {
   else // Plain browser env
     mod(CodeMirror);
 })(function(CodeMirror) {
+  "use strict";
+
+  CodeMirror.defineOption("fullScreen", false, function(cm, val, old) {
+    if (old == CodeMirror.Init) old = false;
+    if (!old == !val) return;
+    if (val) setFullscreen(cm);
+    else setNormal(cm);
+  });
+
+  function setFullscreen(cm) {
+    var wrap = cm.getWrapperElement();
+    cm.state.fullScreenRestore = {scrollTop: window.pageYOffset, scrollLeft: window.pageXOffset,
+                                  width: wrap.style.width, height: wrap.style.height};
+    wrap.style.width = "";
+    wrap.style.height = "auto";
+    wrap.className += " CodeMirror-fullscreen";
+    document.documentElement.style.overflow = "hidden";
+    cm.refresh();
+  }
+
+  function setNormal(cm) {
+    var wrap = cm.getWrapperElement();
+    wrap.className = wrap.className.replace(/\s*CodeMirror-fullscreen\b/, "");
+    document.documentElement.style.overflow = "";
+    var info = cm.state.fullScreenRestore;
+    wrap.style.width = info.width; wrap.style.height = info.height;
+    window.scrollTo(info.scrollLeft, info.scrollTop);
+    cm.refresh();
+  }
+});
+
+},{"../../lib/codemirror":14}],6:[function(require,module,exports){
+// CodeMirror, copyright (c) by Marijn Haverbeke and others
+// Distributed under an MIT license: http://codemirror.net/LICENSE
+
+(function(mod) {
+  if (typeof exports == "object" && typeof module == "object") // CommonJS
+    mod(require("../../lib/codemirror"));
+  else if (typeof define == "function" && define.amd) // AMD
+    define(["../../lib/codemirror"], mod);
+  else // Plain browser env
+    mod(CodeMirror);
+})(function(CodeMirror) {
   var ie_lt8 = /MSIE \d/.test(navigator.userAgent) &&
     (document.documentMode == null || document.documentMode < 8);
 
@@ -7247,7 +5564,581 @@ Trie.prototype = {
   });
 });
 
-},{"../../lib/codemirror":9}],6:[function(require,module,exports){
+},{"../../lib/codemirror":14}],7:[function(require,module,exports){
+// CodeMirror, copyright (c) by Marijn Haverbeke and others
+// Distributed under an MIT license: http://codemirror.net/LICENSE
+
+(function(mod) {
+  if (typeof exports == "object" && typeof module == "object") // CommonJS
+    mod(require("../../lib/codemirror"));
+  else if (typeof define == "function" && define.amd) // AMD
+    define(["../../lib/codemirror"], mod);
+  else // Plain browser env
+    mod(CodeMirror);
+})(function(CodeMirror) {
+"use strict";
+
+CodeMirror.registerHelper("fold", "brace", function(cm, start) {
+  var line = start.line, lineText = cm.getLine(line);
+  var startCh, tokenType;
+
+  function findOpening(openCh) {
+    for (var at = start.ch, pass = 0;;) {
+      var found = at <= 0 ? -1 : lineText.lastIndexOf(openCh, at - 1);
+      if (found == -1) {
+        if (pass == 1) break;
+        pass = 1;
+        at = lineText.length;
+        continue;
+      }
+      if (pass == 1 && found < start.ch) break;
+      tokenType = cm.getTokenTypeAt(CodeMirror.Pos(line, found + 1));
+      if (!/^(comment|string)/.test(tokenType)) return found + 1;
+      at = found - 1;
+    }
+  }
+
+  var startToken = "{", endToken = "}", startCh = findOpening("{");
+  if (startCh == null) {
+    startToken = "[", endToken = "]";
+    startCh = findOpening("[");
+  }
+
+  if (startCh == null) return;
+  var count = 1, lastLine = cm.lastLine(), end, endCh;
+  outer: for (var i = line; i <= lastLine; ++i) {
+    var text = cm.getLine(i), pos = i == line ? startCh : 0;
+    for (;;) {
+      var nextOpen = text.indexOf(startToken, pos), nextClose = text.indexOf(endToken, pos);
+      if (nextOpen < 0) nextOpen = text.length;
+      if (nextClose < 0) nextClose = text.length;
+      pos = Math.min(nextOpen, nextClose);
+      if (pos == text.length) break;
+      if (cm.getTokenTypeAt(CodeMirror.Pos(i, pos + 1)) == tokenType) {
+        if (pos == nextOpen) ++count;
+        else if (!--count) { end = i; endCh = pos; break outer; }
+      }
+      ++pos;
+    }
+  }
+  if (end == null || line == end && endCh == startCh) return;
+  return {from: CodeMirror.Pos(line, startCh),
+          to: CodeMirror.Pos(end, endCh)};
+});
+
+CodeMirror.registerHelper("fold", "import", function(cm, start) {
+  function hasImport(line) {
+    if (line < cm.firstLine() || line > cm.lastLine()) return null;
+    var start = cm.getTokenAt(CodeMirror.Pos(line, 1));
+    if (!/\S/.test(start.string)) start = cm.getTokenAt(CodeMirror.Pos(line, start.end + 1));
+    if (start.type != "keyword" || start.string != "import") return null;
+    // Now find closing semicolon, return its position
+    for (var i = line, e = Math.min(cm.lastLine(), line + 10); i <= e; ++i) {
+      var text = cm.getLine(i), semi = text.indexOf(";");
+      if (semi != -1) return {startCh: start.end, end: CodeMirror.Pos(i, semi)};
+    }
+  }
+
+  var start = start.line, has = hasImport(start), prev;
+  if (!has || hasImport(start - 1) || ((prev = hasImport(start - 2)) && prev.end.line == start - 1))
+    return null;
+  for (var end = has.end;;) {
+    var next = hasImport(end.line + 1);
+    if (next == null) break;
+    end = next.end;
+  }
+  return {from: cm.clipPos(CodeMirror.Pos(start, has.startCh + 1)), to: end};
+});
+
+CodeMirror.registerHelper("fold", "include", function(cm, start) {
+  function hasInclude(line) {
+    if (line < cm.firstLine() || line > cm.lastLine()) return null;
+    var start = cm.getTokenAt(CodeMirror.Pos(line, 1));
+    if (!/\S/.test(start.string)) start = cm.getTokenAt(CodeMirror.Pos(line, start.end + 1));
+    if (start.type == "meta" && start.string.slice(0, 8) == "#include") return start.start + 8;
+  }
+
+  var start = start.line, has = hasInclude(start);
+  if (has == null || hasInclude(start - 1) != null) return null;
+  for (var end = start;;) {
+    var next = hasInclude(end + 1);
+    if (next == null) break;
+    ++end;
+  }
+  return {from: CodeMirror.Pos(start, has + 1),
+          to: cm.clipPos(CodeMirror.Pos(end))};
+});
+
+});
+
+},{"../../lib/codemirror":14}],8:[function(require,module,exports){
+// CodeMirror, copyright (c) by Marijn Haverbeke and others
+// Distributed under an MIT license: http://codemirror.net/LICENSE
+
+(function(mod) {
+  if (typeof exports == "object" && typeof module == "object") // CommonJS
+    mod(require("../../lib/codemirror"));
+  else if (typeof define == "function" && define.amd) // AMD
+    define(["../../lib/codemirror"], mod);
+  else // Plain browser env
+    mod(CodeMirror);
+})(function(CodeMirror) {
+  "use strict";
+
+  function doFold(cm, pos, options, force) {
+    if (options && options.call) {
+      var finder = options;
+      options = null;
+    } else {
+      var finder = getOption(cm, options, "rangeFinder");
+    }
+    if (typeof pos == "number") pos = CodeMirror.Pos(pos, 0);
+    var minSize = getOption(cm, options, "minFoldSize");
+
+    function getRange(allowFolded) {
+      var range = finder(cm, pos);
+      if (!range || range.to.line - range.from.line < minSize) return null;
+      var marks = cm.findMarksAt(range.from);
+      for (var i = 0; i < marks.length; ++i) {
+        if (marks[i].__isFold && force !== "fold") {
+          if (!allowFolded) return null;
+          range.cleared = true;
+          marks[i].clear();
+        }
+      }
+      return range;
+    }
+
+    var range = getRange(true);
+    if (getOption(cm, options, "scanUp")) while (!range && pos.line > cm.firstLine()) {
+      pos = CodeMirror.Pos(pos.line - 1, 0);
+      range = getRange(false);
+    }
+    if (!range || range.cleared || force === "unfold") return;
+
+    var myWidget = makeWidget(cm, options);
+    CodeMirror.on(myWidget, "mousedown", function(e) {
+      myRange.clear();
+      CodeMirror.e_preventDefault(e);
+    });
+    var myRange = cm.markText(range.from, range.to, {
+      replacedWith: myWidget,
+      clearOnEnter: true,
+      __isFold: true
+    });
+    myRange.on("clear", function(from, to) {
+      CodeMirror.signal(cm, "unfold", cm, from, to);
+    });
+    CodeMirror.signal(cm, "fold", cm, range.from, range.to);
+  }
+
+  function makeWidget(cm, options) {
+    var widget = getOption(cm, options, "widget");
+    if (typeof widget == "string") {
+      var text = document.createTextNode(widget);
+      widget = document.createElement("span");
+      widget.appendChild(text);
+      widget.className = "CodeMirror-foldmarker";
+    }
+    return widget;
+  }
+
+  // Clumsy backwards-compatible interface
+  CodeMirror.newFoldFunction = function(rangeFinder, widget) {
+    return function(cm, pos) { doFold(cm, pos, {rangeFinder: rangeFinder, widget: widget}); };
+  };
+
+  // New-style interface
+  CodeMirror.defineExtension("foldCode", function(pos, options, force) {
+    doFold(this, pos, options, force);
+  });
+
+  CodeMirror.defineExtension("isFolded", function(pos) {
+    var marks = this.findMarksAt(pos);
+    for (var i = 0; i < marks.length; ++i)
+      if (marks[i].__isFold) return true;
+  });
+
+  CodeMirror.commands.toggleFold = function(cm) {
+    cm.foldCode(cm.getCursor());
+  };
+  CodeMirror.commands.fold = function(cm) {
+    cm.foldCode(cm.getCursor(), null, "fold");
+  };
+  CodeMirror.commands.unfold = function(cm) {
+    cm.foldCode(cm.getCursor(), null, "unfold");
+  };
+  CodeMirror.commands.foldAll = function(cm) {
+    cm.operation(function() {
+      for (var i = cm.firstLine(), e = cm.lastLine(); i <= e; i++)
+        cm.foldCode(CodeMirror.Pos(i, 0), null, "fold");
+    });
+  };
+  CodeMirror.commands.unfoldAll = function(cm) {
+    cm.operation(function() {
+      for (var i = cm.firstLine(), e = cm.lastLine(); i <= e; i++)
+        cm.foldCode(CodeMirror.Pos(i, 0), null, "unfold");
+    });
+  };
+
+  CodeMirror.registerHelper("fold", "combine", function() {
+    var funcs = Array.prototype.slice.call(arguments, 0);
+    return function(cm, start) {
+      for (var i = 0; i < funcs.length; ++i) {
+        var found = funcs[i](cm, start);
+        if (found) return found;
+      }
+    };
+  });
+
+  CodeMirror.registerHelper("fold", "auto", function(cm, start) {
+    var helpers = cm.getHelpers(start, "fold");
+    for (var i = 0; i < helpers.length; i++) {
+      var cur = helpers[i](cm, start);
+      if (cur) return cur;
+    }
+  });
+
+  var defaultOptions = {
+    rangeFinder: CodeMirror.fold.auto,
+    widget: "\u2194",
+    minFoldSize: 0,
+    scanUp: false
+  };
+
+  CodeMirror.defineOption("foldOptions", null);
+
+  function getOption(cm, options, name) {
+    if (options && options[name] !== undefined)
+      return options[name];
+    var editorOptions = cm.options.foldOptions;
+    if (editorOptions && editorOptions[name] !== undefined)
+      return editorOptions[name];
+    return defaultOptions[name];
+  }
+});
+
+},{"../../lib/codemirror":14}],9:[function(require,module,exports){
+// CodeMirror, copyright (c) by Marijn Haverbeke and others
+// Distributed under an MIT license: http://codemirror.net/LICENSE
+
+(function(mod) {
+  if (typeof exports == "object" && typeof module == "object") // CommonJS
+    mod(require("../../lib/codemirror"), require("./foldcode"));
+  else if (typeof define == "function" && define.amd) // AMD
+    define(["../../lib/codemirror", "./foldcode"], mod);
+  else // Plain browser env
+    mod(CodeMirror);
+})(function(CodeMirror) {
+  "use strict";
+
+  CodeMirror.defineOption("foldGutter", false, function(cm, val, old) {
+    if (old && old != CodeMirror.Init) {
+      cm.clearGutter(cm.state.foldGutter.options.gutter);
+      cm.state.foldGutter = null;
+      cm.off("gutterClick", onGutterClick);
+      cm.off("change", onChange);
+      cm.off("viewportChange", onViewportChange);
+      cm.off("fold", onFold);
+      cm.off("unfold", onFold);
+      cm.off("swapDoc", updateInViewport);
+    }
+    if (val) {
+      cm.state.foldGutter = new State(parseOptions(val));
+      updateInViewport(cm);
+      cm.on("gutterClick", onGutterClick);
+      cm.on("change", onChange);
+      cm.on("viewportChange", onViewportChange);
+      cm.on("fold", onFold);
+      cm.on("unfold", onFold);
+      cm.on("swapDoc", updateInViewport);
+    }
+  });
+
+  var Pos = CodeMirror.Pos;
+
+  function State(options) {
+    this.options = options;
+    this.from = this.to = 0;
+  }
+
+  function parseOptions(opts) {
+    if (opts === true) opts = {};
+    if (opts.gutter == null) opts.gutter = "CodeMirror-foldgutter";
+    if (opts.indicatorOpen == null) opts.indicatorOpen = "CodeMirror-foldgutter-open";
+    if (opts.indicatorFolded == null) opts.indicatorFolded = "CodeMirror-foldgutter-folded";
+    return opts;
+  }
+
+  function isFolded(cm, line) {
+    var marks = cm.findMarksAt(Pos(line));
+    for (var i = 0; i < marks.length; ++i)
+      if (marks[i].__isFold && marks[i].find().from.line == line) return true;
+  }
+
+  function marker(spec) {
+    if (typeof spec == "string") {
+      var elt = document.createElement("div");
+      elt.className = spec + " CodeMirror-guttermarker-subtle";
+      return elt;
+    } else {
+      return spec.cloneNode(true);
+    }
+  }
+
+  function updateFoldInfo(cm, from, to) {
+    var opts = cm.state.foldGutter.options, cur = from;
+    cm.eachLine(from, to, function(line) {
+      var mark = null;
+      if (isFolded(cm, cur)) {
+        mark = marker(opts.indicatorFolded);
+      } else {
+        var pos = Pos(cur, 0), func = opts.rangeFinder || CodeMirror.fold.auto;
+        var range = func && func(cm, pos);
+        if (range && range.from.line + 1 < range.to.line)
+          mark = marker(opts.indicatorOpen);
+      }
+      cm.setGutterMarker(line, opts.gutter, mark);
+      ++cur;
+    });
+  }
+
+  function updateInViewport(cm) {
+    var vp = cm.getViewport(), state = cm.state.foldGutter;
+    if (!state) return;
+    cm.operation(function() {
+      updateFoldInfo(cm, vp.from, vp.to);
+    });
+    state.from = vp.from; state.to = vp.to;
+  }
+
+  function onGutterClick(cm, line, gutter) {
+    var opts = cm.state.foldGutter.options;
+    if (gutter != opts.gutter) return;
+    cm.foldCode(Pos(line, 0), opts.rangeFinder);
+  }
+
+  function onChange(cm) {
+    var state = cm.state.foldGutter, opts = cm.state.foldGutter.options;
+    state.from = state.to = 0;
+    clearTimeout(state.changeUpdate);
+    state.changeUpdate = setTimeout(function() { updateInViewport(cm); }, opts.foldOnChangeTimeSpan || 600);
+  }
+
+  function onViewportChange(cm) {
+    var state = cm.state.foldGutter, opts = cm.state.foldGutter.options;
+    clearTimeout(state.changeUpdate);
+    state.changeUpdate = setTimeout(function() {
+      var vp = cm.getViewport();
+      if (state.from == state.to || vp.from - state.to > 20 || state.from - vp.to > 20) {
+        updateInViewport(cm);
+      } else {
+        cm.operation(function() {
+          if (vp.from < state.from) {
+            updateFoldInfo(cm, vp.from, state.from);
+            state.from = vp.from;
+          }
+          if (vp.to > state.to) {
+            updateFoldInfo(cm, state.to, vp.to);
+            state.to = vp.to;
+          }
+        });
+      }
+    }, opts.updateViewportTimeSpan || 400);
+  }
+
+  function onFold(cm, from) {
+    var state = cm.state.foldGutter, line = from.line;
+    if (line >= state.from && line < state.to)
+      updateFoldInfo(cm, line, line + 1);
+  }
+});
+
+},{"../../lib/codemirror":14,"./foldcode":8}],10:[function(require,module,exports){
+// CodeMirror, copyright (c) by Marijn Haverbeke and others
+// Distributed under an MIT license: http://codemirror.net/LICENSE
+
+(function(mod) {
+  if (typeof exports == "object" && typeof module == "object") // CommonJS
+    mod(require("../../lib/codemirror"));
+  else if (typeof define == "function" && define.amd) // AMD
+    define(["../../lib/codemirror"], mod);
+  else // Plain browser env
+    mod(CodeMirror);
+})(function(CodeMirror) {
+  "use strict";
+
+  var Pos = CodeMirror.Pos;
+  function cmp(a, b) { return a.line - b.line || a.ch - b.ch; }
+
+  var nameStartChar = "A-Z_a-z\\u00C0-\\u00D6\\u00D8-\\u00F6\\u00F8-\\u02FF\\u0370-\\u037D\\u037F-\\u1FFF\\u200C-\\u200D\\u2070-\\u218F\\u2C00-\\u2FEF\\u3001-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFFD";
+  var nameChar = nameStartChar + "\-\:\.0-9\\u00B7\\u0300-\\u036F\\u203F-\\u2040";
+  var xmlTagStart = new RegExp("<(/?)([" + nameStartChar + "][" + nameChar + "]*)", "g");
+
+  function Iter(cm, line, ch, range) {
+    this.line = line; this.ch = ch;
+    this.cm = cm; this.text = cm.getLine(line);
+    this.min = range ? range.from : cm.firstLine();
+    this.max = range ? range.to - 1 : cm.lastLine();
+  }
+
+  function tagAt(iter, ch) {
+    var type = iter.cm.getTokenTypeAt(Pos(iter.line, ch));
+    return type && /\btag\b/.test(type);
+  }
+
+  function nextLine(iter) {
+    if (iter.line >= iter.max) return;
+    iter.ch = 0;
+    iter.text = iter.cm.getLine(++iter.line);
+    return true;
+  }
+  function prevLine(iter) {
+    if (iter.line <= iter.min) return;
+    iter.text = iter.cm.getLine(--iter.line);
+    iter.ch = iter.text.length;
+    return true;
+  }
+
+  function toTagEnd(iter) {
+    for (;;) {
+      var gt = iter.text.indexOf(">", iter.ch);
+      if (gt == -1) { if (nextLine(iter)) continue; else return; }
+      if (!tagAt(iter, gt + 1)) { iter.ch = gt + 1; continue; }
+      var lastSlash = iter.text.lastIndexOf("/", gt);
+      var selfClose = lastSlash > -1 && !/\S/.test(iter.text.slice(lastSlash + 1, gt));
+      iter.ch = gt + 1;
+      return selfClose ? "selfClose" : "regular";
+    }
+  }
+  function toTagStart(iter) {
+    for (;;) {
+      var lt = iter.ch ? iter.text.lastIndexOf("<", iter.ch - 1) : -1;
+      if (lt == -1) { if (prevLine(iter)) continue; else return; }
+      if (!tagAt(iter, lt + 1)) { iter.ch = lt; continue; }
+      xmlTagStart.lastIndex = lt;
+      iter.ch = lt;
+      var match = xmlTagStart.exec(iter.text);
+      if (match && match.index == lt) return match;
+    }
+  }
+
+  function toNextTag(iter) {
+    for (;;) {
+      xmlTagStart.lastIndex = iter.ch;
+      var found = xmlTagStart.exec(iter.text);
+      if (!found) { if (nextLine(iter)) continue; else return; }
+      if (!tagAt(iter, found.index + 1)) { iter.ch = found.index + 1; continue; }
+      iter.ch = found.index + found[0].length;
+      return found;
+    }
+  }
+  function toPrevTag(iter) {
+    for (;;) {
+      var gt = iter.ch ? iter.text.lastIndexOf(">", iter.ch - 1) : -1;
+      if (gt == -1) { if (prevLine(iter)) continue; else return; }
+      if (!tagAt(iter, gt + 1)) { iter.ch = gt; continue; }
+      var lastSlash = iter.text.lastIndexOf("/", gt);
+      var selfClose = lastSlash > -1 && !/\S/.test(iter.text.slice(lastSlash + 1, gt));
+      iter.ch = gt + 1;
+      return selfClose ? "selfClose" : "regular";
+    }
+  }
+
+  function findMatchingClose(iter, tag) {
+    var stack = [];
+    for (;;) {
+      var next = toNextTag(iter), end, startLine = iter.line, startCh = iter.ch - (next ? next[0].length : 0);
+      if (!next || !(end = toTagEnd(iter))) return;
+      if (end == "selfClose") continue;
+      if (next[1]) { // closing tag
+        for (var i = stack.length - 1; i >= 0; --i) if (stack[i] == next[2]) {
+          stack.length = i;
+          break;
+        }
+        if (i < 0 && (!tag || tag == next[2])) return {
+          tag: next[2],
+          from: Pos(startLine, startCh),
+          to: Pos(iter.line, iter.ch)
+        };
+      } else { // opening tag
+        stack.push(next[2]);
+      }
+    }
+  }
+  function findMatchingOpen(iter, tag) {
+    var stack = [];
+    for (;;) {
+      var prev = toPrevTag(iter);
+      if (!prev) return;
+      if (prev == "selfClose") { toTagStart(iter); continue; }
+      var endLine = iter.line, endCh = iter.ch;
+      var start = toTagStart(iter);
+      if (!start) return;
+      if (start[1]) { // closing tag
+        stack.push(start[2]);
+      } else { // opening tag
+        for (var i = stack.length - 1; i >= 0; --i) if (stack[i] == start[2]) {
+          stack.length = i;
+          break;
+        }
+        if (i < 0 && (!tag || tag == start[2])) return {
+          tag: start[2],
+          from: Pos(iter.line, iter.ch),
+          to: Pos(endLine, endCh)
+        };
+      }
+    }
+  }
+
+  CodeMirror.registerHelper("fold", "xml", function(cm, start) {
+    var iter = new Iter(cm, start.line, 0);
+    for (;;) {
+      var openTag = toNextTag(iter), end;
+      if (!openTag || iter.line != start.line || !(end = toTagEnd(iter))) return;
+      if (!openTag[1] && end != "selfClose") {
+        var start = Pos(iter.line, iter.ch);
+        var close = findMatchingClose(iter, openTag[2]);
+        return close && {from: start, to: close.from};
+      }
+    }
+  });
+  CodeMirror.findMatchingTag = function(cm, pos, range) {
+    var iter = new Iter(cm, pos.line, pos.ch, range);
+    if (iter.text.indexOf(">") == -1 && iter.text.indexOf("<") == -1) return;
+    var end = toTagEnd(iter), to = end && Pos(iter.line, iter.ch);
+    var start = end && toTagStart(iter);
+    if (!end || !start || cmp(iter, pos) > 0) return;
+    var here = {from: Pos(iter.line, iter.ch), to: to, tag: start[2]};
+    if (end == "selfClose") return {open: here, close: null, at: "open"};
+
+    if (start[1]) { // closing tag
+      return {open: findMatchingOpen(iter, start[2]), close: here, at: "close"};
+    } else { // opening tag
+      iter = new Iter(cm, to.line, to.ch, range);
+      return {open: here, close: findMatchingClose(iter, start[2]), at: "open"};
+    }
+  };
+
+  CodeMirror.findEnclosingTag = function(cm, pos, range) {
+    var iter = new Iter(cm, pos.line, pos.ch, range);
+    for (;;) {
+      var open = findMatchingOpen(iter);
+      if (!open) break;
+      var forward = new Iter(cm, pos.line, pos.ch, range);
+      var close = findMatchingClose(forward, open.tag);
+      if (close) return {open: open, close: close};
+    }
+  };
+
+  // Used by addon/edit/closetag.js
+  CodeMirror.scanForClosingTag = function(cm, pos, name, end) {
+    var iter = new Iter(cm, pos.line, pos.ch, end ? {from: 0, to: end} : null);
+    return findMatchingClose(iter, name);
+  };
+});
+
+},{"../../lib/codemirror":14}],11:[function(require,module,exports){
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -7638,7 +6529,7 @@ Trie.prototype = {
   CodeMirror.defineOption("hintOptions", null);
 });
 
-},{"../../lib/codemirror":9}],7:[function(require,module,exports){
+},{"../../lib/codemirror":14}],12:[function(require,module,exports){
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -7712,7 +6603,7 @@ CodeMirror.runMode = function(string, modespec, callback, options) {
 
 });
 
-},{"../../lib/codemirror":9}],8:[function(require,module,exports){
+},{"../../lib/codemirror":14}],13:[function(require,module,exports){
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -7903,7 +6794,7 @@ CodeMirror.runMode = function(string, modespec, callback, options) {
   });
 });
 
-},{"../../lib/codemirror":9}],9:[function(require,module,exports){
+},{"../../lib/codemirror":14}],14:[function(require,module,exports){
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -7992,7 +6883,8 @@ CodeMirror.runMode = function(string, modespec, callback, options) {
       suppressEdits: false, // used to disable editing during key handlers when in readOnly mode
       pasteIncoming: false, cutIncoming: false, // help recognize paste/cut edits in readInput
       draggingText: false,
-      highlight: new Delayed() // stores highlight worker timeout
+      highlight: new Delayed(), // stores highlight worker timeout
+      keySeq: null  // Unfinished key sequence
     };
 
     // Override magic textarea content restore that IE sometimes does
@@ -8090,8 +6982,10 @@ CodeMirror.runMode = function(string, modespec, callback, options) {
     // Need to set a minimum width to see the scrollbar on IE7 (but must not set it on IE8).
     if (ie && ie_version < 8) d.scrollbarH.style.minHeight = d.scrollbarV.style.minWidth = "18px";
 
-    if (place.appendChild) place.appendChild(d.wrapper);
-    else place(d.wrapper);
+    if (place) {
+      if (place.appendChild) place.appendChild(d.wrapper);
+      else place(d.wrapper);
+    }
 
     // Current rendered range (may be bigger than the view window).
     d.viewFrom = d.viewTo = doc.first;
@@ -8102,7 +6996,7 @@ CodeMirror.runMode = function(string, modespec, callback, options) {
     d.externalMeasured = null;
     // Empty space (in pixels) above the view
     d.viewOffset = 0;
-    d.lastSizeC = 0;
+    d.lastWrapHeight = d.lastWrapWidth = 0;
     d.updateLineNumbers = null;
 
     // Used to only resize the line number gutter when necessary (when
@@ -8205,12 +7099,6 @@ CodeMirror.runMode = function(string, modespec, callback, options) {
       var estHeight = est(line);
       if (estHeight != line.height) updateLineHeight(line, estHeight);
     });
-  }
-
-  function keyMapChanged(cm) {
-    var map = keyMap[cm.options.keyMap], style = map.style;
-    cm.display.wrapper.className = cm.display.wrapper.className.replace(/\s*cm-keymap-\S+/g, "") +
-      (style ? " cm-keymap-" + style : "");
   }
 
   function themeChanged(cm) {
@@ -8457,6 +7345,7 @@ CodeMirror.runMode = function(string, modespec, callback, options) {
     this.visible = visibleLines(display, cm.doc, viewport);
     this.editorIsHidden = !display.wrapper.offsetWidth;
     this.wrapperHeight = display.wrapper.clientHeight;
+    this.wrapperWidth = display.wrapper.clientWidth;
     this.oldViewFrom = display.viewFrom; this.oldViewTo = display.viewTo;
     this.oldScrollerWidth = display.scroller.clientWidth;
     this.force = force;
@@ -8497,7 +7386,7 @@ CodeMirror.runMode = function(string, modespec, callback, options) {
     }
 
     var different = from != display.viewFrom || to != display.viewTo ||
-      display.lastSizeC != update.wrapperHeight;
+      display.lastWrapHeight != update.wrapperHeight || display.lastWrapWidth != update.wrapperWidth;
     adjustView(cm, from, to);
 
     display.viewOffset = heightAtLine(getLine(cm.doc, display.viewFrom));
@@ -8525,7 +7414,8 @@ CodeMirror.runMode = function(string, modespec, callback, options) {
     removeChildren(display.selectionDiv);
 
     if (different) {
-      display.lastSizeC = update.wrapperHeight;
+      display.lastWrapHeight = update.wrapperHeight;
+      display.lastWrapWidth = update.wrapperWidth;
       startWorker(cm, 400);
     }
 
@@ -8774,9 +7664,12 @@ CodeMirror.runMode = function(string, modespec, callback, options) {
     if (cm.options.lineNumbers || markers) {
       var wrap = ensureLineWrapped(lineView);
       var gutterWrap = lineView.gutter =
-        wrap.insertBefore(elt("div", null, "CodeMirror-gutter-wrapper", "position: absolute; left: " +
-                              (cm.options.fixedGutter ? dims.fixedPos : -dims.gutterTotalWidth) + "px"),
+        wrap.insertBefore(elt("div", null, "CodeMirror-gutter-wrapper", "left: " +
+                              (cm.options.fixedGutter ? dims.fixedPos : -dims.gutterTotalWidth) +
+                              "px; width: " + dims.gutterTotalWidth + "px"),
                           lineView.text);
+      if (lineView.line.gutterClass)
+        gutterWrap.className += " " + lineView.line.gutterClass;
       if (cm.options.lineNumbers && (!markers || !markers["CodeMirror-linenumbers"]))
         lineView.lineNumber = gutterWrap.appendChild(
           elt("div", lineNumberFor(cm.options, lineN),
@@ -10303,7 +9196,7 @@ CodeMirror.runMode = function(string, modespec, callback, options) {
     // possible when it is clear that nothing happened. hasSelection
     // will be the case when there is a lot of text in the textarea,
     // in which case reading its value would be expensive.
-    if (!cm.state.focused || (hasSelection(input) && !prevInput) || isReadOnly(cm) || cm.options.disableInput)
+    if (!cm.state.focused || (hasSelection(input) && !prevInput) || isReadOnly(cm) || cm.options.disableInput || cm.state.keySeq)
       return false;
     // See paste handler for more on the fakedLastChar kludge
     if (cm.state.pasteIncoming && cm.state.fakedLastChar) {
@@ -10558,8 +9451,10 @@ CodeMirror.runMode = function(string, modespec, callback, options) {
 
   // Called when the window resizes
   function onResize(cm) {
-    // Might be a text scaling operation, clear size caches.
     var d = cm.display;
+    if (d.lastWrapHeight == d.wrapper.clientHeight && d.lastWrapWidth == d.wrapper.clientWidth)
+      return;
+    // Might be a text scaling operation, clear size caches.
     d.cachedCharWidth = d.cachedTextHeight = d.cachedPaddingH = null;
     cm.setSize();
   }
@@ -11073,62 +9968,70 @@ CodeMirror.runMode = function(string, modespec, callback, options) {
     return done;
   }
 
-  // Collect the currently active keymaps.
-  function allKeyMaps(cm) {
-    var maps = cm.state.keyMaps.slice(0);
-    if (cm.options.extraKeys) maps.push(cm.options.extraKeys);
-    maps.push(cm.options.keyMap);
-    return maps;
+  function lookupKeyForEditor(cm, name, handle) {
+    for (var i = 0; i < cm.state.keyMaps.length; i++) {
+      var result = lookupKey(name, cm.state.keyMaps[i], handle);
+      if (result) return result;
+    }
+    return (cm.options.extraKeys && lookupKey(name, cm.options.extraKeys, handle))
+      || lookupKey(name, cm.options.keyMap, handle);
   }
 
-  var maybeTransition;
+  var stopSeq = new Delayed;
+  function dispatchKey(cm, name, e, handle) {
+    var seq = cm.state.keySeq;
+    if (seq) {
+      if (isModifierKey(name)) return "handled";
+      stopSeq.set(50, function() {
+        if (cm.state.keySeq == seq) {
+          cm.state.keySeq = null;
+          resetInput(cm);
+        }
+      });
+      name = seq + " " + name;
+    }
+    var result = lookupKeyForEditor(cm, name, handle);
+
+    if (result == "multi")
+      cm.state.keySeq = name;
+    if (result == "handled")
+      signalLater(cm, "keyHandled", cm, name, e);
+
+    if (result == "handled" || result == "multi") {
+      e_preventDefault(e);
+      restartBlink(cm);
+    }
+
+    if (seq && !result && /\'$/.test(name)) {
+      e_preventDefault(e);
+      return true;
+    }
+    return !!result;
+  }
+
   // Handle a key from the keydown event.
   function handleKeyBinding(cm, e) {
-    // Handle automatic keymap transitions
-    var startMap = getKeyMap(cm.options.keyMap), next = startMap.auto;
-    clearTimeout(maybeTransition);
-    if (next && !isModifierKey(e)) maybeTransition = setTimeout(function() {
-      if (getKeyMap(cm.options.keyMap) == startMap) {
-        cm.options.keyMap = (next.call ? next.call(null, cm) : next);
-        keyMapChanged(cm);
-      }
-    }, 50);
-
-    var name = keyName(e, true), handled = false;
+    var name = keyName(e, true);
     if (!name) return false;
-    var keymaps = allKeyMaps(cm);
 
-    if (e.shiftKey) {
+    if (e.shiftKey && !cm.state.keySeq) {
       // First try to resolve full name (including 'Shift-'). Failing
       // that, see if there is a cursor-motion command (starting with
       // 'go') bound to the keyname without 'Shift-'.
-      handled = lookupKey("Shift-" + name, keymaps, function(b) {return doHandleBinding(cm, b, true);})
-             || lookupKey(name, keymaps, function(b) {
-                  if (typeof b == "string" ? /^go[A-Z]/.test(b) : b.motion)
-                    return doHandleBinding(cm, b);
-                });
+      return dispatchKey(cm, "Shift-" + name, e, function(b) {return doHandleBinding(cm, b, true);})
+          || dispatchKey(cm, name, e, function(b) {
+               if (typeof b == "string" ? /^go[A-Z]/.test(b) : b.motion)
+                 return doHandleBinding(cm, b);
+             });
     } else {
-      handled = lookupKey(name, keymaps, function(b) { return doHandleBinding(cm, b); });
+      return dispatchKey(cm, name, e, function(b) { return doHandleBinding(cm, b); });
     }
-
-    if (handled) {
-      e_preventDefault(e);
-      restartBlink(cm);
-      signalLater(cm, "keyHandled", cm, name, e);
-    }
-    return handled;
   }
 
   // Handle a key from the keypress event
   function handleCharBinding(cm, e, ch) {
-    var handled = lookupKey("'" + ch + "'", allKeyMaps(cm),
-                            function(b) { return doHandleBinding(cm, b, true); });
-    if (handled) {
-      e_preventDefault(e);
-      restartBlink(cm);
-      signalLater(cm, "keyHandled", cm, "'" + ch + "'", e);
-    }
-    return handled;
+    return dispatchKey(cm, "'" + ch + "'", e,
+                       function(b) { return doHandleBinding(cm, b, true); });
   }
 
   var lastStoppedKey = null;
@@ -11607,6 +10510,8 @@ CodeMirror.runMode = function(string, modespec, callback, options) {
   // If an editor sits on the top or bottom of the window, partially
   // scrolled out of view, this ensures that the cursor is visible.
   function maybeScrollWindow(cm, coords) {
+    if (signalDOMEvent(cm, "scrollCursorIntoView")) return;
+
     var display = cm.display, box = display.sizer.getBoundingClientRect(), doScroll = null;
     if (coords.top + box.top < 0) doScroll = true;
     else if (coords.bottom + box.top > (window.innerHeight || document.documentElement.clientHeight)) doScroll = false;
@@ -11930,12 +10835,12 @@ CodeMirror.runMode = function(string, modespec, callback, options) {
     getDoc: function() {return this.doc;},
 
     addKeyMap: function(map, bottom) {
-      this.state.keyMaps[bottom ? "push" : "unshift"](map);
+      this.state.keyMaps[bottom ? "push" : "unshift"](getKeyMap(map));
     },
     removeKeyMap: function(map) {
       var maps = this.state.keyMaps;
       for (var i = 0; i < maps.length; ++i)
-        if (maps[i] == map || (typeof maps[i] != "string" && maps[i].name == map)) {
+        if (maps[i] == map || maps[i].name == map) {
           maps.splice(i, 1);
           return true;
         }
@@ -11992,20 +10897,11 @@ CodeMirror.runMode = function(string, modespec, callback, options) {
     // Fetch the parser token for a given character. Useful for hacks
     // that want to inspect the mode state (say, for completion).
     getTokenAt: function(pos, precise) {
-      var doc = this.doc;
-      pos = clipPos(doc, pos);
-      var state = getStateBefore(this, pos.line, precise), mode = this.doc.mode;
-      var line = getLine(doc, pos.line);
-      var stream = new StringStream(line.text, this.options.tabSize);
-      while (stream.pos < pos.ch && !stream.eol()) {
-        stream.start = stream.pos;
-        var style = readToken(mode, stream, state);
-      }
-      return {start: stream.start,
-              end: stream.pos,
-              string: stream.current(),
-              type: style || null,
-              state: state};
+      return takeToken(this, pos, precise);
+    },
+
+    getLineTokens: function(line, precise) {
+      return takeToken(this, Pos(line), precise, true);
     },
 
     getTokenTypeAt: function(pos) {
@@ -12408,7 +11304,12 @@ CodeMirror.runMode = function(string, modespec, callback, options) {
     themeChanged(cm);
     guttersChanged(cm);
   }, true);
-  option("keyMap", "default", keyMapChanged);
+  option("keyMap", "default", function(cm, val, old) {
+    var next = getKeyMap(val);
+    var prev = old != CodeMirror.Init && getKeyMap(old);
+    if (prev && prev.detach) prev.detach(cm, next);
+    if (next.attach) next.attach(cm, prev || null);
+  });
   option("extraKeys", null);
 
   option("lineWrapping", false, wrappingChanged, true);
@@ -12753,9 +11654,11 @@ CodeMirror.runMode = function(string, modespec, callback, options) {
     toggleOverwrite: function(cm) {cm.toggleOverwrite();}
   };
 
+
   // STANDARD KEYMAPS
 
   var keyMap = CodeMirror.keyMap = {};
+
   keyMap.basic = {
     "Left": "goCharLeft", "Right": "goCharRight", "Up": "goLineUp", "Down": "goLineDown",
     "End": "goLineEnd", "Home": "goLineStartSmart", "PageUp": "goPageUp", "PageDown": "goPageDown",
@@ -12777,6 +11680,13 @@ CodeMirror.runMode = function(string, modespec, callback, options) {
     "Ctrl-U": "undoSelection", "Shift-Ctrl-U": "redoSelection", "Alt-U": "redoSelection",
     fallthrough: "basic"
   };
+  // Very basic readline/emacs-style bindings, which are standard on Mac.
+  keyMap.emacsy = {
+    "Ctrl-F": "goCharRight", "Ctrl-B": "goCharLeft", "Ctrl-P": "goLineUp", "Ctrl-N": "goLineDown",
+    "Alt-F": "goWordRight", "Alt-B": "goWordLeft", "Ctrl-A": "goLineStart", "Ctrl-E": "goLineEnd",
+    "Ctrl-V": "goPageDown", "Shift-Ctrl-V": "goPageUp", "Ctrl-D": "delCharAfter", "Ctrl-H": "delCharBefore",
+    "Alt-D": "delWordAfter", "Alt-Backspace": "delWordBefore", "Ctrl-K": "killLine", "Ctrl-T": "transposeChars"
+  };
   keyMap.macDefault = {
     "Cmd-A": "selectAll", "Cmd-D": "deleteLine", "Cmd-Z": "undo", "Shift-Cmd-Z": "redo", "Cmd-Y": "redo",
     "Cmd-Home": "goDocStart", "Cmd-Up": "goDocStart", "Cmd-End": "goDocEnd", "Cmd-Down": "goDocEnd", "Alt-Left": "goGroupLeft",
@@ -12787,69 +11697,99 @@ CodeMirror.runMode = function(string, modespec, callback, options) {
     "Cmd-U": "undoSelection", "Shift-Cmd-U": "redoSelection", "Ctrl-Up": "goDocStart", "Ctrl-Down": "goDocEnd",
     fallthrough: ["basic", "emacsy"]
   };
-  // Very basic readline/emacs-style bindings, which are standard on Mac.
-  keyMap.emacsy = {
-    "Ctrl-F": "goCharRight", "Ctrl-B": "goCharLeft", "Ctrl-P": "goLineUp", "Ctrl-N": "goLineDown",
-    "Alt-F": "goWordRight", "Alt-B": "goWordLeft", "Ctrl-A": "goLineStart", "Ctrl-E": "goLineEnd",
-    "Ctrl-V": "goPageDown", "Shift-Ctrl-V": "goPageUp", "Ctrl-D": "delCharAfter", "Ctrl-H": "delCharBefore",
-    "Alt-D": "delWordAfter", "Alt-Backspace": "delWordBefore", "Ctrl-K": "killLine", "Ctrl-T": "transposeChars"
-  };
   keyMap["default"] = mac ? keyMap.macDefault : keyMap.pcDefault;
 
   // KEYMAP DISPATCH
 
-  function getKeyMap(val) {
-    if (typeof val == "string") return keyMap[val];
-    else return val;
+  function normalizeKeyName(name) {
+    var parts = name.split(/-(?!$)/), name = parts[parts.length - 1];
+    var alt, ctrl, shift, cmd;
+    for (var i = 0; i < parts.length - 1; i++) {
+      var mod = parts[i];
+      if (/^(cmd|meta|m)$/i.test(mod)) cmd = true;
+      else if (/^a(lt)?$/i.test(mod)) alt = true;
+      else if (/^(c|ctrl|control)$/i.test(mod)) ctrl = true;
+      else if (/^s(hift)$/i.test(mod)) shift = true;
+      else throw new Error("Unrecognized modifier name: " + mod);
+    }
+    if (alt) name = "Alt-" + name;
+    if (ctrl) name = "Ctrl-" + name;
+    if (cmd) name = "Cmd-" + name;
+    if (shift) name = "Shift-" + name;
+    return name;
   }
 
-  // Given an array of keymaps and a key name, call handle on any
-  // bindings found, until that returns a truthy value, at which point
-  // we consider the key handled. Implements things like binding a key
-  // to false stopping further handling and keymap fallthrough.
-  var lookupKey = CodeMirror.lookupKey = function(name, maps, handle) {
-    function lookup(map) {
-      map = getKeyMap(map);
-      var found = map[name];
-      if (found === false) return "stop";
-      if (found != null && handle(found)) return true;
-      if (map.nofallthrough) return "stop";
+  // This is a kludge to keep keymaps mostly working as raw objects
+  // (backwards compatibility) while at the same time support features
+  // like normalization and multi-stroke key bindings. It compiles a
+  // new normalized keymap, and then updates the old object to reflect
+  // this.
+  CodeMirror.normalizeKeyMap = function(keymap) {
+    var copy = {};
+    for (var keyname in keymap) if (keymap.hasOwnProperty(keyname)) {
+      var value = keymap[keyname];
+      if (/^(name|fallthrough|(de|at)tach)$/.test(keyname)) continue;
+      if (value == "...") { delete keymap[keyname]; continue; }
 
-      var fallthrough = map.fallthrough;
-      if (fallthrough == null) return false;
-      if (Object.prototype.toString.call(fallthrough) != "[object Array]")
-        return lookup(fallthrough);
-      for (var i = 0; i < fallthrough.length; ++i) {
-        var done = lookup(fallthrough[i]);
-        if (done) return done;
+      var keys = map(keyname.split(" "), normalizeKeyName);
+      for (var i = 0; i < keys.length; i++) {
+        var val, name;
+        if (i == keys.length - 1) {
+          name = keyname;
+          val = value;
+        } else {
+          name = keys.slice(0, i + 1).join(" ");
+          val = "...";
+        }
+        var prev = copy[name];
+        if (!prev) copy[name] = val;
+        else if (prev != val) throw new Error("Inconsistent bindings for " + name);
       }
-      return false;
+      delete keymap[keyname];
     }
+    for (var prop in copy) keymap[prop] = copy[prop];
+    return keymap;
+  };
 
-    for (var i = 0; i < maps.length; ++i) {
-      var done = lookup(maps[i]);
-      if (done) return done != "stop";
+  var lookupKey = CodeMirror.lookupKey = function(key, map, handle) {
+    map = getKeyMap(map);
+    var found = map.call ? map.call(key) : map[key];
+    if (found === false) return "nothing";
+    if (found === "...") return "multi";
+    if (found != null && handle(found)) return "handled";
+
+    if (map.fallthrough) {
+      if (Object.prototype.toString.call(map.fallthrough) != "[object Array]")
+        return lookupKey(key, map.fallthrough, handle);
+      for (var i = 0; i < map.fallthrough.length; i++) {
+        var result = lookupKey(key, map.fallthrough[i], handle);
+        if (result) return result;
+      }
     }
   };
 
   // Modifier key presses don't count as 'real' key presses for the
   // purpose of keymap fallthrough.
-  var isModifierKey = CodeMirror.isModifierKey = function(event) {
-    var name = keyNames[event.keyCode];
+  var isModifierKey = CodeMirror.isModifierKey = function(value) {
+    var name = typeof value == "string" ? value : keyNames[value.keyCode];
     return name == "Ctrl" || name == "Alt" || name == "Shift" || name == "Mod";
   };
 
   // Look up the name of a key as indicated by an event object.
   var keyName = CodeMirror.keyName = function(event, noShift) {
     if (presto && event.keyCode == 34 && event["char"]) return false;
-    var name = keyNames[event.keyCode];
+    var base = keyNames[event.keyCode], name = base;
     if (name == null || event.altGraphKey) return false;
-    if (event.altKey) name = "Alt-" + name;
-    if (flipCtrlCmd ? event.metaKey : event.ctrlKey) name = "Ctrl-" + name;
-    if (flipCtrlCmd ? event.ctrlKey : event.metaKey) name = "Cmd-" + name;
-    if (!noShift && event.shiftKey) name = "Shift-" + name;
+    if (event.altKey && base != "Alt") name = "Alt-" + name;
+    if ((flipCtrlCmd ? event.metaKey : event.ctrlKey) && base != "Ctrl") name = "Ctrl-" + name;
+    if ((flipCtrlCmd ? event.ctrlKey : event.metaKey) && base != "Cmd") name = "Cmd-" + name;
+    if (!noShift && event.shiftKey && base != "Shift") name = "Shift-" + name;
     return name;
   };
+
+  function getKeyMap(val) {
+    return typeof val == "string" ? keyMap[val] : val;
+  }
 
   // FROMTEXTAREA
 
@@ -13700,12 +12640,35 @@ CodeMirror.runMode = function(string, modespec, callback, options) {
     if (inner.mode.blankLine) return inner.mode.blankLine(inner.state);
   }
 
-  function readToken(mode, stream, state) {
+  function readToken(mode, stream, state, inner) {
     for (var i = 0; i < 10; i++) {
+      if (inner) inner[0] = CodeMirror.innerMode(mode, state).mode;
       var style = mode.token(stream, state);
       if (stream.pos > stream.start) return style;
     }
     throw new Error("Mode " + mode.name + " failed to advance stream.");
+  }
+
+  // Utility for getTokenAt and getLineTokens
+  function takeToken(cm, pos, precise, asArray) {
+    function getObj(copy) {
+      return {start: stream.start, end: stream.pos,
+              string: stream.current(),
+              type: style || null,
+              state: copy ? copyState(doc.mode, state) : state};
+    }
+
+    var doc = cm.doc, mode = doc.mode, style;
+    pos = clipPos(doc, pos);
+    var line = getLine(doc, pos.line), state = getStateBefore(cm, pos.line, precise);
+    var stream = new StringStream(line.text, cm.options.tabSize), tokens;
+    if (asArray) tokens = [];
+    while ((asArray || stream.pos < pos.ch) && !stream.eol()) {
+      stream.start = stream.pos;
+      style = readToken(mode, stream, state);
+      if (asArray) tokens.push(getObj(true));
+    }
+    return asArray ? tokens : getObj();
   }
 
   // Run the given mode's parser over a line, calling f for each token.
@@ -13714,6 +12677,7 @@ CodeMirror.runMode = function(string, modespec, callback, options) {
     if (flattenSpans == null) flattenSpans = cm.options.flattenSpans;
     var curStart = 0, curStyle = null;
     var stream = new StringStream(text, cm.options.tabSize), style;
+    var inner = cm.options.addModeClass && [null];
     if (text == "") extractLineClasses(callBlankLine(mode, state), lineClasses);
     while (!stream.eol()) {
       if (stream.pos > cm.options.maxHighlightLength) {
@@ -13722,10 +12686,10 @@ CodeMirror.runMode = function(string, modespec, callback, options) {
         stream.pos = text.length;
         style = null;
       } else {
-        style = extractLineClasses(readToken(mode, stream, state), lineClasses);
+        style = extractLineClasses(readToken(mode, stream, state, inner), lineClasses);
       }
-      if (cm.options.addModeClass) {
-        var mName = CodeMirror.innerMode(mode, state).mode.name;
+      if (inner) {
+        var mName = inner[0].name;
         if (mName) style = "m-" + (style ? mName + " " + style : mName);
       }
       if (!flattenSpans || curStyle != style) {
@@ -13784,12 +12748,13 @@ CodeMirror.runMode = function(string, modespec, callback, options) {
     return {styles: st, classes: lineClasses.bgClass || lineClasses.textClass ? lineClasses : null};
   }
 
-  function getLineStyles(cm, line) {
+  function getLineStyles(cm, line, updateFrontier) {
     if (!line.styles || line.styles[0] != cm.state.modeGen) {
       var result = highlightLine(cm, line, line.stateAfter = getStateBefore(cm, lineNo(line)));
       line.styles = result.styles;
       if (result.classes) line.styleClasses = result.classes;
       else if (line.styleClasses) line.styleClasses = null;
+      if (updateFrontier === cm.doc.frontier) cm.doc.frontier++;
     }
     return line.styles;
   }
@@ -13844,7 +12809,8 @@ CodeMirror.runMode = function(string, modespec, callback, options) {
       if (hasBadBidiRects(cm.display.measure) && (order = getOrder(line)))
         builder.addToken = buildTokenBadBidi(builder.addToken, order);
       builder.map = [];
-      insertLineContent(line, builder, getLineStyles(cm, line));
+      var allowFrontierUpdate = lineView != cm.display.externalMeasured && lineNo(line);
+      insertLineContent(line, builder, getLineStyles(cm, line, allowFrontierUpdate));
       if (line.styleClasses) {
         if (line.styleClasses.bgClass)
           builder.bgClass = joinClasses(line.styleClasses.bgClass, builder.bgClass || "");
@@ -13866,9 +12832,14 @@ CodeMirror.runMode = function(string, modespec, callback, options) {
       }
     }
 
+    // See issue #2901
+    if (webkit && /\bcm-tab\b/.test(builder.content.lastChild.className))
+      builder.content.className = "cm-tab-wrap-hack";
+
     signal(cm, "renderLine", cm, lineView.line, builder.pre);
     if (builder.pre.className)
       builder.textClass = joinClasses(builder.pre.className, builder.textClass || "");
+
     return builder;
   }
 
@@ -14437,22 +13408,26 @@ CodeMirror.runMode = function(string, modespec, callback, options) {
     },
 
     addLineClass: docMethodOp(function(handle, where, cls) {
-      return changeLine(this, handle, "class", function(line) {
-        var prop = where == "text" ? "textClass" : where == "background" ? "bgClass" : "wrapClass";
+      return changeLine(this, handle, where == "gutter" ? "gutter" : "class", function(line) {
+        var prop = where == "text" ? "textClass"
+                 : where == "background" ? "bgClass"
+                 : where == "gutter" ? "gutterClass" : "wrapClass";
         if (!line[prop]) line[prop] = cls;
-        else if (new RegExp("(?:^|\\s)" + cls + "(?:$|\\s)").test(line[prop])) return false;
+        else if (classTest(cls).test(line[prop])) return false;
         else line[prop] += " " + cls;
         return true;
       });
     }),
     removeLineClass: docMethodOp(function(handle, where, cls) {
       return changeLine(this, handle, "class", function(line) {
-        var prop = where == "text" ? "textClass" : where == "background" ? "bgClass" : "wrapClass";
+        var prop = where == "text" ? "textClass"
+                 : where == "background" ? "bgClass"
+                 : where == "gutter" ? "gutterClass" : "wrapClass";
         var cur = line[prop];
         if (!cur) return false;
         else if (cls == null) line[prop] = null;
         else {
-          var found = cur.match(new RegExp("(?:^|\\s+)" + cls + "(?:$|\\s+)"));
+          var found = cur.match(classTest(cls));
           if (!found) return false;
           var end = found.index + found[0].length;
           line[prop] = cur.slice(0, found.index) + (!found.index || end == cur.length ? "" : " ") + cur.slice(end) || null;
@@ -15071,6 +14046,8 @@ CodeMirror.runMode = function(string, modespec, callback, options) {
   // registering a (non-DOM) handler on the editor for the event name,
   // and preventDefault-ing the event in that handler.
   function signalDOMEvent(cm, e, override) {
+    if (typeof e == "string")
+      e = {type: e, preventDefault: function() { this.defaultPrevented = true; }};
     signal(cm, override || e.type, cm, e);
     return e_defaultPrevented(e) || e.codemirrorIgnore;
   }
@@ -15244,7 +14221,8 @@ CodeMirror.runMode = function(string, modespec, callback, options) {
   };
   else range = function(node, start, end) {
     var r = document.body.createTextRange();
-    r.moveToElementText(node.parentNode);
+    try { r.moveToElementText(node.parentNode); }
+    catch(e) { return r; }
     r.collapse(true);
     r.moveEnd("character", end);
     r.moveStart("character", start);
@@ -15276,14 +14254,19 @@ CodeMirror.runMode = function(string, modespec, callback, options) {
     catch(e) { return document.body; }
   };
 
-  function classTest(cls) { return new RegExp("\\b" + cls + "\\b\\s*"); }
-  function rmClass(node, cls) {
-    var test = classTest(cls);
-    if (test.test(node.className)) node.className = node.className.replace(test, "");
-  }
-  function addClass(node, cls) {
-    if (!classTest(cls).test(node.className)) node.className += " " + cls;
-  }
+  function classTest(cls) { return new RegExp("(^|\\s)" + cls + "(?:$|\\s)\\s*"); }
+  var rmClass = CodeMirror.rmClass = function(node, cls) {
+    var current = node.className;
+    var match = classTest(cls).exec(current);
+    if (match) {
+      var after = current.slice(match.index + match[0].length);
+      node.className = current.slice(0, match.index) + (after ? match[1] + after : "");
+    }
+  };
+  var addClass = CodeMirror.addClass = function(node, cls) {
+    var current = node.className;
+    if (!classTest(cls).test(current)) node.className += (current ? " " : "") + cls;
+  };
   function joinClasses(a, b) {
     var as = a.split(" ");
     for (var i = 0; i < as.length; i++)
@@ -15730,12 +14713,12 @@ CodeMirror.runMode = function(string, modespec, callback, options) {
 
   // THE END
 
-  CodeMirror.version = "4.7.0";
+  CodeMirror.version = "4.8.0";
 
   return CodeMirror;
 });
 
-},{}],10:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v1.11.1
  * http://jquery.com/
@@ -26045,7 +25028,7 @@ return jQuery;
 
 }));
 
-},{}],11:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 ;(function(win){
 	var store = {},
 		doc = win.document,
@@ -26054,17 +25037,21 @@ return jQuery;
 		storage
 
 	store.disabled = false
+	store.version = '1.3.17'
 	store.set = function(key, value) {}
-	store.get = function(key) {}
+	store.get = function(key, defaultVal) {}
+	store.has = function(key) { return store.get(key) !== undefined }
 	store.remove = function(key) {}
 	store.clear = function() {}
 	store.transact = function(key, defaultVal, transactionFn) {
-		var val = store.get(key)
 		if (transactionFn == null) {
 			transactionFn = defaultVal
 			defaultVal = null
 		}
-		if (typeof val == 'undefined') { val = defaultVal || {} }
+		if (defaultVal == null) {
+			defaultVal = {}
+		}
+		var val = store.get(key, defaultVal)
 		transactionFn(val)
 		store.set(key, val)
 	}
@@ -26095,7 +25082,10 @@ return jQuery;
 			storage.setItem(key, store.serialize(val))
 			return val
 		}
-		store.get = function(key) { return store.deserialize(storage.getItem(key)) }
+		store.get = function(key, defaultVal) {
+			var val = store.deserialize(storage.getItem(key))
+			return (val === undefined ? defaultVal : val)
+		}
 		store.remove = function(key) { storage.removeItem(key) }
 		store.clear = function() { storage.clear() }
 		store.getAll = function() {
@@ -26137,7 +25127,7 @@ return jQuery;
 			storage = doc.createElement('div')
 			storageOwner = doc.body
 		}
-		function withIEStorage(storeFunction) {
+		var withIEStorage = function(storeFunction) {
 			return function() {
 				var args = Array.prototype.slice.call(arguments, 0)
 				args.unshift(storage)
@@ -26166,9 +25156,10 @@ return jQuery;
 			storage.save(localStorageName)
 			return val
 		})
-		store.get = withIEStorage(function(storage, key) {
+		store.get = withIEStorage(function(storage, key, defaultVal) {
 			key = ieKeyFix(key)
-			return store.deserialize(storage.getAttribute(key))
+			var val = store.deserialize(storage.getAttribute(key))
+			return (val === undefined ? defaultVal : val)
 		})
 		store.remove = withIEStorage(function(storage, key) {
 			key = ieKeyFix(key)
@@ -26214,10 +25205,10 @@ return jQuery;
 
 })(Function('return this')());
 
-},{}],12:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 module.exports={
   "name": "yasgui-utils",
-  "version": "1.3.2",
+  "version": "1.4.2",
   "description": "Utils for YASGUI libs",
   "main": "src/main.js",
   "repository": {
@@ -26230,14 +25221,12 @@ module.exports={
       "url": "http://yasgui.github.io/license.txt"
     }
   ],
-  "author": {
-    "name": "Laurens Rietveld"
-  },
+  "author": "Laurens Rietveld",
   "maintainers": [
     {
       "name": "Laurens Rietveld",
       "email": "laurens.rietveld@gmail.com",
-      "url": "http://laurensrietveld.nl"
+      "web": "http://laurensrietveld.nl"
     }
   ],
   "bugs": {
@@ -26246,50 +25235,80 @@ module.exports={
   "homepage": "https://github.com/YASGUI/Utils",
   "dependencies": {
     "store": "^1.3.14"
-  },
-  "readme": "A simple utils repo for the YASGUI tools\n",
-  "readmeFilename": "README.md",
-  "_id": "yasgui-utils@1.3.2",
-  "dist": {
-    "shasum": "e861884bb67d1f792d37a25fed9140d090b97b7b"
-  },
-  "_from": "yasgui-utils@1.3.2",
-  "_resolved": "https://registry.npmjs.org/yasgui-utils/-/yasgui-utils-1.3.2.tgz"
+  }
 }
 
-},{}],13:[function(require,module,exports){
-/**
- * Determine unique ID of the YASQE object. Useful when several objects are
- * loaded on the same page, and all have 'persistency' enabled. Currently, the
- * ID is determined by selecting the nearest parent in the DOM with an ID set
- * 
- * @param doc {YASQE}
- * @method YASQE.determineId
- */
-var root = module.exports = function(element) {
-	return require("jquery")(element).closest('[id]').attr('id');
+},{}],18:[function(require,module,exports){
+window.console = window.console || {"log":function(){}};//make sure any console statements don't break IE
+module.exports = {
+	storage: require("./storage.js"),
+	svg: require("./svg.js"),
+	version: {
+		"yasgui-utils" : require("../package.json").version,
+	}
 };
-},{"jquery":10}],14:[function(require,module,exports){
+
+},{"../package.json":17,"./storage.js":19,"./svg.js":20}],19:[function(require,module,exports){
+var store = require("store");
+var times = {
+	day: function() {
+		return 1000 * 3600 * 24;//millis to day
+	},
+	month: function() {
+		times.day() * 30;
+	},
+	year: function() {
+		times.month() * 12;
+	}
+};
+
 var root = module.exports = {
-	cross: '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" width="30px" height="30px" viewBox="0 0 100 100" enable-background="new 0 0 100 100" xml:space="preserve"><g>	<path d="M83.288,88.13c-2.114,2.112-5.575,2.112-7.689,0L53.659,66.188c-2.114-2.112-5.573-2.112-7.687,0L24.251,87.907   c-2.113,2.114-5.571,2.114-7.686,0l-4.693-4.691c-2.114-2.114-2.114-5.573,0-7.688l21.719-21.721c2.113-2.114,2.113-5.573,0-7.686   L11.872,24.4c-2.114-2.113-2.114-5.571,0-7.686l4.842-4.842c2.113-2.114,5.571-2.114,7.686,0L46.12,33.591   c2.114,2.114,5.572,2.114,7.688,0l21.721-21.719c2.114-2.114,5.573-2.114,7.687,0l4.695,4.695c2.111,2.113,2.111,5.571-0.003,7.686   L66.188,45.973c-2.112,2.114-2.112,5.573,0,7.686L88.13,75.602c2.112,2.111,2.112,5.572,0,7.687L83.288,88.13z"/></g></svg>',
-	check: '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" width="30px" height="30px" viewBox="0 0 100 100" enable-background="new 0 0 100 100" xml:space="preserve"><path fill="#000000" d="M14.301,49.982l22.606,17.047L84.361,4.903c2.614-3.733,7.76-4.64,11.493-2.026l0.627,0.462  c3.732,2.614,4.64,7.758,2.025,11.492l-51.783,79.77c-1.955,2.791-3.896,3.762-7.301,3.988c-3.405,0.225-5.464-1.039-7.508-3.084  L2.447,61.814c-3.263-3.262-3.263-8.553,0-11.814l0.041-0.019C5.75,46.718,11.039,46.718,14.301,49.982z"/></svg>',
-	unsorted: '<svg   xmlns:dc="http://purl.org/dc/elements/1.1/"   xmlns:cc="http://creativecommons.org/ns#"   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"   xmlns:svg="http://www.w3.org/2000/svg"   xmlns="http://www.w3.org/2000/svg"   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"   version="1.1"   id="Layer_1"   x="0px"   y="0px"   width="100%"   height="100%"   viewBox="0 0 54.552711 113.78478"   enable-background="new 0 0 100 100"   xml:space="preserve"><g     id="g5"     transform="matrix(-0.70522156,-0.70898699,-0.70898699,0.70522156,97.988199,55.081205)"><path       style="fill:#000000"       inkscape:connector-curvature="0"       id="path7"       d="M 57.911,66.915 45.808,55.063 42.904,52.238 31.661,41.25 31.435,41.083 31.131,40.775 30.794,40.523 30.486,40.3 30.069,40.05 29.815,39.911 29.285,39.659 29.089,39.576 28.474,39.326 28.363,39.297 H 28.336 L 27.665,39.128 27.526,39.1 26.94,38.99 26.714,38.961 26.212,38.934 h -0.31 -0.444 l -0.339,0.027 c -1.45,0.139 -2.876,0.671 -4.11,1.564 l -0.223,0.141 -0.279,0.25 -0.335,0.308 -0.054,0.029 -0.171,0.194 -0.334,0.364 -0.224,0.279 -0.25,0.336 -0.225,0.362 -0.192,0.308 -0.197,0.421 -0.142,0.279 -0.193,0.477 -0.084,0.222 -12.441,38.414 c -0.814,2.458 -0.313,5.029 1.115,6.988 v 0.026 l 0.418,0.532 0.17,0.165 0.251,0.281 0.084,0.079 0.283,0.281 0.25,0.194 0.474,0.367 0.083,0.053 c 2.015,1.371 4.641,1.874 7.131,1.094 L 55.228,80.776 c 4.303,-1.342 6.679,-5.814 5.308,-10.006 -0.387,-1.259 -1.086,-2.35 -1.979,-3.215 l -0.368,-0.337 -0.278,-0.303 z m -6.318,5.896 0.079,0.114 -37.369,11.57 11.854,-36.538 10.565,10.317 2.876,2.825 11.995,11.712 z" /></g><path     style="fill:#000000"     inkscape:connector-curvature="0"     id="path7-9"     d="m 8.8748339,52.571766 16.9382111,-0.222584 4.050851,-0.06665 15.719154,-0.222166 0.27778,-0.04246 0.43276,0.0017 0.41632,-0.06121 0.37532,-0.0611 0.47132,-0.119342 0.27767,-0.08206 0.55244,-0.198047 0.19707,-0.08043 0.61095,-0.259721 0.0988,-0.05825 0.019,-0.01914 0.59303,-0.356548 0.11787,-0.0788 0.49125,-0.337892 0.17994,-0.139779 0.37317,-0.336871 0.21862,-0.219786 0.31311,-0.31479 0.21993,-0.259387 c 0.92402,-1.126057 1.55249,-2.512251 1.78961,-4.016904 l 0.0573,-0.25754 0.0195,-0.374113 0.0179,-0.454719 0.0175,-0.05874 -0.0169,-0.258049 -0.0225,-0.493503 -0.0398,-0.355569 -0.0619,-0.414201 -0.098,-0.414812 -0.083,-0.353334 L 53.23955,41.1484 53.14185,40.850967 52.93977,40.377742 52.84157,40.161628 34.38021,4.2507375 C 33.211567,1.9401875 31.035446,0.48226552 28.639484,0.11316952 l -0.01843,-0.01834 -0.671963,-0.07882 -0.236871,0.0042 L 27.335984,-4.7826577e-7 27.220736,0.00379952 l -0.398804,0.0025 -0.313848,0.04043 -0.594474,0.07724 -0.09611,0.02147 C 23.424549,0.60716252 21.216017,2.1142355 20.013025,4.4296865 L 0.93967491,40.894479 c -2.08310801,3.997178 -0.588125,8.835482 3.35080799,10.819749 1.165535,0.613495 2.43199,0.88731 3.675026,0.864202 l 0.49845,-0.02325 0.410875,0.01658 z M 9.1502369,43.934401 9.0136999,43.910011 27.164145,9.2564625 44.70942,43.42818 l -14.765289,0.214677 -4.031106,0.0468 -16.7627881,0.244744 z" /></svg>',
-	sortDesc: '<svg   xmlns:dc="http://purl.org/dc/elements/1.1/"   xmlns:cc="http://creativecommons.org/ns#"   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"   xmlns:svg="http://www.w3.org/2000/svg"   xmlns="http://www.w3.org/2000/svg"   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"   version="1.1"   id="Layer_1"   x="0px"   y="0px"   width="100%"   height="100%"   viewBox="0 0 54.552711 113.78478"   enable-background="new 0 0 100 100"   xml:space="preserve"><g     id="g5"     transform="matrix(-0.70522156,-0.70898699,-0.70898699,0.70522156,97.988199,55.081205)"><path       style="fill:#000000"       inkscape:connector-curvature="0"       id="path7"       d="M 57.911,66.915 45.808,55.063 42.904,52.238 31.661,41.25 31.435,41.083 31.131,40.775 30.794,40.523 30.486,40.3 30.069,40.05 29.815,39.911 29.285,39.659 29.089,39.576 28.474,39.326 28.363,39.297 H 28.336 L 27.665,39.128 27.526,39.1 26.94,38.99 26.714,38.961 26.212,38.934 h -0.31 -0.444 l -0.339,0.027 c -1.45,0.139 -2.876,0.671 -4.11,1.564 l -0.223,0.141 -0.279,0.25 -0.335,0.308 -0.054,0.029 -0.171,0.194 -0.334,0.364 -0.224,0.279 -0.25,0.336 -0.225,0.362 -0.192,0.308 -0.197,0.421 -0.142,0.279 -0.193,0.477 -0.084,0.222 -12.441,38.414 c -0.814,2.458 -0.313,5.029 1.115,6.988 v 0.026 l 0.418,0.532 0.17,0.165 0.251,0.281 0.084,0.079 0.283,0.281 0.25,0.194 0.474,0.367 0.083,0.053 c 2.015,1.371 4.641,1.874 7.131,1.094 L 55.228,80.776 c 4.303,-1.342 6.679,-5.814 5.308,-10.006 -0.387,-1.259 -1.086,-2.35 -1.979,-3.215 l -0.368,-0.337 -0.278,-0.303 z m -6.318,5.896 0.079,0.114 -37.369,11.57 11.854,-36.538 10.565,10.317 2.876,2.825 11.995,11.712 z" /></g><path     style="fill:#000000"     inkscape:connector-curvature="0"     id="path9"     d="m 27.813273,0.12823506 0.09753,0.02006 c 2.39093,0.458209 4.599455,1.96811104 5.80244,4.28639004 L 52.785897,40.894525 c 2.088044,4.002139 0.590949,8.836902 -3.348692,10.821875 -1.329078,0.688721 -2.766603,0.943695 -4.133174,0.841768 l -0.454018,0.02 L 27.910392,52.354171 23.855313,52.281851 8.14393,52.061827 7.862608,52.021477 7.429856,52.021738 7.014241,51.959818 6.638216,51.900838 6.164776,51.779369 5.889216,51.699439 5.338907,51.500691 5.139719,51.419551 4.545064,51.145023 4.430618,51.105123 4.410168,51.084563 3.817138,50.730843 3.693615,50.647783 3.207314,50.310611 3.028071,50.174369 2.652795,49.833957 2.433471,49.613462 2.140099,49.318523 1.901127,49.041407 C 0.97781,47.916059 0.347935,46.528448 0.11153,45.021676 L 0.05352,44.766255 0.05172,44.371683 0.01894,43.936017 0,43.877277 0.01836,43.62206 0.03666,43.122889 0.0765,42.765905 0.13912,42.352413 0.23568,41.940425 0.32288,41.588517 0.481021,41.151945 0.579391,40.853806 0.77369,40.381268 0.876097,40.162336 19.338869,4.2542801 c 1.172169,-2.308419 3.34759,-3.76846504 5.740829,-4.17716604 l 0.01975,0.01985 0.69605,-0.09573 0.218437,0.0225 0.490791,-0.02132 0.39809,0.0046 0.315972,0.03973 0.594462,0.08149 z" /></svg>',
-	sortAsc: '<svg   xmlns:dc="http://purl.org/dc/elements/1.1/"   xmlns:cc="http://creativecommons.org/ns#"   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"   xmlns:svg="http://www.w3.org/2000/svg"   xmlns="http://www.w3.org/2000/svg"   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"   version="1.1"   id="Layer_1"   x="0px"   y="0px"   width="100%"   height="100%"   viewBox="0 0 54.552711 113.78478"   enable-background="new 0 0 100 100"   xml:space="preserve"><g     id="g5"     transform="matrix(-0.70522156,0.70898699,-0.70898699,-0.70522156,97.988199,58.704807)"><path       style="fill:#000000"       inkscape:connector-curvature="0"       id="path7"       d="M 57.911,66.915 45.808,55.063 42.904,52.238 31.661,41.25 31.435,41.083 31.131,40.775 30.794,40.523 30.486,40.3 30.069,40.05 29.815,39.911 29.285,39.659 29.089,39.576 28.474,39.326 28.363,39.297 H 28.336 L 27.665,39.128 27.526,39.1 26.94,38.99 26.714,38.961 26.212,38.934 h -0.31 -0.444 l -0.339,0.027 c -1.45,0.139 -2.876,0.671 -4.11,1.564 l -0.223,0.141 -0.279,0.25 -0.335,0.308 -0.054,0.029 -0.171,0.194 -0.334,0.364 -0.224,0.279 -0.25,0.336 -0.225,0.362 -0.192,0.308 -0.197,0.421 -0.142,0.279 -0.193,0.477 -0.084,0.222 -12.441,38.414 c -0.814,2.458 -0.313,5.029 1.115,6.988 v 0.026 l 0.418,0.532 0.17,0.165 0.251,0.281 0.084,0.079 0.283,0.281 0.25,0.194 0.474,0.367 0.083,0.053 c 2.015,1.371 4.641,1.874 7.131,1.094 L 55.228,80.776 c 4.303,-1.342 6.679,-5.814 5.308,-10.006 -0.387,-1.259 -1.086,-2.35 -1.979,-3.215 l -0.368,-0.337 -0.278,-0.303 z m -6.318,5.896 0.079,0.114 -37.369,11.57 11.854,-36.538 10.565,10.317 2.876,2.825 11.995,11.712 z" /></g><path     style="fill:#000000"     inkscape:connector-curvature="0"     id="path9"     d="m 27.813273,113.65778 0.09753,-0.0201 c 2.39093,-0.45821 4.599455,-1.96811 5.80244,-4.28639 L 52.785897,72.891487 c 2.088044,-4.002139 0.590949,-8.836902 -3.348692,-10.821875 -1.329078,-0.688721 -2.766603,-0.943695 -4.133174,-0.841768 l -0.454018,-0.02 -16.939621,0.223997 -4.055079,0.07232 -15.711383,0.220024 -0.281322,0.04035 -0.432752,-2.61e-4 -0.415615,0.06192 -0.376025,0.05898 -0.47344,0.121469 -0.27556,0.07993 -0.550309,0.198748 -0.199188,0.08114 -0.594655,0.274528 -0.114446,0.0399 -0.02045,0.02056 -0.59303,0.35372 -0.123523,0.08306 -0.486301,0.337172 -0.179243,0.136242 -0.375276,0.340412 -0.219324,0.220495 -0.293372,0.294939 -0.238972,0.277116 C 0.97781,65.869953 0.347935,67.257564 0.11153,68.764336 L 0.05352,69.019757 0.05172,69.414329 0.01894,69.849995 0,69.908735 l 0.01836,0.255217 0.0183,0.499171 0.03984,0.356984 0.06262,0.413492 0.09656,0.411988 0.0872,0.351908 0.158141,0.436572 0.09837,0.298139 0.194299,0.472538 0.102407,0.218932 18.462772,35.908054 c 1.172169,2.30842 3.34759,3.76847 5.740829,4.17717 l 0.01975,-0.0199 0.69605,0.0957 0.218437,-0.0225 0.490791,0.0213 0.39809,-0.005 0.315972,-0.0397 0.594462,-0.0815 z" /></svg>',
-	loader: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="100%" height="100%" fill="black">  <circle cx="16" cy="3" r="0">    <animate attributeName="r" values="0;3;0;0" dur="1s" repeatCount="indefinite" begin="0" keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" calcMode="spline" />  </circle>  <circle transform="rotate(45 16 16)" cx="16" cy="3" r="0">    <animate attributeName="r" values="0;3;0;0" dur="1s" repeatCount="indefinite" begin="0.125s" keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" calcMode="spline" />  </circle>  <circle transform="rotate(90 16 16)" cx="16" cy="3" r="0">    <animate attributeName="r" values="0;3;0;0" dur="1s" repeatCount="indefinite" begin="0.25s" keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" calcMode="spline" />  </circle>  <circle transform="rotate(135 16 16)" cx="16" cy="3" r="0">    <animate attributeName="r" values="0;3;0;0" dur="1s" repeatCount="indefinite" begin="0.375s" keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" calcMode="spline" />  </circle>  <circle transform="rotate(180 16 16)" cx="16" cy="3" r="0">    <animate attributeName="r" values="0;3;0;0" dur="1s" repeatCount="indefinite" begin="0.5s" keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" calcMode="spline" />  </circle>  <circle transform="rotate(225 16 16)" cx="16" cy="3" r="0">    <animate attributeName="r" values="0;3;0;0" dur="1s" repeatCount="indefinite" begin="0.625s" keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" calcMode="spline" />  </circle>  <circle transform="rotate(270 16 16)" cx="16" cy="3" r="0">    <animate attributeName="r" values="0;3;0;0" dur="1s" repeatCount="indefinite" begin="0.75s" keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" calcMode="spline" />  </circle>  <circle transform="rotate(315 16 16)" cx="16" cy="3" r="0">    <animate attributeName="r" values="0;3;0;0" dur="1s" repeatCount="indefinite" begin="0.875s" keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" calcMode="spline" />  </circle>  <circle transform="rotate(180 16 16)" cx="16" cy="3" r="0">    <animate attributeName="r" values="0;3;0;0" dur="1s" repeatCount="indefinite" begin="0.5s" keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" calcMode="spline" />  </circle></svg>',
-	query: '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" width="100%" height="100%" viewBox="0 0 80 80" enable-background="new 0 0 80 80" xml:space="preserve"><g id="Layer_1"></g><g id="Layer_2">	<path d="M64.622,2.411H14.995c-6.627,0-12,5.373-12,12v49.897c0,6.627,5.373,12,12,12h49.627c6.627,0,12-5.373,12-12V14.411   C76.622,7.783,71.249,2.411,64.622,2.411z M24.125,63.906V15.093L61,39.168L24.125,63.906z"/></g></svg>',
-	queryInvalid: '<svg   xmlns:dc="http://purl.org/dc/elements/1.1/"   xmlns:cc="http://creativecommons.org/ns#"   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"   xmlns:svg="http://www.w3.org/2000/svg"   xmlns="http://www.w3.org/2000/svg"   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"   version="1.1"   x="0px"   y="0px"   width="100%"   height="100%"   viewBox="0 0 73.627 73.897"   enable-background="new 0 0 80 80"   xml:space="preserve"   ><g     id="Layer_1"     transform="translate(-2.995,-2.411)" /><g     id="Layer_2"     transform="translate(-2.995,-2.411)"><path       d="M 64.622,2.411 H 14.995 c -6.627,0 -12,5.373 -12,12 v 49.897 c 0,6.627 5.373,12 12,12 h 49.627 c 6.627,0 12,-5.373 12,-12 V 14.411 c 0,-6.628 -5.373,-12 -12,-12 z M 24.125,63.906 V 15.093 L 61,39.168 24.125,63.906 z"       id="path6"       inkscape:connector-curvature="0" /></g><g     transform="matrix(0.76805408,0,0,0.76805408,-0.90231954,-2.0060895)"     id="g3"><path       style="fill:#c02608;fill-opacity:1"       inkscape:connector-curvature="0"       d="m 88.184,81.468 c 1.167,1.167 1.167,3.075 0,4.242 l -2.475,2.475 c -1.167,1.167 -3.076,1.167 -4.242,0 l -69.65,-69.65 c -1.167,-1.167 -1.167,-3.076 0,-4.242 l 2.476,-2.476 c 1.167,-1.167 3.076,-1.167 4.242,0 l 69.649,69.651 z"       id="path5" /></g><g     transform="matrix(0.76805408,0,0,0.76805408,-0.90231954,-2.0060895)"     id="g7"><path       style="fill:#c02608;fill-opacity:1"       inkscape:connector-curvature="0"       d="m 18.532,88.184 c -1.167,1.166 -3.076,1.166 -4.242,0 l -2.475,-2.475 c -1.167,-1.166 -1.167,-3.076 0,-4.242 l 69.65,-69.651 c 1.167,-1.167 3.075,-1.167 4.242,0 l 2.476,2.476 c 1.166,1.167 1.166,3.076 0,4.242 l -69.651,69.65 z"       id="path9" /></g></svg>',
-	download: '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" baseProfile="tiny" x="0px" y="0px" width="100%" height="100%" viewBox="0 0 100 100" xml:space="preserve"><g id="Captions"></g><g id="Your_Icon">	<path fill-rule="evenodd" fill="#000000" d="M88,84v-2c0-2.961-0.859-4-4-4H16c-2.961,0-4,0.98-4,4v2c0,3.102,1.039,4,4,4h68   C87.02,88,88,87.039,88,84z M58,12H42c-5,0-6,0.941-6,6v22H16l34,34l34-34H64V18C64,12.941,62.939,12,58,12z"/></g></svg>',
-	share: '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Icons" x="0px" y="0px" width="100%" height="100%" viewBox="0 0 100 100" style="enable-background:new 0 0 100 100;" xml:space="preserve"><path id="ShareThis" d="M36.764,50c0,0.308-0.07,0.598-0.088,0.905l32.247,16.119c2.76-2.338,6.293-3.797,10.195-3.797  C87.89,63.228,95,70.338,95,79.109C95,87.89,87.89,95,79.118,95c-8.78,0-15.882-7.11-15.882-15.891c0-0.316,0.07-0.598,0.088-0.905  L31.077,62.085c-2.769,2.329-6.293,3.788-10.195,3.788C12.11,65.873,5,58.771,5,50c0-8.78,7.11-15.891,15.882-15.891  c3.902,0,7.427,1.468,10.195,3.797l32.247-16.119c-0.018-0.308-0.088-0.598-0.088-0.914C63.236,12.11,70.338,5,79.118,5  C87.89,5,95,12.11,95,20.873c0,8.78-7.11,15.891-15.882,15.891c-3.911,0-7.436-1.468-10.195-3.806L36.676,49.086  C36.693,49.394,36.764,49.684,36.764,50z"/></svg>',
-	draw: function(parent, config) {
-		if (!parent) return;
-		var el = root.getElement(config);
-		if (el) {
-			$(parent).append(el);
+	set : function(key, val, exp) {
+		if (val) {
+			if (typeof exp == "string") {
+				exp = times[exp]();
+			}
+			//try to store string for dom objects (e.g. XML result). Otherwise, we might get a circular reference error when stringifying this
+			if (val.documentElement) val = new XMLSerializer().serializeToString(val.documentElement);
+			store.set(key, {
+				val : val,
+				exp : exp,
+				time : new Date().getTime()
+			});
 		}
 	},
-	getElement: function(config) {
-		var svgString = (config.id? root[config.id]: config.value);
+	remove: function(key) {
+		store.remove(key)
+	},
+	get : function(key) {
+		var info = store.get(key);
+		if (!info) {
+			return null;
+		}
+		if (info.exp && new Date().getTime() - info.time > info.exp) {
+			return null;
+		}
+		return info.val;
+	}
+
+};
+
+},{"store":16}],20:[function(require,module,exports){
+module.exports = {
+	draw: function(parent, svgString, config) {
+		if (!parent) return;
+		var el = module.exports.getElement(svgString, config);
+		if (el) {
+			if (parent.append) {
+				parent.append(el);
+			} else {
+				//regular dom doc
+				parent.appendChild(el);
+			}
+		}
+	},
+	getElement: function(svgString, config) {
+		if (!config) config = {};
 		if (svgString && svgString.indexOf("<svg") == 0) {
 			if (!config.width) config.width = "100%";
 			if (!config.height) config.height = "100%";
@@ -26308,62 +25327,11 @@ var root = module.exports = {
 		return false;
 	}
 };
-},{}],15:[function(require,module,exports){
-window.console = window.console || {"log":function(){}};//make sure any console statements don't break IE
-module.exports = {
-	storage: require("./storage.js"),
-	determineId: require("./determineId.js"),
-	imgs: require("./imgs.js"),
-	version: {
-		"yasgui-utils" : require("../package.json").version,
-	}
-};
-
-},{"../package.json":12,"./determineId.js":13,"./imgs.js":14,"./storage.js":16}],16:[function(require,module,exports){
-var store = require("store");
-var times = {
-	day: function() {
-		return 1000 * 3600 * 24;//millis to day
-	},
-	month: function() {
-		times.day() * 30;
-	},
-	year: function() {
-		times.month() * 12;
-	}
-};
-
-var root = module.exports = {
-	set : function(key, val, exp) {
-		if (typeof exp == "string") {
-			exp = times[exp]();
-		}
-		//try to store string for dom objects (e.g. XML result). Otherwise, we might get a circular reference error when stringifying this
-		if (val.documentElement) val = new XMLSerializer().serializeToString(val.documentElement);
-		store.set(key, {
-			val : val,
-			exp : exp,
-			time : new Date().getTime()
-		});
-	},
-	get : function(key) {
-		var info = store.get(key);
-		if (!info) {
-			return null;
-		}
-		if (info.exp && new Date().getTime() - info.time > info.exp) {
-			return null;
-		}
-		return info.val;
-	}
-
-};
-
-},{"store":11}],17:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 module.exports={
   "name": "yasgui-yasqe",
   "description": "Yet Another SPARQL Query Editor",
-  "version": "1.5.2",
+  "version": "2.2.6",
   "main": "src/main.js",
   "licenses": [
     {
@@ -26384,21 +25352,24 @@ module.exports={
     "gulp-git": "^0.5.2",
     "gulp-jsvalidate": "^0.2.0",
     "gulp-livereload": "^1.3.1",
-    "gulp-minify-css": "^0.3.0",
+    "gulp-minify-css": "^0.3.11",
     "gulp-notify": "^1.2.5",
     "gulp-rename": "^1.2.0",
     "gulp-streamify": "0.0.5",
     "gulp-tag-version": "^1.1.0",
-    "gulp-uglify": "^0.2.1",
+    "gulp-uglify": "^1.0.1",
     "require-dir": "^0.1.0",
     "run-sequence": "^1.0.1",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "~0.1.1",
     "watchify": "^0.6.4",
-    "browserify-shim": "^3.8.0",
-    "gulp-sourcemaps": "^1.2.4",
+    "gulp-sourcemaps": "^1.2.8",
     "exorcist": "^0.1.6",
-    "vinyl-transform": "0.0.1"
+    "vinyl-transform": "0.0.1",
+    "gulp-sass": "^1.2.2",
+    "twitter-bootstrap-3.0.0": "^3.0.0",
+    "browserify-transform-tools": "^1.2.1",
+    "gulp-cssimport": "^1.3.1"
   },
   "bugs": "https://github.com/YASGUI/YASQE/issues/",
   "keywords": [
@@ -26421,18 +25392,1337 @@ module.exports={
   },
   "dependencies": {
     "jquery": "~ 1.11.0",
-    "codemirror": "^4.2.0",
-    "twitter-bootstrap-3.0.0": "^3.0.0",
-    "yasgui-utils": "^1.3.0"
+    "codemirror": "^4.7.0",
+    "yasgui-utils": "^1.4.1"
   },
-  "browserify-shim": {
-    "jquery": "global:jQuery",
-    "codemirror": "global:CodeMirror",
-    "../../lib/codemirror": "global:CodeMirror"
+  "optionalShim": {
+    "codemirror": {
+      "require": "codemirror",
+      "global": "CodeMirror"
+    },
+    "jquery": {
+      "require": "jquery",
+      "global": "jQuery"
+    },
+    "../../lib/codemirror": {
+      "require": "codemirror",
+      "global": "CodeMirror"
+    }
   }
 }
 
-},{}]},{},[1])(1)
+},{}],22:[function(require,module,exports){
+'use strict';
+var $ = require('jquery'),
+	utils = require('../utils.js'),
+	yutils = require('yasgui-utils'),
+	Trie = require('../../lib/trie.js');
+
+module.exports = function(YASQE, yasqe) {
+	var completionNotifications = {};
+	var completers = {};
+	var tries = {};
+	
+	yasqe.on('cursorActivity', function(yasqe, eventInfo) {
+		autoComplete(true);
+	});
+	yasqe.on('change', function() {
+		var needPossibleAdjustment = [];
+		for (var notificationName in completionNotifications) {
+			if (completionNotifications[notificationName].is(':visible')) {
+				needPossibleAdjustment.push(completionNotifications[notificationName]);
+			}
+		}
+		if (needPossibleAdjustment.length > 0) {
+			//position completion notifications
+			var scrollBar = $(yasqe.getWrapperElement()).find(".CodeMirror-vscrollbar");
+			var offset = 0;
+			if (scrollBar.is(":visible")) {
+				offset = scrollBar.outerWidth();
+			}
+			needPossibleAdjustment.forEach(function(notification){notification.css("right", offset)});
+		}
+	});
+
+	
+
+	/**
+	 * Store bulk completions in memory as trie, and store these in localstorage as well (if enabled)
+	 * 
+	 * @method doc.storeBulkCompletions
+	 * @param completions {array}
+	 */
+	var storeBulkCompletions = function(completer, completions) {
+		// store array as trie
+		tries[completer.name] = new Trie();
+		for (var i = 0; i < completions.length; i++) {
+			tries[completer.name].insert(completions[i]);
+		}
+		// store in localstorage as well
+		var storageId = utils.getPersistencyId(yasqe, completer.persistent);
+		if (storageId) yutils.storage.set(storageId, completions, "month");
+	};
+	
+	var initCompleter = function(name, completionInit) {
+		var completer = completers[name] = new completionInit(yasqe, name);
+		completer.name = name;
+		if (completer.bulk) {
+			var storeArrayAsBulk = function(suggestions) {
+				if (suggestions && suggestions instanceof Array && suggestions.length > 0) {
+					storeBulkCompletions(completer, suggestions);
+				}
+			}
+			if (completer.get instanceof Array) {
+				// we don't care whether the completions are already stored in
+				// localstorage. just use this one
+				storeArrayAsBulk(completer.get);
+			} else {
+				// if completions are defined in localstorage, use those! (calling the
+				// function may come with overhead (e.g. async calls))
+				var completionsFromStorage = null;
+				var persistencyIdentifier = utils.getPersistencyId(yasqe, completer.persistent);
+				if (persistencyIdentifier)
+					completionsFromStorage = yutils.storage.get(persistencyIdentifier);
+				if (completionsFromStorage && completionsFromStorage.length > 0) {
+					storeArrayAsBulk(completionsFromStorage);
+				} else {
+					// nothing in storage. check whether we have a function via which we
+					// can get our prefixes
+					if (completer.get instanceof Function) {
+						if (completer.async) {
+							completer.get(null, storeArrayAsBulk);
+						} else {
+							storeArrayAsBulk(completer.get());
+						}
+					}
+				}
+			}
+		}
+	};
+
+	var autoComplete = function(fromAutoShow) {
+		if (yasqe.somethingSelected())
+			return;
+		var tryHintType = function(completer) {
+			if (fromAutoShow // from autoShow, i.e. this gets called each time the editor content changes
+					&& (!completer.autoShow // autoshow for  this particular type of autocompletion is -not- enabled
+					|| (!completer.bulk && completer.async)) // async is enabled (don't want to re-do ajax-like request for every editor change)
+			) {
+				return false;
+			}
+
+			var hintConfig = {
+				closeCharacters : /(?=a)b/,
+				completeSingle: false
+			};
+			if (!completer.bulk && completer.async) {
+				hintConfig.async = true;
+			}
+			var wrappedHintCallback = function(yasqe, callback) {
+				return getCompletionHintsObject(completer, callback);
+			};
+			var result = YASQE.showHint(yasqe, wrappedHintCallback, hintConfig);
+			return true;
+		};
+		for ( var completerName in completers) {
+			if ($.inArray(completerName, yasqe.options.autocompleters) == -1) continue;//this completer is disabled
+			var completer = completers[completerName];
+			if (!completer.isValidCompletionPosition) continue; //no way to check whether we are in a valid position
+			
+			if (!completer.isValidCompletionPosition()) {
+				//if needed, fire callbacks for when we are -not- in valid completion position
+				if (completer.callbacks && completer.callbacks.invalidPosition) {
+					completer.callbacks.invalidPosition(yasqe, completer);
+				}
+				//not in a valid position, so continue to next completion candidate type
+				continue;
+			}
+			// run valid position handler, if there is one (if it returns false, stop the autocompletion!)
+			if (completer.callbacks && completer.callbacks.validPosition) {
+				if (completer.callbacks.validPosition(yasqe, completer) === false)
+					continue;
+			}
+			var success = tryHintType(completer);
+			if (success)
+				break;
+		}
+	};
+	
+	
+
+	var getCompletionHintsObject = function(completer, callback) {
+		var getSuggestionsFromToken = function(partialToken) {
+			var stringToAutocomplete = partialToken.autocompletionString || partialToken.string;
+			var suggestions = [];
+			if (tries[completer.name]) {
+				suggestions = tries[completer.name].autoComplete(stringToAutocomplete);
+			} else if (typeof completer.get == "function" && completer.async == false) {
+				suggestions = completer.get(stringToAutocomplete);
+			} else if (typeof completer.get == "object") {
+				var partialTokenLength = stringToAutocomplete.length;
+				for (var i = 0; i < completer.get.length; i++) {
+					var completion = completer.get[i];
+					if (completion.slice(0, partialTokenLength) == stringToAutocomplete) {
+						suggestions.push(completion);
+					}
+				}
+			}
+			return getSuggestionsAsHintObject(suggestions, completer, partialToken);
+			
+		};
+		
+		
+		var token = yasqe.getCompleteToken();
+		if (completer.preProcessToken) {
+			token = completer.preProcessToken(token);
+		}
+		
+		if (token) {
+			// use custom completionhint function, to avoid reaching a loop when the
+			// completionhint is the same as the current token
+			// regular behaviour would keep changing the codemirror dom, hence
+			// constantly calling this callback
+			if (!completer.bulk && completer.async) {
+				var wrappedCallback = function(suggestions) {
+					callback(getSuggestionsAsHintObject(suggestions, completer, token));
+				};
+				completer.get(token, wrappedCallback);
+			} else {
+				return getSuggestionsFromToken(token);
+
+			}
+		}
+	};
+	
+
+	/**
+	 *  get our array of suggestions (strings) in the codemirror hint format
+	 */
+	var getSuggestionsAsHintObject = function(suggestions, completer, token) {
+		var hintList = [];
+		for (var i = 0; i < suggestions.length; i++) {
+			var suggestedString = suggestions[i];
+			if (completer.postProcessToken) {
+				suggestedString = completer.postProcessToken(token, suggestedString);
+			}
+			hintList.push({
+				text : suggestedString,
+				displayText : suggestedString,
+				hint : selectHint,
+			});
+		}
+		
+		var cur = yasqe.getCursor();
+		var returnObj = {
+			completionToken : token.string,
+			list : hintList,
+			from : {
+				line : cur.line,
+				ch : token.start
+			},
+			to : {
+				line : cur.line,
+				ch : token.end
+			}
+		};
+		//if we have some autocompletion handlers specified, add these these to the object. Codemirror will take care of firing these
+		if (completer.callbacks) {
+			for ( var callbackName in completer.callbacks) {
+				if (completer.callbacks[callbackName]) 
+					yasqe.on(returnObj, callbackName, completer.callbacks[callbackName]);
+			}
+		}
+		return returnObj;
+	};
+	
+	return {
+		init: initCompleter,
+		completers: completers,
+		notifications: {
+			getEl: function(completer) {
+				return $(completionNotifications[completer.name]);
+			},
+			show: function(yasqe, completer) {
+				//only draw when the user needs to use a keypress to summon autocompletions
+				if (!completer.autoshow) {
+					if (!completionNotifications[completer.name]) completionNotifications[completer.name] = $("<div class='completionNotification'></div>");
+					completionNotifications[completer.name]
+						.show()
+						.text("Press " + (navigator.userAgent.indexOf('Mac OS X') != -1? "CMD": "CTRL") + " - <spacebar> to autocomplete")
+						.appendTo($(yasqe.getWrapperElement()));
+				}
+			},
+			hide: function(yasqe, completer) {
+				if (completionNotifications[completer.name]) {
+					completionNotifications[completer.name].hide();
+				}
+			}
+			
+		},
+		autoComplete: autoComplete,
+		getTrie: function(completer) {return (typeof completer == "string"? tries[completer]: tries[completer.name]);}
+	}
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+/**
+ * function which fires after the user selects a completion. this function checks whether we actually need to store this one (if completion is same as current token, don't do anything)
+ */
+var selectHint = function(yasqe, data, completion) {
+	if (completion.text != yasqe.getTokenAt(yasqe.getCursor()).string) {
+		yasqe.replaceRange(completion.text, data.from, data.to);
+	}
+};
+
+
+
+
+
+//
+//module.exports = {
+//	preprocessPrefixTokenForCompletion: preprocessPrefixTokenForCompletion,
+//	postprocessResourceTokenForCompletion: postprocessResourceTokenForCompletion,
+//	preprocessResourceTokenForCompletion: preprocessResourceTokenForCompletion,
+//	showCompletionNotification: showCompletionNotification,
+//	hideCompletionNotification: hideCompletionNotification,
+//	autoComplete: autoComplete,
+//	autocompleteVariables: autocompleteVariables,
+//	fetchFromPrefixCc: fetchFromPrefixCc,
+//	fetchFromLov: fetchFromLov,
+////	storeBulkCompletions: storeBulkCompletions,
+//	loadBulkCompletions: loadBulkCompletions,
+//};
+
+},{"../../lib/trie.js":4,"../utils.js":34,"jquery":15,"yasgui-utils":18}],23:[function(require,module,exports){
+'use strict';
+var $ = require('jquery');
+module.exports = function(yasqe, name) {
+	return {
+		isValidCompletionPosition : function(){return module.exports.isValidCompletionPosition(yasqe);},
+		get : function(token, callback) {
+			return require('./utils').fetchFromLov(yasqe, this, token, callback);
+		},
+		preProcessToken: function(token) {return module.exports.preProcessToken(yasqe, token)},
+		postProcessToken: function(token, suggestedString) {return module.exports.postProcessToken(yasqe, token, suggestedString);},
+		async : true,
+		bulk : false,
+		autoShow : false,
+		persistent : name,
+		callbacks : {
+			validPosition : yasqe.autocompleters.notifications.show,
+			invalidPosition : yasqe.autocompleters.notifications.hide,
+		}
+	}
+};
+
+module.exports.isValidCompletionPosition = function(yasqe) {
+	var token = yasqe.getCompleteToken();
+	if (token.string.indexOf("?") == 0)
+		return false;
+	var cur = yasqe.getCursor();
+	var previousToken = yasqe.getPreviousNonWsToken(cur.line, token);
+	if (previousToken.string == "a")
+		return true;
+	if (previousToken.string == "rdf:type")
+		return true;
+	if (previousToken.string == "rdfs:domain")
+		return true;
+	if (previousToken.string == "rdfs:range")
+		return true;
+	return false;
+};
+module.exports.preProcessToken = function(yasqe, token) {
+	return require('./utils.js').preprocessResourceTokenForCompletion(yasqe, token);
+};
+module.exports.postProcessToken = function(yasqe, token, suggestedString) {
+	return require('./utils.js').postprocessResourceTokenForCompletion(yasqe, token, suggestedString)
+};
+},{"./utils":26,"./utils.js":26,"jquery":15}],24:[function(require,module,exports){
+'use strict';
+var $ = require('jquery');
+//this is a mapping from the class names (generic ones, for compatability with codemirror themes), to what they -actually- represent
+var tokenTypes = {
+	"string-2" : "prefixed",
+	"atom": "var"
+};
+
+module.exports = function(yasqe, completerName) {
+	//this autocompleter also fires on-change!
+	yasqe.on("change", function() {
+		module.exports.appendPrefixIfNeeded(yasqe, completerName);
+	});
+	
+	
+	return {
+		isValidCompletionPosition : function(){return module.exports.isValidCompletionPosition(yasqe);},
+		get : function(token, callback) {
+			$.get("http://prefix.cc/popular/all.file.json", function(data) {
+				var prefixArray = [];
+				for ( var prefix in data) {
+					if (prefix == "bif")
+						continue;// skip this one! see #231
+					var completeString = prefix + ": <" + data[prefix] + ">";
+					prefixArray.push(completeString);// the array we want to store in localstorage
+				}
+				
+				prefixArray.sort();
+				callback(prefixArray);
+			});
+		},
+		preProcessToken: function(token) {return module.exports.preprocessPrefixTokenForCompletion(yasqe, token)},
+		async : true,
+		bulk : true,
+		autoShow: true,
+		persistent : completerName,
+	};
+};
+module.exports.isValidCompletionPosition = function(yasqe) {
+	var cur = yasqe.getCursor(), token = yasqe.getTokenAt(cur);
+
+	// not at end of line
+	if (yasqe.getLine(cur.line).length > cur.ch)
+		return false;
+
+	if (token.type != "ws") {
+		// we want to complete token, e.g. when the prefix starts with an a
+		// (treated as a token in itself..)
+		// but we to avoid including the PREFIX tag. So when we have just
+		// typed a space after the prefix tag, don't get the complete token
+		token = yasqe.getCompleteToken();
+	}
+
+	// we shouldnt be at the uri part the prefix declaration
+	// also check whether current token isnt 'a' (that makes codemirror
+	// thing a namespace is a possiblecurrent
+	if (!token.string.indexOf("a") == 0
+			&& $.inArray("PNAME_NS", token.state.possibleCurrent) == -1)
+		return false;
+
+	// First token of line needs to be PREFIX,
+	// there should be no trailing text (otherwise, text is wrongly inserted
+	// in between)
+	var previousToken = yasqe.getPreviousNonWsToken(cur.line, token);
+	if (!previousToken || previousToken.string.toUpperCase() != "PREFIX") return false;
+	return true;
+};
+module.exports.preprocessPrefixTokenForCompletion = function(yasqe, token) {
+	var previousToken = yasqe.getPreviousNonWsToken(yasqe.getCursor().line, token);
+	if (previousToken && previousToken.string && previousToken.string.slice(-1) == ":") {
+		//combine both tokens! In this case we have the cursor at the end of line "PREFIX bla: <".
+		//we want the token to be "bla: <", en not "<"
+		token = {
+			start: previousToken.start,
+			end: token.end,
+			string: previousToken.string + " " + token.string,
+			state: token.state
+		};
+	}
+	return token;
+};
+/**
+ * Check whether typed prefix is declared. If not, automatically add declaration
+ * using list from prefix.cc
+ * 
+ * @param yasqe
+ */
+module.exports.appendPrefixIfNeeded = function(yasqe, completerName) {
+	if (!yasqe.autocompleters.getTrie(completerName))
+		return;// no prefixed defined. just stop
+	if (!yasqe.options.autocompleters || yasqe.options.autocompleters.indexOf(completerName) == -1) return;//this autocompleter is disabled
+	var cur = yasqe.getCursor();
+
+	var token = yasqe.getTokenAt(cur);
+	if (tokenTypes[token.type] == "prefixed") {
+		var colonIndex = token.string.indexOf(":");
+		if (colonIndex !== -1) {
+			// check previous token isnt PREFIX, or a '<'(which would mean we are in a uri)
+//			var firstTokenString = yasqe.getNextNonWsToken(cur.line).string.toUpperCase();
+			var lastNonWsTokenString = yasqe.getPreviousNonWsToken(cur.line, token).string.toUpperCase();
+			var previousToken = yasqe.getTokenAt({
+				line : cur.line,
+				ch : token.start
+			});// needs to be null (beginning of line), or whitespace
+			if (lastNonWsTokenString != "PREFIX"
+					&& (previousToken.type == "ws" || previousToken.type == null)) {
+				// check whether it isnt defined already (saves us from looping
+				// through the array)
+				var currentPrefix = token.string.substring(0, colonIndex + 1);
+				var queryPrefixes = yasqe.getPrefixesFromQuery();
+				if (queryPrefixes[currentPrefix.slice(0,-1)] == null) {
+					// ok, so it isnt added yet!
+					var completions = yasqe.autocompleters.getTrie(completerName).autoComplete(currentPrefix);
+					if (completions.length > 0) {
+						yasqe.addPrefixes(completions[0]);
+					}
+				}
+			}
+		}
+	}
+};
+
+
+},{"jquery":15}],25:[function(require,module,exports){
+'use strict';
+var $ = require('jquery');
+module.exports = function(yasqe, name) {
+	return {
+		isValidCompletionPosition : function(){return module.exports.isValidCompletionPosition(yasqe);},
+		get : function(token, callback) {
+			return require('./utils').fetchFromLov(yasqe, this, token, callback);
+		},
+		preProcessToken: function(token) {return module.exports.preProcessToken(yasqe, token)},
+		postProcessToken: function(token, suggestedString) {return module.exports.postProcessToken(yasqe, token, suggestedString);},
+		async : true,
+		bulk : false,
+		autoShow : false,
+		persistent : name,
+		callbacks : {
+			validPosition : yasqe.autocompleters.notifications.show,
+			invalidPosition : yasqe.autocompleters.notifications.hide,
+		}
+	}
+};
+
+module.exports.isValidCompletionPosition = function(yasqe) {
+	var token = yasqe.getCompleteToken();
+	if (token.string.length == 0) 
+		return false; //we want -something- to autocomplete
+	if (token.string.indexOf("?") == 0)
+		return false; // we are typing a var
+	if ($.inArray("a", token.state.possibleCurrent) >= 0)
+		return true;// predicate pos
+	var cur = yasqe.getCursor();
+	var previousToken = yasqe.getPreviousNonWsToken(cur.line, token);
+	if (previousToken.string == "rdfs:subPropertyOf")
+		return true;
+
+	// hmm, we would like -better- checks here, e.g. checking whether we are
+	// in a subject, and whether next item is a rdfs:subpropertyof.
+	// difficult though... the grammar we use is unreliable when the query
+	// is invalid (i.e. during typing), and often the predicate is not typed
+	// yet, when we are busy writing the subject...
+	return false;
+};
+module.exports.preProcessToken = function(yasqe, token) {
+	return require('./utils.js').preprocessResourceTokenForCompletion(yasqe, token);
+};
+module.exports.postProcessToken = function(yasqe, token, suggestedString) {
+	return require('./utils.js').postprocessResourceTokenForCompletion(yasqe, token, suggestedString)
+};
+},{"./utils":26,"./utils.js":26,"jquery":15}],26:[function(require,module,exports){
+'use strict';
+var $ = require('jquery'),
+	utils = require('./utils.js'),
+	yutils = require('yasgui-utils');
+/**
+ * Where the base class only contains functionality related to -all- completions, this class contains some utils used here and there in our autocompletions
+ */
+
+
+
+/**
+ * Converts rdf:type to http://.../type and converts <http://...> to http://...
+ * Stores additional info such as the used namespace and prefix in the token object
+ */
+var preprocessResourceTokenForCompletion = function(yasqe, token) {
+	var queryPrefixes = yasqe.getPrefixesFromQuery();
+	if (!token.string.indexOf("<") == 0) {
+		token.tokenPrefix = token.string.substring(0,	token.string.indexOf(":") + 1);
+
+		if (queryPrefixes[token.tokenPrefix.slice(0,-1)] != null) {
+			token.tokenPrefixUri = queryPrefixes[token.tokenPrefix.slice(0,-1)];
+		}
+	}
+
+	token.autocompletionString = token.string.trim();
+	if (!token.string.indexOf("<") == 0 && token.string.indexOf(":") > -1) {
+		// hmm, the token is prefixed. We still need the complete uri for autocompletions. generate this!
+		for (var prefix in queryPrefixes) {
+			if (token.string.indexOf(prefix) == 0) {
+				token.autocompletionString = queryPrefixes[prefix];
+				token.autocompletionString += token.string.substring(prefix.length + 1);
+				break;
+			}
+		}
+	}
+
+	if (token.autocompletionString.indexOf("<") == 0)	token.autocompletionString = token.autocompletionString.substring(1);
+	if (token.autocompletionString.indexOf(">", token.length - 1) !== -1) token.autocompletionString = token.autocompletionString.substring(0,	token.autocompletionString.length - 1);
+	return token;
+};
+
+var postprocessResourceTokenForCompletion = function(yasqe, token, suggestedString) {
+	if (token.tokenPrefix && token.autocompletionString && token.tokenPrefixUri) {
+		// we need to get the suggested string back to prefixed form
+		suggestedString = token.tokenPrefix + suggestedString.substring(token.tokenPrefixUri.length);
+	} else {
+		// it is a regular uri. add '<' and '>' to string
+		suggestedString = "<" + suggestedString + ">";
+	}
+	return suggestedString;
+};
+
+var fetchFromLov = function(yasqe, completer, token, callback) {
+	if (!token || !token.string || token.string.trim().length == 0) {
+		yasqe.autocompleters.notifications.getEl(completer)
+			.empty()
+			.append("Nothing to autocomplete yet!");
+		return false;
+	}
+	var maxResults = 50;
+
+	var args = {
+		q : token.autocompletionString,
+		page : 1
+	};
+	if (completer.name == "classes") {
+		args.type = "class";
+	} else {
+		args.type = "property";
+	}
+	var results = [];
+	var url = "";
+	var updateUrl = function() {
+		url = "http://lov.okfn.org/dataset/lov/api/v2/autocomplete/terms?"
+				+ $.param(args);
+	};
+	updateUrl();
+	var increasePage = function() {
+		args.page++;
+		updateUrl();
+	};
+	var doRequests = function() {
+		$.get(
+				url,
+				function(data) {
+					for (var i = 0; i < data.results.length; i++) {
+						if ($.isArray(data.results[i].uri) && data.results[i].uri.length > 0) {
+							results.push(data.results[i].uri[0]);
+						} else {
+							results.push(data.results[i].uri);
+						}
+						
+					}
+					if (results.length < data.total_results
+							&& results.length < maxResults) {
+						increasePage();
+						doRequests();
+					} else {
+						//if notification bar is there, show feedback, or close
+						if (results.length > 0) {
+							yasqe.autocompleters.notifications.hide(yasqe, completer)
+						} else {
+							yasqe.autocompleters.notifications.getEl(completer).text("0 matches found...");
+						}
+						callback(results);
+						// requests done! Don't call this function again
+					}
+				}).fail(function(jqXHR, textStatus, errorThrown) {
+					yasqe.autocompleters.notifications.getEl(completer)
+						.empty()
+						.append("Failed fetching suggestions..");
+					
+		});
+	};
+	//if notification bar is there, show a loader
+	yasqe.autocompleters.notifications.getEl(completer)
+		.empty()
+		.append($("<span>Fetchting autocompletions &nbsp;</span>"))
+		.append($(yutils.svg.getElement(require('../imgs.js').loader, {width: "18px", height: "18px"})).css("vertical-align", "middle"));
+	doRequests();
+};
+
+
+
+module.exports = {
+	fetchFromLov: fetchFromLov,
+	preprocessResourceTokenForCompletion: preprocessResourceTokenForCompletion,
+	postprocessResourceTokenForCompletion: postprocessResourceTokenForCompletion,
+};
+},{"../imgs.js":29,"./utils.js":26,"jquery":15,"yasgui-utils":18}],27:[function(require,module,exports){
+'use strict';
+var $ = require('jquery');
+module.exports = function(yasqe) {
+	return {
+		isValidCompletionPosition : function() {
+			var token = yasqe.getTokenAt(yasqe.getCursor());
+			if (token.type != "ws") {
+				token = yasqe.getCompleteToken(token);
+				if (token && token.string.indexOf("?") == 0) {
+					return true;
+				}
+			}
+			return false;
+		},
+		get : function(token) {
+			if (token.trim().length == 0) return [];//nothing to autocomplete
+			var distinctVars = {};
+			//do this outside of codemirror. I expect jquery to be faster here (just finding dom elements with classnames)
+			$(yasqe.getWrapperElement()).find(".cm-atom").each(function() {
+				var variable = this.innerHTML;
+				if (variable.indexOf("?") == 0) {
+					//ok, lets check if the next element in the div is an atom as well. In that case, they belong together (may happen sometimes when query is not syntactically valid)
+					var nextEl = $(this).next();
+					var nextElClass = nextEl.attr('class');
+					if (nextElClass && nextEl.attr('class').indexOf("cm-atom") >= 0) {
+						variable += nextEl.text();			
+					}
+					
+					//skip single questionmarks
+					if (variable.length <= 1) return;
+					
+					//it should match our token ofcourse
+					if (variable.indexOf(token) !== 0) return;
+					
+					//skip exact matches
+					if (variable == token) return;
+					
+					//store in map so we have a unique list 
+					distinctVars[variable] = true;
+					
+					
+				}
+			});
+			var variables = [];
+			for (var variable in distinctVars) {
+				variables.push(variable);
+			}
+			variables.sort();
+			return variables;
+		},
+		async : false,
+		bulk : false,
+		autoShow : true,
+	}
+};
+
+},{"jquery":15}],28:[function(require,module,exports){
+/**
+ * The default options of YASQE (check the CodeMirror documentation for even
+ * more options, such as disabling line numbers, or changing keyboard shortcut
+ * keys). Either change the default options by setting YASQE.defaults, or by
+ * passing your own options as second argument to the YASQE constructor
+ */
+var $ = require('jquery');
+module.exports = {
+	use: function(YASQE) {
+		YASQE.defaults = $.extend(true, {}, YASQE.defaults, {
+				mode : "sparql11",
+				/**
+				 * Query string
+				 */
+				value : "SELECT * WHERE {\n  ?sub ?pred ?obj .\n} \nLIMIT 10",
+				highlightSelectionMatches : {
+					showToken : /\w/
+				},
+				tabMode : "indent",
+				lineNumbers : true,
+			    lineWrapping: true,
+			    
+			    foldGutter: {rangeFinder:YASQE.fold.brace },
+			    gutters: [ "gutterErrorBar", "CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+//			    cell.code_mirror.setOption('foldGutter',{rangeFinder: new CodeMirror.fold.combine(CodeMirror.fold.firstline, CodeMirror.fold.brace) }); 
+				matchBrackets : true,
+				fixedGutter : true,
+				syntaxErrorCheck: true,
+				/**
+				 * Extra shortcut keys. Check the CodeMirror manual on how to add your own
+				 * 
+				 * @property extraKeys
+				 * @type object
+				 */
+				extraKeys : {
+//					"Ctrl-Space" : function(yasqe) {
+//						YASQE.autoComplete(yasqe);
+//					},
+					"Ctrl-Space" : YASQE.autoComplete,
+					
+					"Cmd-Space" : YASQE.autoComplete,
+					"Ctrl-D" : YASQE.deleteLine,
+					"Ctrl-K" : YASQE.deleteLine,
+					"Cmd-D" : YASQE.deleteLine,
+					"Cmd-K" : YASQE.deleteLine,
+					"Ctrl-/" : YASQE.commentLines,
+					"Cmd-/" : YASQE.commentLines,
+					"Ctrl-Alt-Down" : YASQE.copyLineDown,
+					"Ctrl-Alt-Up" : YASQE.copyLineUp,
+					"Cmd-Alt-Down" : YASQE.copyLineDown,
+					"Cmd-Alt-Up" : YASQE.copyLineUp,
+					"Shift-Ctrl-F" : YASQE.doAutoFormat,
+					"Shift-Cmd-F" : YASQE.doAutoFormat,
+					"Ctrl-]" : YASQE.indentMore,
+					"Cmd-]" : YASQE.indentMore,
+					"Ctrl-[" : YASQE.indentLess,
+					"Cmd-[" : YASQE.indentLess,
+					"Ctrl-S" : YASQE.storeQuery,
+					"Cmd-S" : YASQE.storeQuery,
+					"Ctrl-Enter" : YASQE.executeQuery,
+					"Cmd-Enter" : YASQE.executeQuery,
+					"F11": function(yasqe) {
+				          yasqe.setOption("fullScreen", !yasqe.getOption("fullScreen"));
+			        },
+			        "Esc": function(yasqe) {
+			          if (yasqe.getOption("fullScreen")) yasqe.setOption("fullScreen", false);
+			        }
+				},
+				cursorHeight : 0.9,
+
+				
+				/**
+				 * Show a button with which users can create a link to this query. Set this value to null to disable this functionality.
+				 * By default, this feature is enabled, and the only the query value is appended to the link.
+				 * ps. This function should return an object which is parseable by jQuery.param (http://api.jquery.com/jQuery.param/)
+				 */
+				createShareLink: YASQE.createShareLink,
+				
+				/**
+				 * Consume links shared by others, by checking the url for arguments coming from a query link. Defaults by only checking the 'query=' argument in the url
+				 */
+				consumeShareLink: YASQE.consumeShareLink,
+				
+				
+				
+				
+				/**
+				 * Change persistency settings for the YASQE query value. Setting the values
+				 * to null, will disable persistancy: nothing is stored between browser
+				 * sessions Setting the values to a string (or a function which returns a
+				 * string), will store the query in localstorage using the specified string.
+				 * By default, the ID is dynamically generated using the closest dom ID, to avoid collissions when using multiple YASQE items on one
+				 * page
+				 * 
+				 * @type function|string
+				 */
+				persistent : function(yasqe) {
+					return "queryVal_" + $(yasqe.getWrapperElement()).closest('[id]').attr('id');
+				},
+
+				
+				/**
+				 * Settings for querying sparql endpoints
+				 */
+				sparql : {
+					showQueryButton: false,
+					
+					/**f
+					 * Endpoint to query
+					 * 
+					 * @property sparql.endpoint
+					 * @type String|function
+					 */
+					endpoint : "http://dbpedia.org/sparql",
+					/**
+					 * Request method via which to access SPARQL endpoint
+					 * 
+					 * @property sparql.requestMethod
+					 * @type String|function
+					 */
+					requestMethod : "POST",
+					
+					/**
+					 * @type String|function
+					 */
+					acceptHeaderGraph: "text/turtle,*/*;q=0.9",
+					/**
+					 * @type String|function
+					 */
+					acceptHeaderSelect: "application/sparql-results+json,*/*;q=0.9",
+					/**
+					 * @type String|function
+					 */
+					acceptHeaderUpdate: "text/plain,*/*;q=0.9",
+					
+					/**
+					 * Named graphs to query.
+					 */
+					namedGraphs : [],
+					/**
+					 * Default graphs to query.
+					 */
+					defaultGraphs : [],
+
+					/**
+					 * Additional request arguments. Add them in the form: {name: "name", value: "value"}
+					 */
+					args : [],
+
+					/**
+					 * Additional request headers
+					 */
+					headers : {},
+					
+					/**
+					 * Set of ajax callbacks
+					 */
+					callbacks : {
+						beforeSend : null,
+						complete : null,
+						error : null,
+						success : null
+					},
+					handlers: {}//keep here for backwards compatability
+				},
+			});
+	}
+};
+
+},{"jquery":15}],29:[function(require,module,exports){
+'use strict';
+module.exports = {
+	loader: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="100%" height="100%" fill="black">  <circle cx="16" cy="3" r="0">    <animate attributeName="r" values="0;3;0;0" dur="1s" repeatCount="indefinite" begin="0" keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" calcMode="spline" />  </circle>  <circle transform="rotate(45 16 16)" cx="16" cy="3" r="0">    <animate attributeName="r" values="0;3;0;0" dur="1s" repeatCount="indefinite" begin="0.125s" keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" calcMode="spline" />  </circle>  <circle transform="rotate(90 16 16)" cx="16" cy="3" r="0">    <animate attributeName="r" values="0;3;0;0" dur="1s" repeatCount="indefinite" begin="0.25s" keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" calcMode="spline" />  </circle>  <circle transform="rotate(135 16 16)" cx="16" cy="3" r="0">    <animate attributeName="r" values="0;3;0;0" dur="1s" repeatCount="indefinite" begin="0.375s" keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" calcMode="spline" />  </circle>  <circle transform="rotate(180 16 16)" cx="16" cy="3" r="0">    <animate attributeName="r" values="0;3;0;0" dur="1s" repeatCount="indefinite" begin="0.5s" keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" calcMode="spline" />  </circle>  <circle transform="rotate(225 16 16)" cx="16" cy="3" r="0">    <animate attributeName="r" values="0;3;0;0" dur="1s" repeatCount="indefinite" begin="0.625s" keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" calcMode="spline" />  </circle>  <circle transform="rotate(270 16 16)" cx="16" cy="3" r="0">    <animate attributeName="r" values="0;3;0;0" dur="1s" repeatCount="indefinite" begin="0.75s" keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" calcMode="spline" />  </circle>  <circle transform="rotate(315 16 16)" cx="16" cy="3" r="0">    <animate attributeName="r" values="0;3;0;0" dur="1s" repeatCount="indefinite" begin="0.875s" keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" calcMode="spline" />  </circle>  <circle transform="rotate(180 16 16)" cx="16" cy="3" r="0">    <animate attributeName="r" values="0;3;0;0" dur="1s" repeatCount="indefinite" begin="0.5s" keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" calcMode="spline" />  </circle></svg>',
+	query: '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" width="100%" height="100%" viewBox="0 0 80 80" enable-background="new 0 0 80 80" xml:space="preserve"><g ></g><g >	<path d="M64.622,2.411H14.995c-6.627,0-12,5.373-12,12v49.897c0,6.627,5.373,12,12,12h49.627c6.627,0,12-5.373,12-12V14.411   C76.622,7.783,71.249,2.411,64.622,2.411z M24.125,63.906V15.093L61,39.168L24.125,63.906z"/></g></svg>',
+	queryInvalid: '<svg   xmlns:dc="http://purl.org/dc/elements/1.1/"   xmlns:cc="http://creativecommons.org/ns#"   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"   xmlns:svg="http://www.w3.org/2000/svg"   xmlns="http://www.w3.org/2000/svg"   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"   version="1.1"   x="0px"   y="0px"   width="100%"   height="100%"   viewBox="0 0 73.627 73.897"   enable-background="new 0 0 80 80"   xml:space="preserve"   ><g transform="translate(-2.995,-2.411)" /><g       transform="translate(-2.995,-2.411)"><path       d="M 64.622,2.411 H 14.995 c -6.627,0 -12,5.373 -12,12 v 49.897 c 0,6.627 5.373,12 12,12 h 49.627 c 6.627,0 12,-5.373 12,-12 V 14.411 c 0,-6.628 -5.373,-12 -12,-12 z M 24.125,63.906 V 15.093 L 61,39.168 24.125,63.906 z"         inkscape:connector-curvature="0" /></g><g     transform="matrix(0.76805408,0,0,0.76805408,-0.90231954,-2.0060895)"  ><path       style="fill:#c02608;fill-opacity:1"       inkscape:connector-curvature="0"       d="m 88.184,81.468 c 1.167,1.167 1.167,3.075 0,4.242 l -2.475,2.475 c -1.167,1.167 -3.076,1.167 -4.242,0 l -69.65,-69.65 c -1.167,-1.167 -1.167,-3.076 0,-4.242 l 2.476,-2.476 c 1.167,-1.167 3.076,-1.167 4.242,0 l 69.649,69.651 z"       /></g><g     transform="matrix(0.76805408,0,0,0.76805408,-0.90231954,-2.0060895)"  ><path       style="fill:#c02608;fill-opacity:1"       inkscape:connector-curvature="0"       d="m 18.532,88.184 c -1.167,1.166 -3.076,1.166 -4.242,0 l -2.475,-2.475 c -1.167,-1.166 -1.167,-3.076 0,-4.242 l 69.65,-69.651 c 1.167,-1.167 3.075,-1.167 4.242,0 l 2.476,2.476 c 1.166,1.167 1.166,3.076 0,4.242 l -69.651,69.65 z"    /></g></svg>',
+	download: '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" baseProfile="tiny" x="0px" y="0px" width="100%" height="100%" viewBox="0 0 100 100" xml:space="preserve"><g ></g><g >	<path fill-rule="evenodd" fill="#000000" d="M88,84v-2c0-2.961-0.859-4-4-4H16c-2.961,0-4,0.98-4,4v2c0,3.102,1.039,4,4,4h68   C87.02,88,88,87.039,88,84z M58,12H42c-5,0-6,0.941-6,6v22H16l34,34l34-34H64V18C64,12.941,62.939,12,58,12z"/></g></svg>',
+	share: '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"  x="0px" y="0px" width="100%" height="100%" viewBox="0 0 100 100" style="enable-background:new 0 0 100 100;" xml:space="preserve"><path d="M36.764,50c0,0.308-0.07,0.598-0.088,0.905l32.247,16.119c2.76-2.338,6.293-3.797,10.195-3.797  C87.89,63.228,95,70.338,95,79.109C95,87.89,87.89,95,79.118,95c-8.78,0-15.882-7.11-15.882-15.891c0-0.316,0.07-0.598,0.088-0.905  L31.077,62.085c-2.769,2.329-6.293,3.788-10.195,3.788C12.11,65.873,5,58.771,5,50c0-8.78,7.11-15.891,15.882-15.891  c3.902,0,7.427,1.468,10.195,3.797l32.247-16.119c-0.018-0.308-0.088-0.598-0.088-0.914C63.236,12.11,70.338,5,79.118,5  C87.89,5,95,12.11,95,20.873c0,8.78-7.11,15.891-15.882,15.891c-3.911,0-7.436-1.468-10.195-3.806L36.676,49.086  C36.693,49.394,36.764,49.684,36.764,50z"/></svg>',
+	warning: '<svg   xmlns:dc="http://purl.org/dc/elements/1.1/"   xmlns:cc="http://creativecommons.org/ns#"   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"   xmlns:svg="http://www.w3.org/2000/svg"   xmlns="http://www.w3.org/2000/svg"   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"   version="1.1"   x="0px"   y="0px"   viewBox="0 0 66.399998 66.399998"   enable-background="new 0 0 69.3 69.3"   xml:space="preserve"   height="100%"   width="100%"   inkscape:version="0.48.4 r9939"   ><g      transform="translate(-1.5,-1.5)"     style="fill:#ff0000"><path       d="M 34.7,1.5 C 16.4,1.5 1.5,16.4 1.5,34.7 1.5,53 16.4,67.9 34.7,67.9 53,67.9 67.9,53 67.9,34.7 67.9,16.4 53,1.5 34.7,1.5 z m 0,59.4 C 20.2,60.9 8.5,49.1 8.5,34.7 8.5,20.2 20.3,8.5 34.7,8.5 c 14.4,0 26.2,11.8 26.2,26.2 0,14.4 -11.8,26.2 -26.2,26.2 z"      inkscape:connector-curvature="0"       style="fill:#ff0000" /><path       d="m 34.6,47.1 c -1.4,0 -2.5,0.5 -3.5,1.5 -0.9,1 -1.4,2.2 -1.4,3.6 0,1.6 0.5,2.8 1.5,3.8 1,0.9 2.1,1.3 3.4,1.3 1.3,0 2.4,-0.5 3.4,-1.4 1,-0.9 1.5,-2.2 1.5,-3.7 0,-1.4 -0.5,-2.6 -1.4,-3.6 -0.9,-1 -2.1,-1.5 -3.5,-1.5 z"       inkscape:connector-curvature="0"       style="fill:#ff0000" /><path       d="m 34.8,13.9 c -1.5,0 -2.8,0.5 -3.7,1.6 -0.9,1 -1.4,2.4 -1.4,4.2 0,1.1 0.1,2.9 0.2,5.6 l 0.8,13.1 c 0.2,1.8 0.4,3.2 0.9,4.1 0.5,1.2 1.5,1.8 2.9,1.8 1.3,0 2.3,-0.7 2.9,-1.9 0.5,-1 0.7,-2.3 0.9,-4 L 39.4,25 c 0.1,-1.3 0.2,-2.5 0.2,-3.8 0,-2.2 -0.3,-3.9 -0.8,-5.1 -0.5,-1 -1.6,-2.2 -4,-2.2 z"       inkscape:connector-curvature="0"       style="fill:#ff0000" /></g></svg>',
+};
+},{}],30:[function(require,module,exports){
+'use strict';
+/**
+ * Append prefix declaration to list of prefixes in query window.
+ * 
+ * @param yasqe
+ * @param prefix
+ */
+var addPrefixes = function(yasqe, prefixes) {
+	var existingPrefixes = yasqe.getPrefixesFromQuery();
+	//for backwards compatability, we stil support prefixes value as string (e.g. 'rdf: <http://fbfgfgf>'
+	if (typeof prefixes == "string") {
+		addPrefixAsString(yasqe, prefixes);
+	} else {
+		for (var pref in prefixes) {
+			if (!(pref in existingPrefixes))
+			addPrefixAsString(yasqe, pref + ": <" + prefixes[pref] + ">");
+		}
+	}
+};
+
+var addPrefixAsString = function(yasqe, prefixString) {
+	var lastPrefix = null;
+	var lastPrefixLine = 0;
+	var numLines = yasqe.lineCount();
+	for (var i = 0; i < numLines; i++) {
+		var firstToken = yasqe.getNextNonWsToken(i);
+		if (firstToken != null
+				&& (firstToken.string == "PREFIX" || firstToken.string == "BASE")) {
+			lastPrefix = firstToken;
+			lastPrefixLine = i;
+		}
+	}
+
+	if (lastPrefix == null) {
+		yasqe.replaceRange("PREFIX " + prefixString + "\n", {
+			line : 0,
+			ch : 0
+		});
+	} else {
+		var previousIndent = getIndentFromLine(yasqe, lastPrefixLine);
+		yasqe.replaceRange("\n" + previousIndent + "PREFIX " + prefixString, {
+			line : lastPrefixLine
+		});
+	}
+};
+var removePrefixes = function(yasqe, prefixes) {
+	var escapeRegex = function(string) {
+		//taken from http://stackoverflow.com/questions/3561493/is-there-a-regexp-escape-function-in-javascript/3561711#3561711
+		return string.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+	}
+	for (var pref in prefixes) {
+		yasqe.setValue(yasqe.getValue().replace(new RegExp("PREFIX\\s*" + pref + ":\\s*" + escapeRegex("<" + prefixes[pref] + ">") + "\\s*", "ig"), ''));
+	}
+	
+};
+
+/**
+ * Get defined prefixes from query as array, in format {"prefix:" "uri"}
+ * 
+ * @param cm
+ * @returns {Array}
+ */
+var getPrefixesFromQuery = function(yasqe) {
+	var queryPrefixes = {};
+	var shouldContinue = true;
+	var getPrefixesFromLine = function(lineOffset, colOffset) {
+		if (!shouldContinue) return;
+		if (!colOffset) colOffset = 1;
+		var token = yasqe.getNextNonWsToken(i, colOffset);
+		if (token) {
+			if (token.state.possibleCurrent.indexOf("PREFIX") == -1 && token.state.possibleNext.indexOf("PREFIX") == -1) shouldContinue = false;//we are beyond the place in the query where we can enter prefixes
+			if (token.string.toUpperCase() == "PREFIX") {
+				var prefix = yasqe.getNextNonWsToken(i, token.end + 1);
+				if (prefix) {
+					var uri = yasqe.getNextNonWsToken(i, prefix.end + 1);
+					if (uri) {
+						var uriString = uri.string;
+						if (uriString.indexOf("<") == 0)
+							uriString = uriString.substring(1);
+						if (uriString.slice(-1) == ">")
+							uriString = uriString
+									.substring(0, uriString.length - 1);
+						queryPrefixes[prefix.string.slice(0,-1)] = uriString;
+						
+						getPrefixesFromLine(lineOffset, uri.end+1);
+					} else {
+						getPrefixesFromLine(lineOffset, prefix.end+1);
+					}
+					
+				} else {
+					getPrefixesFromLine(lineOffset, token.end+1);
+				}
+			} else {
+				getPrefixesFromLine(lineOffset, token.end+1);
+			}
+		}
+	};
+	
+	
+	var numLines = yasqe.lineCount();
+	for (var i = 0; i < numLines; i++) {
+		if (!shouldContinue) break;
+		getPrefixesFromLine(i);
+		
+	}
+	return queryPrefixes;
+};
+
+/**
+ * Get the used indentation for a certain line
+ * 
+ * @param yasqe
+ * @param line
+ * @param charNumber
+ * @returns
+ */
+var getIndentFromLine = function(yasqe, line, charNumber) {
+	if (charNumber == undefined)
+		charNumber = 1;
+	var token = yasqe.getTokenAt({
+		line : line,
+		ch : charNumber
+	});
+	if (token == null || token == undefined || token.type != "ws") {
+		return "";
+	} else {
+		return token.string + getIndentFromLine(yasqe, line, token.end + 1);
+	}
+	;
+};
+
+module.exports = {
+	addPrefixes: addPrefixes,
+	getPrefixesFromQuery: getPrefixesFromQuery,
+	removePrefixes: removePrefixes
+};
+
+},{}],31:[function(require,module,exports){
+'use strict';
+var $ = require('jquery');
+module.exports = {
+	use: function(YASQE) {
+		YASQE.executeQuery = function(yasqe, callbackOrConfig) {
+			var callback = (typeof callbackOrConfig == "function" ? callbackOrConfig: null);
+			var config = (typeof callbackOrConfig == "object" ? callbackOrConfig : {});
+			var queryMode = yasqe.getQueryMode();
+			if (yasqe.options.sparql)
+				config = $.extend({}, yasqe.options.sparql, config);
+			
+			//for backwards compatability, make sure we copy sparql handlers to sparql callbacks
+			if (config.handlers) 
+				$.extend(true, config.callbacks, config.handlers);
+			
+			
+			if (!config.endpoint || config.endpoint.length == 0)
+				return;// nothing to query!
+
+			/**
+			 * initialize ajax config
+			 */
+			var ajaxConfig = {
+				url : (typeof config.endpoint == "function"? config.endpoint(yasqe): config.endpoint),
+				type : (typeof config.requestMethod == "function"? config.requestMethod(yasqe): config.requestMethod),
+				data : [{
+					name : queryMode,
+					value : yasqe.getValue()
+				}],
+				headers : {
+					Accept : getAcceptHeader(yasqe, config),
+				}
+			};
+
+			/**
+			 * add complete, beforesend, etc callbacks (if specified)
+			 */
+			var handlerDefined = false;
+			if (config.callbacks) {
+				for ( var handler in config.callbacks) {
+					if (config.callbacks[handler]) {
+						handlerDefined = true;
+						ajaxConfig[handler] = config.callbacks[handler];
+					}
+				}
+			}
+			if (!handlerDefined && !callback)
+				return; // ok, we can query, but have no callbacks. just stop now
+			
+			// if only callback is passed as arg, add that on as 'onComplete' callback
+			if (callback)
+				ajaxConfig.complete = callback;
+
+			/**
+			 * add named graphs to ajax config
+			 */
+			if (config.namedGraphs && config.namedGraphs.length > 0) {
+				var argName = (queryMode == "query" ? "named-graph-uri": "using-named-graph-uri ");
+				for (var i = 0; i < config.namedGraphs.length; i++)
+					ajaxConfig.data.push({
+						name : argName,
+						value : config.namedGraphs[i]
+					});
+			}
+			/**
+			 * add default graphs to ajax config
+			 */
+			if (config.defaultGraphs && config.defaultGraphs.length > 0) {
+				var argName = (queryMode == "query" ? "default-graph-uri": "using-graph-uri ");
+				for (var i = 0; i < config.defaultGraphs.length; i++)
+					ajaxConfig.data.push({
+						name : argName,
+						value : config.defaultGraphs[i]
+					});
+			}
+
+			/**
+			 * merge additional request headers
+			 */
+			if (config.headers && !$.isEmptyObject(config.headers))
+				$.extend(ajaxConfig.headers, config.headers);
+			/**
+			 * add additional request args
+			 */
+			if (config.args && config.args.length > 0) $.merge(ajaxConfig.data, config.args);
+			YASQE.updateQueryButton(yasqe, "busy");
+			
+			var updateQueryButton = function() {
+				YASQE.updateQueryButton(yasqe);
+			};
+			//Make sure the query button is updated again on complete
+			if (ajaxConfig.complete) {
+				ajaxConfig.complete = [updateQueryButton, ajaxConfig.complete];
+			} else {
+				ajaxConfig.complete = updateQueryButton;
+			}
+			yasqe.xhr = $.ajax(ajaxConfig);
+		};
+	}
+};
+
+var getAcceptHeader = function(yasqe, config) {
+	var acceptHeader = null;
+	if (config.acceptHeader && !config.acceptHeaderGraph && !config.acceptHeaderSelect && !config.acceptHeaderUpdate) {
+		//this is the old config. For backwards compatability, keep supporting it
+		if (typeof config.acceptHeader == "function") {
+			acceptHeader = config.acceptHeader(yasqe);
+		} else {
+			acceptHeader = config.acceptHeader;
+		}
+	} else {
+		if (yasqe.getQueryMode() == "update") {
+			acceptHeader = (typeof config.acceptHeader == "function"? config.acceptHeaderUpdate(yasqe): config.acceptHeaderUpdate);
+		} else {
+			var qType = yasqe.getQueryType();
+			if (qType == "DESCRIBE" || qType == "CONSTRUCT") {
+				acceptHeader = (typeof config.acceptHeaderGraph == "function"? config.acceptHeaderGraph(yasqe): config.acceptHeaderGraph);
+			} else {
+				acceptHeader = (typeof config.acceptHeaderSelect == "function" ? config.acceptHeaderSelect(yasqe): config.acceptHeaderSelect);
+			}
+		}
+	}
+	return acceptHeader;
+};
+
+},{"jquery":15}],32:[function(require,module,exports){
+'use strict';
+/**
+ * When typing a query, this query is sometimes syntactically invalid, causing
+ * the current tokens to be incorrect This causes problem for autocompletion.
+ * http://bla might result in two tokens: http:// and bla. We'll want to combine
+ * these
+ * 
+ * @param yasqe {doc}
+ * @param token {object}
+ * @param cursor {object}
+ * @return token {object}
+ * @method YASQE.getCompleteToken
+ */
+var getCompleteToken = function(yasqe, token, cur) {
+	if (!cur) {
+		cur = yasqe.getCursor();
+	}
+	if (!token) {
+		token = yasqe.getTokenAt(cur);
+	}
+	var prevToken = yasqe.getTokenAt({
+		line : cur.line,
+		ch : token.start
+	});
+	// not start of line, and not whitespace
+	if (
+			prevToken.type != null && prevToken.type != "ws"
+			&& token.type != null && token.type != "ws"
+		) {
+		token.start = prevToken.start;
+		token.string = prevToken.string + token.string;
+		return getCompleteToken(yasqe, token, {
+			line : cur.line,
+			ch : prevToken.start
+		});// recursively, might have multiple tokens which it should include
+	} else if (token.type != null && token.type == "ws") {
+		//always keep 1 char of whitespace between tokens. Otherwise, autocompletions might end up next to the previous node, without whitespace between them
+		token.start = token.start + 1;
+		token.string = token.string.substring(1);
+		return token;
+	} else {
+		return token;
+	}
+};
+var getPreviousNonWsToken = function(yasqe, line, token) {
+	var previousToken = yasqe.getTokenAt({
+		line : line,
+		ch : token.start
+	});
+	if (previousToken != null && previousToken.type == "ws") {
+		previousToken = getPreviousNonWsToken(yasqe, line, previousToken);
+	}
+	return previousToken;
+}
+var getNextNonWsToken = function(yasqe, lineNumber, charNumber) {
+	if (charNumber == undefined)
+		charNumber = 1;
+	var token = yasqe.getTokenAt({
+		line : lineNumber,
+		ch : charNumber
+	});
+	if (token == null || token == undefined || token.end < charNumber) {
+		return null;
+	}
+	if (token.type == "ws") {
+		return getNextNonWsToken(yasqe, lineNumber, token.end + 1);
+	}
+	return token;
+};
+
+module.exports = {
+	getPreviousNonWsToken: getPreviousNonWsToken,
+	getCompleteToken: getCompleteToken,
+	getNextNonWsToken: getNextNonWsToken,
+};
+
+
+},{}],33:[function(require,module,exports){
+'use strict';
+var $ = require('jquery'),
+	utils = require('./utils.js');
+
+/**
+ * Write our own tooltip, to avoid loading another library for just this functionality. For now, we only use tooltip for showing parse errors, so this is quite a tailored solution
+ * Requirements: 
+ * 		position tooltip within codemirror frame as much as possible, to avoid z-index issues with external things on page
+ * 		use html as content
+ */
+module.exports = function(yasqe, parent, html) {
+	var parent = $(parent);
+	var tooltip;
+	parent.hover(function() {
+		if (typeof html == "function") html = html();
+		tooltip = $("<div>").addClass('yasqe_tooltip').html(html).appendTo(parent);
+		repositionTooltip();
+	},
+	function() {
+		$(".yasqe_tooltip").remove();
+	});
+	
+	
+	
+	/**
+	 * only need to take into account top and bottom offset for this usecase
+	 */
+	var repositionTooltip = function() {
+		if ($(yasqe.getWrapperElement()).offset().top >= tooltip.offset().top) {
+			//shit, move the tooltip down. The tooltip now hovers over the top edge of the yasqe instance
+			tooltip.css('bottom', 'auto');
+			tooltip.css('top', '26px');
+		}
+	};
+};
+
+
+},{"./utils.js":34,"jquery":15}],34:[function(require,module,exports){
+'use strict';
+var $ = require('jquery');
+
+var keyExists = function(objectToTest, key) {
+	var exists = false;
+	try {
+		if (objectToTest[key] !== undefined)
+			exists = true;
+	} catch (e) {
+	}
+	return exists;
+};
+
+var getPersistencyId = function(yasqe, persistentIdCreator) {
+	var persistencyId = null;
+
+	if (persistentIdCreator) {
+		if (typeof persistentIdCreator == "string") {
+			persistencyId = persistentIdCreator;
+		} else {
+			persistencyId = persistentIdCreator(yasqe);
+		}
+	}
+	return persistencyId;
+};
+
+var elementsOverlap = (function () {
+    function getPositions( elem ) {
+        var pos, width, height;
+        pos = $( elem ).offset();
+        width = $( elem ).width();
+        height = $( elem ).height();
+        return [ [ pos.left, pos.left + width ], [ pos.top, pos.top + height ] ];
+    }
+
+    function comparePositions( p1, p2 ) {
+        var r1, r2;
+        r1 = p1[0] < p2[0] ? p1 : p2;
+        r2 = p1[0] < p2[0] ? p2 : p1;
+        return r1[1] > r2[0] || r1[0] === r2[0];
+    }
+
+    return function ( a, b ) {
+        var pos1 = getPositions( a ),
+            pos2 = getPositions( b );
+        return comparePositions( pos1[0], pos2[0] ) && comparePositions( pos1[1], pos2[1] );
+    };
+})();
+
+module.exports = {
+	keyExists: keyExists,
+	getPersistencyId: getPersistencyId,
+	elementsOverlap:elementsOverlap,
+};
+},{"jquery":15}]},{},[1])(1)
 });
 
 

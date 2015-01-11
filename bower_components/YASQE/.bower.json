@@ -1,14 +1,34 @@
 {
-  "name": "YASQE",
-  "homepage": "https://github.com/YASGUI/YASQE",
-  "version": "1.5.2",
-  "_release": "1.5.2",
+  "name": "yasqe",
+  "version": "2.2.6",
+  "homepage": "http://yasqe.yasgui.org",
+  "authors": [
+    "Laurens Rietveld <laurens.rietveld@gmail.com>"
+  ],
+  "description": "Yet Another SPARQL Query Editor",
+  "main": "dist/yasqe.bundled.min.js",
+  "moduleType": [
+    "globals"
+  ],
+  "keywords": [
+    "SPARQL",
+    "Linked Data"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "_release": "2.2.6",
   "_resolution": {
     "type": "version",
-    "tag": "v1.5.2",
-    "commit": "dd3a3e50a0caef034ed46a26b438ecf91495d943"
+    "tag": "v2.2.6",
+    "commit": "7e8671146e890e92ea914bea66e7e7418ab22200"
   },
   "_source": "git://github.com/YASGUI/YASQE.git",
-  "_target": "~1.5.2",
+  "_target": "~2.2.6",
   "_originalSource": "YASGUI/YASQE"
 }

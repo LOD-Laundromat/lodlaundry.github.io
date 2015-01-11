@@ -1,5 +1,6 @@
 {
   "name": "CSV-JS",
+  "version": "1.1.1",
   "description": "A Comma-Separated Values parser for JavaScript. Standards-based, stand alone, and no regular expressions.",
   "main": "csv.js",
   "keywords": [
@@ -22,14 +23,13 @@
     "test",
     "tests"
   ],
-  "_release": "c221a31b38",
+  "_release": "1.1.1",
   "_resolution": {
-    "type": "branch",
-    "branch": "master",
-    "commit": "c221a31b383a2d2fe0e9ef46323ab1301ba8aa11"
+    "type": "version",
+    "tag": "v1.1.1",
+    "commit": "4f37fae21f9d900b122ce6b03810005e687c8a17"
   },
   "_source": "git://github.com/gkindel/CSV-JS.git",
   "_target": "*",
-  "_originalSource": "csv-js",
-  "_direct": true
+  "_originalSource": "csv-js"
 }

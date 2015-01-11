@@ -4,8 +4,8 @@ var gulp = require('gulp'),
 	livereload = require('gulp-livereload');
 
 gulp.task('watch', function() {
-	gulp.watch(["./src/*", './lib/*.js'], [ 'browserify' ]);
-	gulp.watch(paths.style, [ 'minifyCss' ]);
+	gulp.watch(["./src/**/*.js", './lib/*.js'], [ 'browserifyForDebug' ]);
+	gulp.watch(paths.style, [ 'makeCss' ]);
 	  gulp.watch(
 		'./*.html'
 	, function(files) {

@@ -8,16 +8,15 @@ var gulp = require('gulp'),
 	uglify = require("gulp-uglify"),
 	rename = require("gulp-rename"),
 	streamify = require('gulp-streamify'),
-	shim = require('browserify-shim'),
 	paths = require("./paths.js"),
 	buffer = require('vinyl-buffer'),
 	exorcist = require('exorcist'),
+	optionalShim = require('./optionalShim.js'),
 	sourcemaps = require('gulp-sourcemaps');
 
-
 gulp.task('browserify', function() {
-	browserify({entries: ["./src/main.js"],standalone: "YASQE", debug: true, global:true})
-		.transform({global:true},shim)
+	browserify({entries: ["./src/main.js"],standalone: "YASQE", debug: true})
+		.transform({global:true}, optionalShim)
 		.exclude('jquery')
 		.exclude('codemirror')
 		.exclude('../../lib/codemirror') 
@@ -29,13 +28,15 @@ gulp.task('browserify', function() {
 		.pipe(buffer())
 		.pipe(sourcemaps.init({
 			loadMaps: true,
-			//we need to -not- include the content. Break-points only work when using this particular trick
-			includeContent: false,
-		      sourceRoot: function(file) {
-		        return './';
-		      }
+			debug:true,
 		}))
-		.pipe(uglify())
+		.pipe(uglify({
+			compress: {
+				//disable the compressions. Otherwise, breakpoints in minified files don't work (sourcemaped lines get offset w.r.t. original)
+	            negate_iife: false,
+	            sequences: false
+	        }
+		}))
 		.pipe(sourcemaps.write('./'))
 		.pipe(gulp.dest(paths.bundleDir));
 });
@@ -54,13 +55,16 @@ gulp.task('browserifyWithDeps', function() {
 		.pipe(buffer())
 		.pipe(sourcemaps.init({
 			loadMaps: true,
-			//we need to -not- include the content. Break-points only work when using this particular trick
-			includeContent: false,
-		      sourceRoot: function(file) {
-		        return './';
-		      }
+			debug:true,
 		}))
-		.pipe(uglify())
+		.pipe(uglify({
+			compress: {
+				//disable the compressions. Otherwise, breakpoints in minified files don't work (sourcemaped lines get offset w.r.t. original)
+				//minified files does increase from 457 to 459 kb, but can live with that 
+	            negate_iife: false,
+	            sequences: false
+	        }
+		}))
 		.pipe(sourcemaps.write('./'))
 		.pipe(gulp.dest(paths.bundleDir));
 });

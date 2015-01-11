@@ -16,25 +16,78 @@ console = console || {"log":function(){}};//make sure any console statements don
  * @return {doc} YASR document
  */
 var root = module.exports = function(parent, options, queryResults) {
+
+	
 	var yasr = {};
 	yasr.options = $.extend(true, {}, root.defaults, options);
+	
 	yasr.container = $("<div class='yasr'></div>").appendTo(parent);
 	yasr.header = $("<div class='yasr_header'></div>").appendTo(yasr.container);
 	yasr.resultsContainer = $("<div class='yasr_results'></div>").appendTo(yasr.container);
+	yasr.storage = utils.storage;
+	
+	var prefix = null;
+	yasr.getPersistencyId = function(postfix) {
+		if (prefix === null) {
+			//instantiate prefix
+			if (yasr.options.persistency && yasr.options.persistency.prefix) {
+				prefix = (typeof yasr.options.persistency.prefix == 'string'? yasr.options.persistency.prefix : yasr.options.persistency.prefix(yasr));
+			} else {
+				prefix = false;
+			}
+		}
+		if (prefix && postfix) {
+			return prefix + (typeof postfix == 'string'? postfix : postfix(yasr));
+		} else {
+			return null;
+		}
+	};
+	
+	if (yasr.options.useGoogleCharts) {
+		//pre-load google-loader
+		require('./gChartLoader.js')
+			.once('initError', function(){yasr.options.useGoogleCharts = false})
+			.init();
+	}
+	
+	//first initialize plugins
+	yasr.plugins = {};
+	for (var pluginName in root.plugins) {
+		if (!yasr.options.useGoogleCharts && pluginName == "gchart") continue; 
+		yasr.plugins[pluginName] = new root.plugins[pluginName](yasr);
+	}
 	
 	
+	yasr.updateHeader = function() {
+		var downloadIcon = yasr.header.find(".yasr_downloadIcon")
+				.removeAttr("title");//and remove previous titles
+		
+		var outputPlugin = yasr.plugins[yasr.options.output];
+		if (outputPlugin) {
+			var info = (outputPlugin.getDownloadInfo? outputPlugin.getDownloadInfo(): null);
+			if (info) {
+				if (info.buttonTitle) downloadIcon.attr('title', info.buttonTitle);
+				downloadIcon.prop("disabled", false);
+				downloadIcon.find("path").each(function(){
+					this.style.fill = "black";
+				});
+			} else {
+				downloadIcon.prop("disabled", true).prop("title", "Download not supported for this result representation");
+				downloadIcon.find("path").each(function(){
+					this.style.fill = "gray";
+				});
+			}
+		}
+	};
 	yasr.draw = function(output) {
 		if (!yasr.results) return false;
 		if (!output) output = yasr.options.output;
 		
-		if (output in yasr.plugins && yasr.plugins[output].canHandleResults(yasr)) {
-			$(yasr.resultsContainer).empty();
-			yasr.plugins[output].draw();
-			return true;
-		}
+		
 		//ah, our default output does not take our current results. Try to autodetect
 		var selectedOutput = null;
 		var selectedOutputPriority = -1;
+		var unsupportedOutputs = [];
 		for (var tryOutput in yasr.plugins) {
 			if (yasr.plugins[tryOutput].canHandleResults(yasr)) {
 				var priority = yasr.plugins[tryOutput].getPriority;
@@ -43,86 +96,105 @@ var root = module.exports = function(parent, options, queryResults) {
 					selectedOutputPriority = priority;
 					selectedOutput = tryOutput;
 				}
+			} else {
+				unsupportedOutputs.push(tryOutput);
 			}
 		}
-		if (selectedOutput) {
+		disableOutputs(unsupportedOutputs);
+		if (output in yasr.plugins && yasr.plugins[output].canHandleResults(yasr)) {
+			$(yasr.resultsContainer).empty();
+			yasr.plugins[output].draw();
+			return true;
+		} else if (selectedOutput) {
 			$(yasr.resultsContainer).empty();
 			yasr.plugins[selectedOutput].draw();
 			return true;
 		}
 		return false;
 	};
+	
+	var disableOutputs = function(outputs) {
+		//first enable everything.
+		yasr.header.find('.yasr_btnGroup .yasr_btn').removeClass('disabled');
+		
+		
+		//now disable the outputs passed as param
+		outputs.forEach(function(outputName) {
+			yasr.header.find('.yasr_btnGroup .select_' + outputName).addClass('disabled');
+		});
+		
+	};
 	yasr.somethingDrawn = function() {
 		return !yasr.resultsContainer.is(":empty");
 	};
-	yasr.setResponse = function(queryResults) {
+
+	yasr.setResponse = function(dataOrJqXhr, textStatus, jqXhrOrErrorString) {
 		try {
-			yasr.results = require("./parsers/wrapper.js")(queryResults);
+			yasr.results = require("./parsers/wrapper.js")(dataOrJqXhr, textStatus, jqXhrOrErrorString);
 		} catch(exception) {
-			yasr.results = exception;
+			yasr.results = {getException: function(){return exception}};
 		}
 		yasr.draw();
 		
 		//store if needed
-		if (yasr.options.persistency && yasr.options.persistency.results) {
+		var resultsId = yasr.getPersistencyId(yasr.options.persistency.results.key);
+		if (resultsId) {
 			if (yasr.results.getOriginalResponseAsString && yasr.results.getOriginalResponseAsString().length < yasr.options.persistency.results.maxSize) {
-				var id = (typeof yasr.options.persistency.results.id == "string" ? yasr.options.persistency.results.id: yasr.options.persistency.results.id(yasr));
-				utils.storage.set(id, yasr.results.getOriginalResponse(), "month");
+				utils.storage.set(resultsId, yasr.results.getAsStoreObject(), "month");
+			} else {
+				//remove old string
+				utils.storage.remove(resultsId);
 			}
 		}
 	};
 	
-	yasr.plugins = {};
-	for (var plugin in root.plugins) {
-		yasr.plugins[plugin] = root.plugins[plugin](yasr, yasr.resultsContainer);
-	}
+	
+
 	/**
 	 * postprocess
 	 */
-	if (yasr.options.persistency && yasr.options.persistency.outputSelector) {
-		var id = (typeof yasr.options.persistency.outputSelector == "string"? yasr.options.persistency.outputSelector: yasr.options.persistency.outputSelector(yasr));
-		if (id) {
-			var selection = utils.storage.get(id);
-			if (selection) yasr.options.output = selection;
+	var selectorId = yasr.getPersistencyId(yasr.options.persistency.outputSelector)
+	if (selectorId) {
+		var selection = utils.storage.get(selectorId);
+		if (selection) yasr.options.output = selection;
+	}
+	drawHeader(yasr);
+	if (!queryResults && yasr.options.persistency && yasr.options.persistency.results) {
+		var resultsId = yasr.getPersistencyId(yasr.options.persistency.results.key)
+		var fromStorage;
+		if (resultsId) {
+			fromStorage = utils.storage.get(resultsId);
+		}
+		
+		
+		if (!fromStorage && yasr.options.persistency.results.id) {
+			//deprecated! But keep for backwards compatability
+			//if results are stored under old ID. Fetch the results, and delete that key (results can be large, and clutter space)
+			//setting the results, will automatically store it under the new key, so we don't have to worry about that here
+			var deprId = (typeof yasr.options.persistency.results.id == "string" ? yasr.options.persistency.results.id: yasr.options.persistency.results.id(yasr));
+			if (deprId) {
+				fromStorage = utils.storage.get(deprId);
+				if (fromStorage) utils.storage.remove(deprId);
+			}
+		}
+		if (fromStorage) {
+			if ($.isArray(fromStorage)) {
+				yasr.setResponse.apply(this, fromStorage);
+			} else {
+				yasr.setResponse(fromStorage);
+			}
 		}
 	}
-	if (!queryResults && yasr.options.persistency && yasr.options.persistency.results) {
-		var id = (typeof yasr.options.persistency.results.id == "string" ? yasr.options.persistency.results.id: yasr.options.persistency.results.id(yasr));
-		queryResults = utils.storage.get(id);
-	}
-	
-	root.drawHeader(yasr);
 	
 	if (queryResults) {
 		yasr.setResponse(queryResults);
 	} 
-	root.updateHeader(yasr);
+	yasr.updateHeader();
 	return yasr;
 };
-root.updateHeader = function(yasr) {
-	var downloadIcon = yasr.header.find(".yasr_downloadIcon");
-		downloadIcon
-			.removeAttr("title");//and remove previous titles
-	
-	var outputPlugin = yasr.plugins[yasr.options.output];
-	if (outputPlugin) {
-		var info = (outputPlugin.getDownloadInfo? outputPlugin.getDownloadInfo(): null);
-		if (info) {
-			if (info.buttonTitle) downloadIcon.attr(info.buttonTitle);
-			downloadIcon.prop("disabled", false);
-			downloadIcon.find("path").each(function(){
-				this.style.fill = "black";
-			});
-		} else {
-			downloadIcon.prop("disabled", true).prop("title", "Download not supported for this result representation");
-			downloadIcon.find("path").each(function(){
-				this.style.fill = "gray";
-			});
-		}
-	}
-};
 
-root.drawHeader = function(yasr) {
+
+var drawHeader = function(yasr) {
 	var drawOutputSelector = function() {
 		var btnGroup = $('<div class="yasr_btnGroup"></div>');
 		$.each(yasr.plugins, function(pluginName, plugin) {
@@ -139,14 +211,14 @@ root.drawHeader = function(yasr) {
 				yasr.options.output = pluginName;
 				
 				//store if needed
-				if (yasr.options.persistency && yasr.options.persistency.outputSelector) {
-					var id = (typeof yasr.options.persistency.outputSelector == "string"? yasr.options.persistency.outputSelector: yasr.options.persistency.outputSelector(yasr));
-					utils.storage.set(id, yasr.options.output, "month");
+				var selectorId = yasr.getPersistencyId(yasr.options.persistency.outputSelector);
+				if (selectorId) {
+					utils.storage.set(selectorId, yasr.options.output, "month");
 				}
 				
 				
 				yasr.draw();
-				root.updateHeader(yasr);
+				yasr.updateHeader();
 			})
 			.appendTo(btnGroup);
 			if (yasr.options.output == pluginName) button.addClass("selected");
@@ -164,8 +236,8 @@ root.drawHeader = function(yasr) {
 			}
 			return url;
 		};
-		var button = $("<button class='yasr_btn yasr_downloadIcon'></button>")
-			.append(require("yasgui-utils").imgs.getElement({id: "download", width: "15px", height: "15px"}))
+		var button = $("<button class='yasr_btn yasr_downloadIcon btn_icon'></button>")
+			.append(require("yasgui-utils").svg.getElement(require('./imgs.js').download))
 			.click(function() {
 				var currentPlugin = yasr.plugins[yasr.options.output];
 				if (currentPlugin && currentPlugin.getDownloadInfo) {
@@ -179,28 +251,34 @@ root.drawHeader = function(yasr) {
 			});
 		yasr.header.append(button);
 	};
+	var drawFullscreenButton = function() {
+		var button = $("<button class='yasr_btn btn_fullscreen btn_icon'></button>")
+			.append(require("yasgui-utils").svg.getElement(require('./imgs.js').fullscreen))
+			.click(function() {
+				yasr.container.addClass('yasr_fullscreen');
+			});
+		yasr.header.append(button);
+	};
+	var drawSmallscreenButton = function() {
+		var button = $("<button class='yasr_btn btn_smallscreen btn_icon'></button>")
+			.append(require("yasgui-utils").svg.getElement(require('./imgs.js').smallscreen))
+			.click(function() {
+				yasr.container.removeClass('yasr_fullscreen');
+			});
+		yasr.header.append(button);
+	};
+	drawFullscreenButton();drawSmallscreenButton();
 	if (yasr.options.drawOutputSelector) drawOutputSelector();
 	if (yasr.options.drawDownloadIcon) drawDownloadIcon();
 };
 
-
-
-
-/**
- * Registered plugins. Add a plugin by adding it to this object. 
- * Each plugin -must- return an object from the constructor with the following keys: draw (function) and 
- * options (object with keys hideFromSelection, canHandlerResults, getPriority and name)
- * Want to add your own plugin? I'd advice you use the boolean plugin as a template
- * 
- * @type object
- * @attribute YASR.plugins
- */
-root.plugins = {
-	boolean: require("./boolean.js"),
-	table: require("./table.js"),
-	rawResponse: require("./rawResponse.js"),
-	error: require("./error.js")
+root.plugins = {};
+root.registerOutput = function(name, constructor) {
+	root.plugins[name] = constructor;
 };
+
+
+
 
 /**
  * The default options of YASR. Either change the default options by setting YASR.defaults, or by
@@ -208,93 +286,20 @@ root.plugins = {
  * 
  * @attribute YASR.defaults
  */
-root.defaults = {
-	/**
-	 * key of default plugin to use
-	 * @property output
-	 * @type string
-	 * @default "table"
-	 */
-	output: "table",
-	
-	/**
-	 * Draw the output selector widget
-	 * 
-	 * @property drawOutputSelector
-	 * @type boolean
-	 * @default true
-	 */
-	drawOutputSelector: true,
-	/**
-	 * Draw download icon. This issues html5 download functionality to 'download' files created on the client-side.
-	 *  This allows the user to download results already queried for, such as a CSV when a table is shown, or the original response when the raw response output is selected
-	 * 
-	 * @property drawDownloadIcon
-	 * @type boolean
-	 * @default true
-	 */
-	drawDownloadIcon: true,
-	
-	
-	getUsedPrefixes: null,
-	/**
-	 * Make certain settings and values of YASR persistent. Setting a key
-	 * to null, will disable persistancy: nothing is stored between browser
-	 * sessions Setting the values to a string (or a function which returns a
-	 * string), will store the query in localstorage using the specified string.
-	 * By default, the ID is dynamically generated by finding the nearest DOM element with an "id" set,
-	 * to avoid collissions when using multiple YASR items on one page
-	 * 
-	 * @property persistency
-	 * @type object
-	 */
-	persistency: {
-		/**
-		 * Persistency setting for the selected output
-		 * 
-		 * @property persistency.outputSelector
-		 * @type string|function
-		 * @default function (determine unique id)
-		 */
-		outputSelector: function(yasr) {
-			return "selector_" + utils.determineId(yasr.container);
-		},
-		/**
-		 * Persistency setting for query results.
-		 * 
-		 * @property persistency.results
-		 * @type object
-		 */
-		results: {
-			/**
-			 * Get the key to store results in
-			 * 
-			 * @property persistency.results.id
-			 * @type string|function
-			 * @default function (determine unique id)
-			 */
-			id: function(yasr){
-				return "results_" + utils.determineId(yasr.container);
-			},
-			/**
-			 * The result set might too large to fit in local storage. 
-			 * It is impossible to detect how large the local storage is.
-			 * Therefore, we do not store all results in local storage, depending on a max number of characters in the SPARQL result serialization.
-			 * Set this function conservitavely. (especially when using multiple YASR instances on one page)
-			 * 
-			 * @property persistency.results.maxSize
-			 * @type int
-			 * @default 100000
-			 */
-			maxSize: 100000 //char count
-		}
-		
-	},
-	
-	
-};
+root.defaults = require('./defaults.js');
 root.version = {
 	"YASR" : require("../package.json").version,
 	"jquery": $.fn.jquery,
 	"yasgui-utils": require("yasgui-utils").version
 };
+root.$ = $;
+
+
+
+//put these in a try-catch. When using the unbundled version, and when some dependencies are missing, then YASR as a whole will still function
+try {root.registerOutput('boolean', require("./boolean.js"))} catch(e){};
+try {root.registerOutput('rawResponse', require("./rawResponse.js"))} catch(e){};
+try {root.registerOutput('table', require("./table.js"))} catch(e){};
+try {root.registerOutput('error', require("./error.js"))} catch(e){};
+try {root.registerOutput('pivot', require("./pivot.js"))} catch(e){};
+try {root.registerOutput('gchart', require("./gchart.js"))} catch(e){};

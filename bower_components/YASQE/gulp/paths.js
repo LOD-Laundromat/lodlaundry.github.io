@@ -1,9 +1,5 @@
 module.exports =  {
-	style: [
-		'node_modules/codemirror/lib/codemirror.css', 
-		'node_modules/codemirror/addon/hint/show-hint.css',
-		'src/**/*.css',
-	],
+	style: ['src/scss/scoped.scss', 'src/scss/global.scss'],
 	bundleDir: "dist",
 	bundleName: "yasqe",
 	docDir: "doc"

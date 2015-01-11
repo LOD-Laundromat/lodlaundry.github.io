@@ -1,6 +1,11 @@
-var $ = require("jquery");
-require("./../lib/DataTables/media/js/jquery.dataTables.js");
-var imgs = require("yasgui-utils").imgs;
+'use strict';
+var $ = require("jquery"),
+	yutils = require("yasgui-utils"),
+	imgs = require('./imgs.js');
+require("../lib/DataTables/media/js/jquery.dataTables.js");
+require("../lib/colResizable-1.4.js");
+
+
 
 /**
  * Constructor of plugin which displays results as a table
@@ -12,22 +17,128 @@ var imgs = require("yasgui-utils").imgs;
  * @return yasr-table (doc)
  * 
  */
-var root = module.exports = function(yasr,parent, options) {
-	var plugin = {};
-	plugin.options = $.extend(true, {}, root.defaults, options);
-	plugin.yasr = yasr;
-	plugin.parent = parent;
-	plugin.draw = function() {
-		root.draw(plugin);
+var root = module.exports = function(yasr) {
+	var table = null;
+	var plugin = {
+		name: "Table",
+		getPriority: 10,
 	};
-	/**
-	 * Human-readable name of this plugin (used in selection widget)
-	 * 
-	 * @property pluginDoc.name
-	 * @type string
-	 * @default "Table"
-	 */
-	plugin.name = "Table";
+	var options = plugin.options = $.extend(true, {}, root.defaults);
+	var tableLengthPersistencyId = (options.persistency? yasr.getPersistencyId(options.persistency.tableLength): null);
+
+	var getRows = function() {
+		var rows = [];
+		var bindings = yasr.results.getBindings();
+		var vars = yasr.results.getVariables();
+		var usedPrefixes = null;
+		if (yasr.options.getUsedPrefixes) {
+			usedPrefixes = (typeof yasr.options.getUsedPrefixes == "function"? yasr.options.getUsedPrefixes(yasr):  yasr.options.getUsedPrefixes);
+		}
+		for (var rowId = 0; rowId < bindings.length; rowId++) {
+			var row = [];
+			row.push("");//row numbers
+			var binding = bindings[rowId];
+			for (var colId = 0; colId < vars.length; colId++) {
+				var sparqlVar = vars[colId];
+				if (sparqlVar in binding) {
+					if (options.getCellContent) {
+						row.push(options.getCellContent(yasr, plugin, binding, sparqlVar, {'rowId': rowId, 'colId': colId, 'usedPrefixes': usedPrefixes}));
+					} else {
+						row.push("");
+					}
+				} else {
+					row.push("");
+				}
+			}
+			rows.push(row);
+		}
+		return rows;
+	};
+	
+
+	var addEvents = function() {
+		table.on( 'order.dt', function () {
+		    drawSvgIcons();
+		});
+		if (tableLengthPersistencyId) {
+			table.on('length.dt', function(e, settings, len) {
+				yutils.storage.set(tableLengthPersistencyId, len, "month");
+			});
+		}
+		$.extend(true, options.callbacks, options.handlers);
+		table.delegate("td", "click", function(event) {
+			if (options.callbacks && options.callbacks.onCellClick) {
+				var result = options.callbacks.onCellClick(this, event);
+				if (result === false) return false;
+			}
+		}).delegate("td",'mouseenter', function(event) {
+			if (options.callbacks && options.callbacks.onCellMouseEnter) {
+				options.callbacks.onCellMouseEnter(this, event);
+			}
+			var tdEl = $(this);
+			if (options.fetchTitlesFromPreflabel 
+					&& tdEl.attr("title") === undefined
+					&& tdEl.text().trim().indexOf("http") == 0) {
+				addPrefLabel(tdEl);
+			}
+		}).delegate("td",'mouseleave', function(event) {
+			if (options.callbacks && options.callbacks.onCellMouseLeave) {
+				options.callbacks.onCellMouseLeave(this, event);
+				
+			}
+		});
+		
+	};
+	
+	plugin.draw = function() {
+		table = $('<table cellpadding="0" cellspacing="0" border="0" class="resultsTable"></table>');
+		$(yasr.resultsContainer).html(table);
+
+		var dataTableConfig = options.datatable;
+		dataTableConfig.data = getRows();
+		dataTableConfig.columns = options.getColumns(yasr, plugin);
+		
+		//fetch stored datatables length value
+		var pLength = yutils.storage.get(tableLengthPersistencyId);
+		if (pLength) dataTableConfig.pageLength = pLength;
+		
+		
+		
+		table.DataTable($.extend(true, {}, dataTableConfig));//make copy. datatables adds properties for backwards compatability reasons, and don't want this cluttering our own 
+		
+		
+		drawSvgIcons();
+		
+		addEvents();
+		
+		//move the table upward, so the table options nicely aligns with the yasr header
+		var headerHeight = yasr.header.outerHeight() - 5; //add some space of 5 px between table and yasr header
+		if (headerHeight > 0) {
+			yasr.resultsContainer.find(".dataTables_wrapper")
+			.css("position", "relative")
+			.css("top", "-" + headerHeight + "px")
+			.css("margin-bottom", "-" + headerHeight + "px");
+		}
+		
+		//finally, make the columns dragable:
+		table.colResizable();
+		
+		
+	};
+	
+	var drawSvgIcons = function() {
+		var sortings = {
+			"sorting": "unsorted",
+			"sorting_asc": "sortAsc",
+			"sorting_desc": "sortDesc"
+		};
+		table.find(".sortIcons").remove();
+		for (var sorting in sortings) {
+			var svgDiv = $("<div class='sortIcons'></div>");
+			yutils.svg.draw(svgDiv, imgs[sortings[sorting]]);
+			table.find("th." + sorting).append(svgDiv);
+		}
+	};
 	/**
 	 * Check whether this plugin can handler the current results
 	 * 
@@ -35,21 +146,13 @@ var root = module.exports = function(yasr,parent, options) {
 	 * @type function
 	 * @default If resultset contains variables in the resultset, return true
 	 */
-	plugin.canHandleResults = function(yasr){
-		return yasr.results && yasr.results.getVariables() && yasr.results.getVariables().length > 0;
+	plugin.canHandleResults = function(){
+		return yasr.results && yasr.results.getVariables && yasr.results.getVariables() && yasr.results.getVariables().length > 0;
 	};
-	/**
-	 * If we need to dynamically check which plugin to use, we rank the possible plugins by priority, and select the highest one
-	 * 
-	 * @property getPriority
-	 * @param yasrDoc
-	 * @type int|function
-	 * @default 10
-	 */
-	plugin.getPriority =  function(yasr){return 10;};
+
 	
 	plugin.getDownloadInfo = function() {
-		if (!plugin.yasr.results) return null;
+		if (!yasr.results) return null;
 		return {
 			getContent: function(){return require("./bindingsToCsv.js")(yasr.results.getAsJson());},
 			filename: "queryResults.csv",
@@ -58,162 +161,60 @@ var root = module.exports = function(yasr,parent, options) {
 		};
 	};
 	
-	plugin.disableSelectorOn = function(yasr) {
-		
-	};
 	return plugin;
 };
 
-root.draw = function(plugin) {
-	plugin.table = $('<table cellpadding="0" cellspacing="0" border="0" class="resultsTable"></table>');
-	$(plugin.parent).html(plugin.table);
 
-	var dataTableConfig = plugin.options.datatable;
-	dataTableConfig.aaData = getRows(plugin);
-	dataTableConfig.aoColumns = getVariablesAsCols(plugin),
-	plugin.table.dataTable(dataTableConfig); 
-	
-	
-	drawSvgIcons(plugin);
-	
-	addEvents(plugin);
-	
-	//move the table upward, so the table options nicely aligns with the yasr header
-	var headerHeight = plugin.yasr.header.outerHeight() - 5; //add some space of 5 px between table and yasr header
-	if (headerHeight > 0) {
-		plugin.yasr.container.find(".dataTables_wrapper")
-		.css("position", "relative")
-		.css("top", "-" + headerHeight + "px")
-		.css("margin-bottom", "-" + headerHeight + "px");
-	}
-	
-	
-	//make sure we redraw the table on resize
-	$(window).on('resize', function () {
-		if (plugin.table) plugin.table.fnAdjustColumnSizing();
-	});
-};
-
-
-var getVariablesAsCols = function(plugin) {
-	var cols = [];
-	cols.push({"sTitle": ""});//row numbers
-	var sparqlVars = plugin.yasr.results.getVariables();
-	for (var i = 0; i < sparqlVars.length; i++) {
-		cols.push({"sTitle": sparqlVars[i]});
-	}
-	return cols;
-};
-
-var getRows = function(plugin) {
-	var rows = [];
-	var bindings = plugin.yasr.results.getBindings();
-	var vars = plugin.yasr.results.getVariables();
-	var usedPrefixes = null;
-	if (plugin.yasr.options.getUsedPrefixes) {
-		usedPrefixes = (typeof plugin.yasr.options.getUsedPrefixes == "function"? plugin.yasr.options.getUsedPrefixes(plugin.yasr):  plugin.yasr.options.getUsedPrefixes);
-	}
-	for (var rowId = 0; rowId < bindings.length; rowId++) {
-		var row = [];
-		row.push("");//row numbers
-		var binding = bindings[rowId];
-		for (var colId = 0; colId < vars.length; colId++) {
-			var sparqlVar = vars[colId];
-			if (sparqlVar in binding) {
-				if (plugin.options.drawCellContent) {
-					row.push(plugin.options.drawCellContent(rowId, colId, binding[sparqlVar], usedPrefixes));
-				} else {
-					row.push("");
-				}
-			} else {
-				row.push("");
-			}
+var formatLiteral = function(yasr, plugin, literalBinding) {
+	var stringRepresentation = literalBinding.value;
+	if (literalBinding["xml:lang"]) {
+		stringRepresentation = '"' + literalBinding.value + '"@' + literalBinding["xml:lang"];
+	} else if (literalBinding.datatype) {
+		var xmlSchemaNs = "http://www.w3.org/2001/XMLSchema#";
+		var dataType = literalBinding.datatype;
+		if (dataType.indexOf(xmlSchemaNs) == 0) {
+			dataType = "xsd:" + dataType.substring(xmlSchemaNs.length);
+		} else {
+			dataType = "<" + dataType + ">";
 		}
-		rows.push(row);
+		
+		stringRepresentation = '"' + stringRepresentation + '"^^' + dataType;
 	}
-	return rows;
+	return stringRepresentation;
 };
-
-
-root.getFormattedValueFromBinding = function(rowId, colId, binding, usedPrefixes) {
+var getCellContent = function(yasr, plugin, bindings, sparqlVar, context) {
+	var binding = bindings[sparqlVar];
 	var value = null;
 	if (binding.type == "uri") {
-		var href = visibleString = binding.value;
-		if (usedPrefixes) {
-			for (var prefix in usedPrefixes) {
-				if (visibleString.indexOf(usedPrefixes[prefix]) == 0) {
-					visibleString = prefix + href.substring(usedPrefixes[prefix].length);
+		var title = null;
+		var href = binding.value;
+		var visibleString = href;  
+		if (context.usedPrefixes) {
+			for (var prefix in context.usedPrefixes) {
+				if (visibleString.indexOf(context.usedPrefixes[prefix]) == 0) {
+					visibleString = prefix + ':' + href.substring(context.usedPrefixes[prefix].length);
 					break;
 				}
 			}
 		}
-		value = "<a class='uri' target='_blank' href='" + href + "'>" + visibleString + "</a>";
-	} else {
-		var stringRepresentation = binding.value;
-		if (binding["xml:lang"]) {
-			stringRepresentation = '"' + binding.value + '"@' + binding["xml:lang"];
-		} else if (binding.datatype) {
-			var xmlSchemaNs = "http://www.w3.org/2001/XMLSchema#";
-			var dataType = binding.datatype;
-			if (dataType.indexOf(xmlSchemaNs) == 0) {
-				dataType = "xsd:" + dataType.substring(xmlSchemaNs.length);
-			} else {
-				dataType = "<" + dataType + ">";
+		if (plugin.options.mergeLabelsWithUris) {
+			var postFix = (typeof plugin.options.mergeLabelsWithUris == "string"? plugin.options.mergeLabelsWithUris: "Label");
+			if (bindings[sparqlVar + postFix]) {
+				visibleString = formatLiteral(yasr, plugin, bindings[sparqlVar + postFix]);
+				title = href;
 			}
-			
-			stringRepresentation = '"' + stringRepresentation + '"^^' + dataType;
 		}
-		
-		value = "<span class='nonUri'>" + stringRepresentation + "</span>";
+		value = "<a " + (title? "title='" + href + "' ": "") + "class='uri' target='_blank' href='" + href + "'>" + visibleString + "</a>";
+	} else {
+		value = "<span class='nonUri'>" + formatLiteral(yasr, plugin, binding) + "</span>";
 	}
-	return value;
-};
-var getExternalLinkElement = function() {
-	var element = $("#externalLink");
-	if (element.length == 0) {
-		element = $("<img id='externalLink' src='" + Yasgui.constants.imgs.externalLink.get() + "'></img>")
-			.on("click", function(){
-				window.open($(this).parent().text());
-			});
-	}
-	return element;
-};
-var executeSnorqlQuery = function(uri) {
-	console.log("exec snorql");
-//	var newQuery = Yasgui.settings.defaults.tabularBrowsingTemplate;
-//	newQuery = newQuery.replace(/<URI>/g, "<" + uri + ">");
-//	Yasgui.settings.getCurrentTab().query = newQuery;
-//	Yasgui.tabs.getCurrentTab().cm.reloadFromSettings();
-//	Yasgui.sparql.query();
+	return "<div>" + value + "</div>";
 };
 
-var addEvents = function(plugin) {
-	plugin.table.on( 'order.dt', function () {
-	    drawSvgIcons(plugin);
-	});
-	
-	plugin.table.delegate("td", "click", function(event) {
-		if (plugin.options.handlers && plugin.options.handlers.onCellClick) {
-			var result = plugin.options.handlers.onCellClick(this, event);
-			if (result === false) return false;
-		}
-	}).delegate("td",'mouseenter', function(event) {
-		if (plugin.options.handlers && plugin.options.handlers.onCellMouseEnter) {
-			plugin.options.handlers.onCellMouseEnter(this, event);
-		}
-		var tdEl = $(this);
-		if (plugin.options.fetchTitlesFromPreflabel 
-				&& tdEl.attr("title") === undefined
-				&& tdEl.text().trim().indexOf("http") == 0) {
-			addPrefLabel(tdEl);
-		}
-	}).delegate("td",'mouseleave', function(event) {
-		if (plugin.options.handlers && plugin.options.handlers.onCellMouseLeave) {
-			plugin.options.handlers.onCellMouseLeave(this, event);
-			
-		}
-	});
-};
+
+
+
+
 
 var addPrefLabel = function(td) {
 	var addEmptyTitle = function() {
@@ -233,20 +234,7 @@ var addPrefLabel = function(td) {
 		.fail(addEmptyTitle);
 };
 
-var drawSvgIcons = function(plugin) {
-	var sortings = {
-		"sorting": "unsorted",
-		"sorting_asc": "sortAsc",
-		"sorting_desc": "sortDesc"
-	};
-	plugin.table.find(".sortIcons").remove();
-	for (var sorting in sortings) {
-		var svgDiv = $("<div class='sortIcons'></div>").css("float", "right").css("margin-right", "-12px").width(10).height(15);
-		imgs.draw(svgDiv, {id: sortings[sorting], width: 12, height: 16});
-		plugin.table.find("th." + sorting).append(svgDiv);
-	}
-};
-root.openCellUriInNewWindow = function(cell) {
+var openCellUriInNewWindow = function(cell) {
 	if (cell.className.indexOf("uri") >= 0) {
 		window.open(this.innerHTML);
 	}
@@ -269,8 +257,33 @@ root.defaults = {
 	 * @return string
 	 * @default YASR.plugins.table.getFormattedValueFromBinding
 	 */
-	drawCellContent: root.getFormattedValueFromBinding,
+	getCellContent: getCellContent,
 	
+	persistency: {
+		tableLength: "tableLength",
+	},
+	
+	getColumns: function(yasr, plugin) {
+		var includeVariable = function(variableToCheck) {
+			if (!plugin.options.mergeLabelsWithUris) return true;
+			var postFix = (typeof plugin.options.mergeLabelsWithUris == "string"? plugin.options.mergeLabelsWithUris: "Label");
+			if (variableToCheck.indexOf(postFix, variableToCheck.length - postFix.length) !== -1) {
+				//this one ends with a postfix
+				if (yasr.results.getVariables().indexOf(variableToCheck.substring(0, variableToCheck.length - postFix.length)) >= 0) {
+					//we have a shorter version of this variable. So, do not include the ..<postfix> variable in the table
+					return false;
+				}
+			}
+			return true;
+		};
+		
+		var cols = [];
+		cols.push({"title": ""});//row numbers column
+		yasr.results.getVariables().forEach(function(variable) {
+			cols.push({"title": "<span>" + variable + "</span>", "visible": includeVariable(variable)});
+		});
+		return cols;
+	},
 	/**
 	 * Try to fetch the label representation for each URI, using the preflabel.org services. (fetching occurs when hovering over the cell)
 	 * 
@@ -279,13 +292,15 @@ root.defaults = {
 	 * @default true
 	 */
 	fetchTitlesFromPreflabel: true,
+	
+	mergeLabelsWithUris: false,
 	/**
 	 * Set a number of handlers for the table
 	 * 
 	 * @property handlers
 	 * @type object
 	 */
-	handlers: {
+	callbacks: {
 		/**
 		 * Mouse-enter-cell event
 		 * 
@@ -312,7 +327,6 @@ root.defaults = {
 		 * @param td-element
 		 * @default null
 		 */
-//		onCellClick: root.openCellUriInNewWindow
 		onCellClick: null
 	},
 	/**
@@ -323,12 +337,13 @@ root.defaults = {
 	 * @type object
 	 */
 	datatable: {
-		"aaSorting": [],//disable initial sorting
-		"iDisplayLength": 50,//default page length
-    	"aLengthMenu": [[10, 50, 100, 1000, -1], [10, 50, 100, 1000, "All"]],//possible page lengths
-    	"bLengthChange": true,//allow changing page length
-    	"sPaginationType": "full_numbers",//how to show the pagination options
-        "fnDrawCallback": function ( oSettings ) {
+		"autoWidth": false,
+		"order": [],//disable initial sorting
+		"pageLength": 50,//default page length
+    	"lengthMenu": [[10, 50, 100, 1000, -1], [10, 50, 100, 1000, "All"]],//possible page lengths
+    	"lengthChange": true,//allow changing page length
+    	"pagingType": "full_numbers",//how to show the pagination options
+        "drawCallback": function ( oSettings ) {
         	//trick to show row numbers
         	for ( var i = 0; i < oSettings.aiDisplay.length; i++) {
 				$('td:eq(0)',oSettings.aoData[oSettings.aiDisplay[i]].nTr).html(i + 1);
@@ -347,8 +362,8 @@ root.defaults = {
         		$(oSettings.nTableWrapper).find(".dataTables_paginate").hide();
         	}
 		},
-		"aoColumnDefs": [
-			{ "sWidth": "12px", "bSortable": false, "aTargets": [ 0 ] }//disable row sorting for first col
+		"columnDefs": [
+			{ "width": "32px", "orderable": false, "targets": 0  }//disable row sorting for first col
 		],
 	},
 };

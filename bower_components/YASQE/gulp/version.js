@@ -4,19 +4,24 @@ var gulp = require('gulp'),
     paths = require('./paths.js'),
     filter = require('gulp-filter'),
     tag_version = require('gulp-tag-version'),
-	runSequence = require('run-sequence').use(gulp);
+	runSequence = require('run-sequence').use(gulp),
+	spawn = require('child_process').spawn;
 	
 
 
 
 function inc(importance) {
     // get all the files to bump version in
-    return gulp.src('./package.json') 
+    return gulp.src(['./package.json', './bower.json']) 
         // bump the version number in those files
         .pipe(bump({type: importance}))
         // save it back to filesystem
         .pipe(gulp.dest('./'));
 }
+
+gulp.task('publish', function (done) {
+  spawn('npm', ['publish'], { stdio: 'inherit' }).on('close', done);
+});
 
 gulp.task('commitDist', function() {
 	  return gulp.src(['./' + paths.docDir + '/*', './' + paths.bundleDir + '/*'])
@@ -25,8 +30,11 @@ gulp.task('commitDist', function() {
 });
 
 gulp.task('tag', function() {
-	return gulp.src('./package.json')
-    .pipe(git.commit('version bump')).pipe(tag_version());
+	return gulp.src(['./package.json', './bower.json'])
+    .pipe(git.commit('version bump'))
+    // read only one file to get the version number
+	.pipe(filter('package.json')) 
+	.pipe(tag_version());
 });
 
 
@@ -35,11 +43,11 @@ gulp.task('bumpMinor', function() { return inc('minor'); })
 gulp.task('bumpMajor', function() { return inc('major'); })
 
 gulp.task('patch', function() {
-	runSequence('bumpPatch', 'default', 'commitDist', 'tag');
+	runSequence('bumpPatch', 'default', 'commitDist', 'tag', 'publish');
 });
 gulp.task('minor', function() {
-	runSequence('bumpMinor', 'default', 'commitDist', 'tag');
+	runSequence('bumpMinor', 'default', 'commitDist', 'tag', 'publish');
 });
 gulp.task('major', function() {
-	runSequence('bumpMajor', 'default', 'commitDist', 'tag');
+	runSequence('bumpMajor', 'default', 'commitDist', 'tag', 'publish');
 });

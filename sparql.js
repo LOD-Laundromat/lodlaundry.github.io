@@ -27,12 +27,7 @@ $( document ).ready(function() {
     /**
     * Set some of the hooks to link YASR and YASQE
     */
-    yasqe.options.sparql.handlers.success =  function(data, textStatus, xhr) {
-		yasr.setResponse({response: data, contentType: xhr.getResponseHeader("Content-Type")});
-	};
-	yasqe.options.sparql.handlers.error = function(xhr, textStatus, errorThrown) {
-		yasr.setResponse({exception: textStatus + ": " + errorThrown});
-	};
+    yasqe.options.sparql.callbacks.complete = yasr.setResponse;
 	if (getUrlParams("query").length > 0) yasqe.query();//exec query immediately when someone with link opens page
 	
 	
@@ -50,3 +45,10 @@ var getUrlParams = function(key) {
     }
     return values;
 };
+
+//disable regular lodlaundromat loader behaviour
+$.ajaxSetup({
+    beforeSend: function() {
+     
+    },
+});

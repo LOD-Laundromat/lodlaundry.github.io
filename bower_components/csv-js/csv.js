@@ -18,10 +18,11 @@
  The above copyright notice and this permission notice shall be included in
  all copies or substantial portions of the Software.
 
- Author Greg Kindel (twitter @gkindel), 2013
+ Author Greg Kindel (twitter @gkindel), 2014
  */
 
-(function () {
+(function (global) {
+    'use strict';
     /**
      * @name CSV
      * @namespace
@@ -37,6 +38,8 @@
     CSV.IGNORE_QUOTE_WHITESPACE = true;
     CSV.DEBUG = false;
 
+    CSV.COLUMN_SEPARATOR = ",";
+
     CSV.ERROR_EOF = "UNEXPECTED_END_OF_FILE";
     CSV.ERROR_CHAR = "UNEXPECTED_CHARACTER";
     CSV.ERROR_EOL = "UNEXPECTED_END_OF_RECORD";
@@ -45,7 +48,6 @@
     var QUOTE = "\"",
         CR = "\r",
         LF = "\n",
-        COMMA = ",",
         SPACE = " ",
         TAB = "\t";
 
@@ -172,7 +174,7 @@
                 CSV.token_end();
                 CSV.record_end();
             }
-            else if (c == COMMA) {
+            else if (c == CSV.COLUMN_SEPARATOR) {
                 CSV.token_end();
             }
             else if( CSV.state == MID_TOKEN ){
@@ -190,6 +192,51 @@
         return result;
     };
 
+    /**
+     * @name CSV.stream
+     * @function
+     * @description stream a CSV file
+     * @example
+     * node -e "c=require('CSV-JS');require('fs').createReadStream('csv.txt').pipe(c.stream()).pipe(c.stream.json()).pipe(process.stdout)"
+     */
+    CSV.stream = function () {
+        var s = new require('stream').Transform({objectMode: true});
+        s.EOL = '\n';
+        s.prior = "";
+        s.emitter = function(s) {
+            return function(e) {
+                s.push(CSV.parse(e+s.EOL))
+            }
+        }(s);
+
+        s._transform = function(chunk, encoding, done) {
+            var lines = (this.prior == "") ?
+                chunk.toString().split(this.EOL) :
+                (this.prior + chunk.toString()).split(this.EOL);
+            this.prior = lines.pop();
+            lines.forEach(this.emitter);
+            done()
+        };
+
+        s._flush = function(done) {
+            if (this.prior != "") {
+                this.emitter(this.prior)
+                this.prior = ""
+            }
+            done()
+        };
+        return s
+    };
+
+    CSV.stream.json = function () {
+        var s = new require('stream').Transform({objectMode: true});
+        s._transform = function(chunk, encoding, done) {
+            s.push(JSON.stringify(chunk.toString())+require('os').EOL);
+            done()
+        };
+        return s
+    };
+    
     CSV.reset = function () {
         CSV.state = null;
         CSV.token = null;
@@ -221,8 +268,7 @@
 
     CSV.record_end = function () {
         CSV.state = POST_RECORD;
-        if( ! (CSV.IGNORE_RECORD_LENGTH || CSV.RELAXED)
-            && CSV.result.length > 0 && CSV.record.length !=  CSV.result[0].length ){
+        if( ! (CSV.IGNORE_RECORD_LENGTH || CSV.RELAXED) && CSV.result.length > 0 && CSV.record.length !=  CSV.result[0].length ){
             CSV.error(CSV.ERROR_EOL);
         }
         CSV.result.push(CSV.record);
@@ -234,7 +280,7 @@
         if( token.match(/^\d+(\.\d+)?$/) ){
             token = parseFloat(token);
         }
-        else if( token.match(/^true|false$/i) ){
+        else if( token.match(/^(true|false)$/i) ){
             token = Boolean( token.match(/true/i) );
         }
         else if(token === "undefined" ){
@@ -295,13 +341,33 @@
 
     };
 
-    (function(name, context, definition) {
-            if (typeof module != 'undefined' && module.exports) module.exports = definition();
-            else if (typeof define == 'function' && typeof define.amd == 'object') define(definition);
-            else this[name] = definition();
-        }('CSV', this, function()
-            { return CSV; }
-        )
-    );
 
-})();
+    // Node, PhantomJS, etc
+    // eg.  var CSV = require("CSV"); CSV.parse(...);
+    if ( typeof module != 'undefined' && module.exports) {
+        module.exports = CSV;
+        return;
+    }
+
+    // CommonJS http://wiki.commonjs.org/wiki/Modules
+    // eg.  var CSV = require("CSV"); CSV.parse(...);
+    else if (typeof exports != 'undefined' ) {
+        exports.CSV = CSV;
+    }
+
+    // AMD https://github.com/amdjs/amdjs-api/wiki/AMD
+    // eg.  require(['./csv.js'], function (CSV) { CSV.parse(...); } );
+    else if (typeof define == 'function' && typeof define.amd == 'object'){
+        define([], function () {
+            return CSV;
+        });
+        return;
+    }
+
+    // .. else global var
+    // eg. CSV.parse(...);
+    if( global ){
+        global.CSV = CSV;
+    }
+
+})(this);

@@ -1,11 +1,6 @@
 
-.affix-top {
-	top: 100px;
-}
-
-
-body{
-	margin-top:60px;
+.affix {
+	margin-top: -60px;
 }
 .doc {
 	margin: 10px;
@@ -29,4 +24,14 @@ body{
 	padding-top: 4px;
 	padding-bottom: 4px;
 	padding-left: 30px;
+}
+
+.CodeMirror-fullscreen {
+	z-index: 2000;/*make sure the fullscreen positions over the twitter bootstrap page header*/
+}
+
+.gistIcon {
+	margin-left: 10px;
+	width: 18px;
+	height:18px;
 }

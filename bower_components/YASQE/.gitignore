@@ -1,7 +1,0 @@
-.classpath
-bower_components
-node_modules
-.project
-.settings
-/bin
-doc/*
