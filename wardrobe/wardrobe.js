@@ -51,13 +51,13 @@ $.ajax({
 		        	        var ldfQueryButton;
 		        	        if (full[3] && full[3] > 0) {
                                 //we have a clean file (as we have triples)
-		        	            ldfBrowserButton = "<a style='padding: 6px;' class='btn btn-default' title='Browser data via LDF' href='" + api.ldf.browser + full[4] + "' target='_blank'><img class='pull-left' style='height: 20px;width: 20px;' src='../imgs/logo_ldf.svg'>&nbsp;Browse Data</a>";
+		        	            ldfBrowserButton = "<a style='padding: 6px;' class='btn btn-default' title='Browse data via LDF' href='" + api.ldf.browser + full[4] + "' target='_blank'><img class='pull-left' style='height: 20px;width: 20px;' src='../imgs/logo_ldf.svg'>&nbsp;Browse</a>";
 		        	            ldfQueryButton = "<a style='padding: 6px;' class='btn btn-default' title='Query as LDF' href='" + api.ldf.query + full[4] + "' target='_blank'><img class='pull-left' style='height: 20px;width: 20px;' src='../imgs/logo_ldf.svg'>&nbsp;Query</a>";
 		        	        } else {
-		        	            ldfBrowserButton = "<a style='padding: 6px;' class='btn btn-default disabled' title='Empty dataset: Browsing not available' href='javascript:void(0)'><img class='pull-left' style='height: 20px;width: 20px;' src='../imgs/logo_ldf.svg'>&nbsp;Browse Data</a>";
+		        	            ldfBrowserButton = "<a style='padding: 6px;' class='btn btn-default disabled' title='Empty dataset: Browsing not available' href='javascript:void(0)'><img class='pull-left' style='height: 20px;width: 20px;' src='../imgs/logo_ldf.svg'>&nbsp;Browse</a>";
 		        	            ldfQueryButton = "<a style='padding: 6px;' class='btn btn-default disabled' title='Empty dataset: Query interface not available' href='javascript:void(0)'><img class='pull-left' style='height: 20px;width: 20px;' src='../imgs/logo_ldf.svg'>&nbsp;Query</a>";
 		        	        }
-		        	        var metaDataBtn = "<a style='padding: 6px;' class='btn btn-default' title='Show more info' href='http://lodlaundromat.org/resource/" + full[4] + "' target='_blank'><span class='glyphicon glyphicon-info-sign'></span> metadata</a>";
+		        	        var metaDataBtn = "<a style='padding: 6px;' class='btn btn-default' title='Show more info' href='http://lodlaundromat.org/resource/" + full[4] + "' target='_blank'><span class='glyphicon glyphicon-info-sign'></span> Metadata</a>";
 		        	        
                             return ldfBrowserButton + '&nbsp;' + ldfQueryButton + '&nbsp;' + metaDataBtn;
                         },
