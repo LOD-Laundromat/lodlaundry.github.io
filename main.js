@@ -299,7 +299,11 @@ var api = {
   "laundryBasket": {
     "seedUpdateApi": "http://backend.lodlaundromat.org"
   },
-  "ldf" : "http://tpf.lodlaundromat.d2s.labs.vu.nl/",
+  "ldf": {
+      browser: "http://ldf.lodlaundromat.d2s.labs.vu.nl/",
+      query: "http://query.lodlaundromat.d2s.labs.vu.nl/",
+  },
+  
   "namespace": "http://lodlaundromat.org/vocab#",
   "wardrobe": {
     "download": function(md5, type) {
