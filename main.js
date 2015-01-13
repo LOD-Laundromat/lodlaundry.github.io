@@ -301,7 +301,11 @@ var api = {
   },
   "ldf": {
       browser: "http://ldf.lodlaundromat.d2s.labs.vu.nl/",
-      query: "http://query.lodlaundromat.d2s.labs.vu.nl/",
+      query: function(md5) {
+          var ldfUrl = api.ldf.browser + md5;
+          var defaultQuery = "SELECT * WHERE {?sub ?pred ?obj}"
+          return "http://client.linkeddatafragments.org/#startFragment=" + encodeURIComponent(ldfUrl) + "&query=" + encodeURIComponent(defaultQuery);
+      },
   },
   
   "namespace": "http://lodlaundromat.org/vocab#",
