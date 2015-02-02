@@ -284,9 +284,12 @@ var sparqlResultToDataTable = function(sparqlResult) {
 function storeUrl() {
   var failureMsg = function(customMsg) {
 	  var msg = "<span class=\"label label-danger\">";
-	  if (customMsg && customMsg.length > 0) {
-		  msg += customMsg + ".";
-	  } else {
+	  if (customMsg && typeof customMsg == "string" && customMsg.length > 0){
+          msg += customMsg + '.';
+	  } else if (customMsg && typeof customMsg == 'object' && customMsg.alternative){
+	      msg += 'Did you mean <a class="alternativeUrl" style="color:#2C2C2C" href="#">' + customMsg.alternative + '</a>?';
+	  }
+      else {
 		  msg += "Something went wrong. Is the url correct?"; 
 	  }
 	  msg += " If this problem persists, please drop us a <a style=\"color:#2C2C2C\" href=\"https://github.com/LODLaundry/lodlaundry.github.io/issues\">Github issue</a>!</span>";
@@ -302,9 +305,17 @@ function storeUrl() {
         url: url
       },
       error: function(response,textStatus,errorThrown) {
-    	  console.log(arguments);
     	  var errorThrown = response.responseText || errorThrown;
+	      try{
+	          errorThrown = JSON.parse(errorThrown);
+	      }catch(e){
+	          //never mind, it's just a string
+	      }
         $(".submitStatus").empty().hide().append(failureMsg(errorThrown)).show(400);
+        $(".submitStatus .alternativeUrl").click(function(){
+            $("#newDirtyLaundry").val($(this).text());
+            storeUrl();
+        });
       },
       success: function() {
         $(".submitStatus").empty().hide().append(successMsg).show(400);
