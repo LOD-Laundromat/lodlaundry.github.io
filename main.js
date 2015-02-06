@@ -300,7 +300,7 @@ var api = {
     "seedUpdateApi": "http://backend.lodlaundromat.org"
   },
   "ldf": {
-      browser: "http://ldf.lodlaundromat.d2s.labs.vu.nl/",
+      browser: "http://ldf.lodlaundromat.org/",
       query: function(md5) {
           var ldfUrl = api.ldf.browser + md5;
           return "http://client.linkeddatafragments.org/#startFragment=" + encodeURIComponent(ldfUrl);
