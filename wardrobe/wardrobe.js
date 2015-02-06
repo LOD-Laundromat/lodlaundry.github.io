@@ -47,18 +47,9 @@ $.ajax({
 		        	},
 	                 {//1 services buttons
 		        	    render: function( data, type, full, meta ) {
-		        	        var ldfBrowserButton;
-		        	        var ldfQueryButton;
-		        	        if (full[3] && full[3] > 0) {
-                                //we have a clean file (as we have triples)
-		        	            ldfBrowserButton = "<a style='padding: 6px;' class='btn btn-default' title='Browse data via LDF' href='" + api.ldf.browser + full[4] + "' target='_blank'><img class='pull-left' style='height: 20px;width: 20px;' src='../imgs/logo_ldf.svg'>&nbsp;Browse</a>";
-		        	            ldfQueryButton = "<a style='padding: 6px;' class='btn btn-default' title='Query as LDF' href='" + api.ldf.query(full[4]) + "' target='_blank'><img class='pull-left' style='height: 20px;width: 20px;' src='../imgs/logo_ldf.svg'>&nbsp;Query</a>";
-		        	        } else {
-		        	            ldfBrowserButton = "<a style='padding: 6px;' class='btn btn-default disabled' title='Empty dataset: Browsing not available' href='javascript:void(0)'><img class='pull-left' style='height: 20px;width: 20px;' src='../imgs/logo_ldf.svg'>&nbsp;Browse</a>";
-		        	            ldfQueryButton = "<a style='padding: 6px;' class='btn btn-default disabled' title='Empty dataset: Query interface not available' href='javascript:void(0)'><img class='pull-left' style='height: 20px;width: 20px;' src='../imgs/logo_ldf.svg'>&nbsp;Query</a>";
-		        	        }
+	        	            var ldfBrowserButton = "<a style='padding: 6px;' class='btn btn-default' title='Browse data via LDF' href='" + api.ldf.browser + full[4] + "' target='_blank'><img class='pull-left' style='height: 20px;width: 20px;' src='../imgs/logo_ldf.svg'>&nbsp;Browse</a>";
+	        	            var ldfQueryButton = "<a style='padding: 6px;' class='btn btn-default' title='Query as LDF' href='" + api.ldf.query(full[4]) + "' target='_blank'><img class='pull-left' style='height: 20px;width: 20px;' src='../imgs/logo_ldf.svg'>&nbsp;Query</a>";
 		        	        var metaDataBtn = "<a style='padding: 6px;' class='btn btn-default' title='Show more info' href='http://lodlaundromat.org/resource/" + full[4] + "' target='_blank'><span class='glyphicon glyphicon-info-sign'></span> Metadata</a>";
-		        	        
                             return ldfBrowserButton + '&nbsp;' + ldfQueryButton + '&nbsp;' + metaDataBtn;
                         },
                         "class": "buttonCol",
@@ -67,14 +58,7 @@ $.ajax({
                     },
                     {//2 downloads buttons
 		        		render: function( data, type, full, meta ) {
-		        			var cleanBtn;
-		        			if (full[3] && full[3] > 0) {
-		        			    
-		        				//we have a clean file (as we have triples)
-		        				cleanBtn = "<a class='downloadClean btn btn-default' download='" + $('<a>').prop('href', full[0]).prop('hostname') + ".clean.nt.gz' href='"+ api.wardrobe.download(full[4]) + "' title='Download the washed and cleaned data' target='_blank'><span class='glyphicon glyphicon-download'></span> GZIP</a>";
-		        			} else {
-		        				cleanBtn = "<a class='downloadClean btn btn-default disabled' href='javascript:void(0)' title='Empty dataset: Cleaned file not available'><span class='glyphicon glyphicon-download'></span> GZIP</a>";
-		        			}
+		        			var cleanBtn = "<a class='downloadClean btn btn-default' download='" + $('<a>').prop('href', full[0]).prop('hostname') + ".clean.nt.gz' href='"+ api.wardrobe.download(full[4]) + "' title='Download the washed and cleaned data' target='_blank'><span class='glyphicon glyphicon-download'></span> GZIP</a>";
 		        			var dirtyBtn;
 		        	        if (full[5].length) {
 		        	            //this one is unpacked from an archive. we don't have a single dirty file...
@@ -83,13 +67,8 @@ $.ajax({
 		        	            dirtyBtn = "<a class='downloadDirty btn btn-default' title='Download original dirty dataset' href='" + full[0] + "' target='_blank'><span class='glyphicon glyphicon-download'></span> Original Dirty File</a>";
 		        	        }
 		        	        
-		        	        var hdtBtn;
-		        	        if (full[3] && full[3] > 0) {
-                                //we have a clean file (as we have triples)
-		        	            hdtBtn = "<a class='downloadHdt btn btn-default' download='" + $('<a>').prop('href', full[0]).prop('hostname') + ".clean.hdt' href='"+ api.wardrobe.download(full[4], "hdt") + "' title='Download the washed and cleaned data as HDT file' target='_blank'><img class='pull-left' style='height:20px;width: 20px;' src='../imgs/logo_hdt.png'>&nbsp;&nbsp;HDT</a>";
-                            } else {
-                                hdtBtn = "<a class='downloadHdt btn btn-default disabled' href='javascript:void(0)' title='Empty dataset: Clean HDT file not available'><img class='pull-left' style='height:20px;width: 20px;' src='../imgs/logo_hdt.png'>&nbsp;&nbsp;HDT</a>";
-                            }
+		        	        var hdtBtn = "<a class='downloadHdt btn btn-default' download='" + $('<a>').prop('href', full[0]).prop('hostname') + ".clean.hdt' href='"+ api.wardrobe.download(full[4], "hdt") + "' title='Download the washed and cleaned data as HDT file' target='_blank'><img class='pull-left' style='height:20px;width: 20px;' src='../imgs/logo_hdt.png'>&nbsp;&nbsp;HDT</a>";
+                            
 		        	        var space = "&nbsp;";//yes UGLY. Just want this done fast
 		        	        return cleanBtn + space + hdtBtn + space + dirtyBtn;
 		        		},
