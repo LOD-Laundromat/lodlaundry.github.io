@@ -212,7 +212,7 @@ basketListing: function(basketGraph, mainGraph, drawId, orderBy, offset, limit, 
 			clauses = "OPTIONAL {\n\
 		          GRAPH <" + mainGraph + "> {\n";
 			for (var i = 0; i < optionalTPatterns.length; i++) {
-				clauses += "       OPTIONAL{" + optionalTPatterns[i] + "}\n";
+				clauses += "       " + optionalTPatterns[i] + " .\n";
 			}
 			clauses += "     }\n   }\n";
 		}
