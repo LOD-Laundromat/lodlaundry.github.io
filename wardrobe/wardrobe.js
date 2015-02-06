@@ -1,5 +1,41 @@
 var recordsTotal;
 
+var dt;
+var doSearch;
+var addFilterWidgets = function() {
+    var tripleFilter = $('<input id="tripleFilter" style="margin-left: 20px;" type="search" placeholder="filter">')
+    .keyup(function(event){
+        if(event.keyCode == 13){
+            doSearch();
+        }
+    }).appendTo("#tripleHeader");
+    
+    /**
+     * URL filter
+     */
+    var urlFilter = $('<input id="urlFilter" style="margin-left: 20px;" type="search" placeholder="filter">')
+    .keyup(function(event){
+        if(event.keyCode == 13){
+            doSearch();
+        }
+    }).appendTo("#urlHeader");
+    
+    doSearch = function() {
+        var urlFilterVal = urlFilter.val().trim();
+        var tripleFilterVal = tripleFilter.val().trim().replace('.', '');
+        var filter = "";
+        if (tripleFilterVal.length > 0 ) {
+            filter += "triples:" + tripleFilterVal;
+        }
+        if (urlFilterVal.length > 0) {
+            filter += (filter.length == 0? "": " ") + urlFilterVal;
+        }
+        
+        dt.api().search(filter).draw();
+    };
+};
+
+
 $.ajax({
     data: [
            {name: "default-graph-uri", value: sparql.graphs.main},
@@ -15,7 +51,7 @@ $.ajax({
     	  
     	  
     	  $(document).ready(function() {
-		    var datatable = $('#wardrobeTable').dataTable( {
+    	      dt = $('#wardrobeTable').dataTable( {
 		        "processing": true,
 		        "serverSide": true,
 		        "ajax": $.fn.dataTable.pipeline(),
@@ -99,10 +135,13 @@ $.ajax({
 		        	    visible:false
 		        	}
 		        ]
-		    }).fnFilterOnReturn().css("display", "table");
+		    });
+    	    dt.fnFilterOnReturn().css("display", "table");
 		    $("#wardrobeTable_wrapper").prepend(multiButtons);
-		    datatable.on('draw.dt', function () { updateMultiSelectDownloads(); });
+		    
+		    dt.on('draw.dt', function () { updateMultiSelectDownloads(); });
 		} );
+    	  addFilterWidgets();
     	  
     	  
       }

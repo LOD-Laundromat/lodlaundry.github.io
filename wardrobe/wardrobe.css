@@ -4,6 +4,9 @@
 	width: 18px;
 	height: 18px;
 }
+#wardrobeTable_filter {
+	display:none;
+}
 .tableHoverImgs {
 	float:right;
 /* 	position:absolute; */

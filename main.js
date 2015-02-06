@@ -90,16 +90,36 @@ wardrobeListing: function(drawId, orderBy, offset, limit, filter) {
 		0: "?url",
 		3: "?triples"
 	};
-	var filterClause = "";
-	filter = filter.replace("\"", "");//very simple method to avoid injection
-	if (filter.length > 0) {
-		filterExpressions = [];
-		filterExpressions.push("CONTAINS(str(?url), \"" + filter + "\")");
-		if (!isNaN(filter)) {//is  a number, so check the triples field as well
-			filterExpressions.push("CONTAINS(str(?triples), \"" + filter + "\")");
-		}
-		filterClause = "      FILTER(" + filterExpressions.join(" || ") + ")\n";
+	
+	
+	filter = filter.trim().replace("\"", "");//very simple method to avoid injection
+    var triplesFilter = null;
+    var urlFilter = null;
+    if (filter.length > 0) {
+        if (filter.indexOf('triples:') == 0) {
+            filter = filter.substring('triples:'.length);
+            triplesFilter = filter.match(/([\d\.]*)/)[0];
+            filter = filter.substring(triplesFilter.length).trim();
+        }
+        if (filter.length) {
+            urlFilter = filter;
+        }
+    }
+    
+    
+    
+	
+	var filterExpressions = [];
+	if (urlFilter && urlFilter.length > 0) {
+		
+		filterExpressions.push("CONTAINS(str(?url), \"" + urlFilter + "\")");
 	}
+	if (triplesFilter && triplesFilter.length) {
+		filterExpressions.push("CONTAINS(str(?triples), \"" + triplesFilter + "\")");
+	}
+	
+	var filterClause = "";
+	if (filterExpressions.length > 0) filterClause = "      FILTER(" + filterExpressions.join(" || ") + ")\n";
 	var triplePatterns = 
 "      {\n\
          ?datadoc llo:url ?url ;\n\
