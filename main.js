@@ -118,17 +118,17 @@ WHERE {\n\
   {\n\
     SELECT ?md5 ?url ?triples ?parent WHERE { \n" + triplePatterns + "\
     }";
-	var orderBys = [];
-	if (orderBy && orderBy.length > 0) {
-		for (var i = 0; i < orderBy.length; i++) {
-			if (orderBy[i].column in colsToVar) {
-				orderBys.push(orderBy[i].dir.toUpperCase() + "(" + colsToVar[orderBy[i].column] + ")");
-			}
-		}
-	}
-	if (orderBys.length > 0) {
-		query += " ORDER BY " + orderBys.join(" ");
-	}
+//	var orderBys = [];
+//	if (orderBy && orderBy.length > 0) {
+//		for (var i = 0; i < orderBy.length; i++) {
+//			if (orderBy[i].column in colsToVar) {
+//				orderBys.push(orderBy[i].dir.toUpperCase() + "(" + colsToVar[orderBy[i].column] + ")");
+//			}
+//		}
+//	}
+//	if (orderBys.length > 0) {
+//		query += " ORDER BY " + orderBys.join(" ");
+//	}
 	
 	if (limit && limit > 0) {
 		query += " LIMIT " + limit;

@@ -43,7 +43,8 @@ $.ajax({
 		        },
 		        "columns": [
                     {//0 URL
-                    	"class": "urlCol"
+                    	"class": "urlCol",
+                    	orderable: false,
 		        	},
 	                 {//1 services buttons
 		        	    render: function( data, type, full, meta ) {
@@ -87,7 +88,8 @@ $.ajax({
                     		
 			        	},
 			        	"class": "tripleCol",
-			        	width: 90
+			        	width: 90,
+			        	orderable: false,
 		        	},
 		        	{//4 md5
 		        		visible: false,
