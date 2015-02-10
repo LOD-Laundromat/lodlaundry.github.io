@@ -132,7 +132,7 @@ wardrobeListing: function(drawId, orderBy, offset, limit, filter) {
         ?parent llo:containsEntry ?datadoc .\n\
         } " + filterClause;
 
-	var query = prefixes + "SELECT ?totalFilterCount ?drawId ?md5 ?url ?triples ?parent \n\
+	var query = prefixes + "SELECT DISTINCT ?totalFilterCount ?drawId ?md5 ?url ?triples ?parent \n\
 WHERE {\n\
   BIND(\"" + drawId + "\" AS ?drawId) \n\
   {\n\
@@ -159,7 +159,7 @@ WHERE {\n\
 	query += "\n\
   }\n\
   {\n\
-    SELECT (COUNT(?datadoc) AS ?totalFilterCount) WHERE {\n" + triplePatterns + "\
+    SELECT (COUNT(DISTINCT ?datadoc) AS ?totalFilterCount) WHERE {\n" + triplePatterns + "\
     }\n\
   }\n\
 } \n";
