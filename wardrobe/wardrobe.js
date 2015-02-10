@@ -84,10 +84,25 @@ $.ajax({
 		        	},
 	                 {//1 services buttons
 		        	    render: function( data, type, full, meta ) {
-	        	            var ldfBrowserButton = "<a style='padding: 6px;' class='btn btn-default' title='Browse data via LDF' href='" + api.ldf.browser + full[4] + "' target='_blank'><img class='pull-left' style='height: 20px;width: 20px;' src='../imgs/logo_ldf.svg'>&nbsp;Browse</a>";
-	        	            var ldfQueryButton = "<a style='padding: 6px;' class='btn btn-default' title='Query as LDF' href='" + api.ldf.query(full[4]) + "' target='_blank'><img class='pull-left' style='height: 20px;width: 20px;' src='../imgs/logo_ldf.svg'>&nbsp;Query</a>";
-		        	        var metaDataBtn = "<a style='padding: 6px;' class='btn btn-default' title='Show more info' href='http://lodlaundromat.org/resource/" + full[4] + "' target='_blank'><span class='glyphicon glyphicon-info-sign'></span> Metadata</a>";
-                            return ldfBrowserButton + '&nbsp;' + ldfQueryButton + '&nbsp;' + metaDataBtn;
+		        	        var getLdfBrowserBtn = function(href, title, enabled) {
+		        	            return "<a style='padding: 6px;' class='btn btn-default " + (enabled? "" : "disabled") + "' title='" + title + "' href='" + href + "' target='_blank'><img class='pull-left' style='height: 20px;width: 20px;' src='../imgs/logo_ldf.svg'>&nbsp;Browse</a>";
+		        	        }
+		        	        var getLdfQueryBtn = function(href, title, enabled) {
+		        	            return "<a style='padding: 6px;' class='btn btn-default " + (enabled? "" : "disabled") + "' title='" + title + "' href='" + href + "' target='_blank'><img class='pull-left' style='height: 20px;width: 20px;' src='../imgs/logo_ldf.svg'>&nbsp;Query</a>";
+		        	        }
+                            var metaDataBtn = "<a style='padding: 6px;' class='btn btn-default' title='Show more info' href='http://lodlaundromat.org/resource/" + full[4] + "' target='_blank'><span class='glyphicon glyphicon-info-sign'></span> Metadata</a>";
+                            
+                            
+                            var ldfBrowserButton,ldfQueryButton;
+		        	        if (full[3] === null) {
+		        	            //an archive file. no triples set (not '0' as well)
+		        	            ldfBrowserButton = getLdfBrowserBtn('javascript:void(0)', 'Unable to browse archive as LDF. Access the unpacked members instead', false);
+		        	            ldfQueryButton = getLdfQueryBtn('javascript:void(0)', 'Unable to query this archive as LDF. Access the unpacked members instead', false);
+		        	        } else {
+		        	            ldfBrowserButton = getLdfBrowserBtn( api.ldf.browser + full[4], 'Browse data via LDF', true);
+		        	            ldfQueryButton = getLdfQueryBtn(api.ldf.query(full[4]), 'Query as LDF', true);
+		        	        }
+	        	            return ldfBrowserButton + '&nbsp;' + ldfQueryButton + '&nbsp;' + metaDataBtn;
                         },
                         "class": "buttonCol",
                         orderable: false,
@@ -95,16 +110,32 @@ $.ajax({
                     },
                     {//2 downloads buttons
 		        		render: function( data, type, full, meta ) {
-		        			var cleanBtn = "<a class='downloadClean btn btn-default' download='" + $('<a>').prop('href', full[0]).prop('hostname') + ".clean.nt.gz' href='"+ api.wardrobe.download(full[4]) + "' title='Download the washed and cleaned data' target='_blank'><span class='glyphicon glyphicon-download'></span> GZIP</a>";
-		        			var dirtyBtn;
+		        		    var getDownloadLink = function(className, href, title, enabled, buttonName) {
+		        		        return "<a class='" + className + " btn btn-default " + (enabled? "" : "disabled") + "' title='" + title + "' href='" + href + "' target='_blank'><span class='glyphicon glyphicon-download'></span> " + buttonName + "</a>";
+		        		    }
+		        		    var getHdtBtn = function(href, title, enabled) {
+		        		        return "<a class='downloadHdt btn btn-default " + (enabled? "" : "disabled") + "' title='" + title + "' href='" + href + "' target='_blank'><img class='pull-left' style='height:20px;width: 20px;' src='../imgs/logo_hdt.png'>&nbsp;&nbsp;HDT</a>";
+		        		    }
+		        		    
+		        		    
+		        			var dirtyBtn, cleanBtn, hdtBtn;
 		        	        if (full[5].length) {
-		        	            //this one is unpacked from an archive. we don't have a single dirty file...
-		        	        	dirtyBtn = "<a class='downloadDirty btn btn-default disabled' title='File is unpacked from an archive. Download the original archive in order to fetch this file' href='javascript:void(0)'><span class='glyphicon glyphicon-download'></span> Original Dirty File</a>"; 
+		        	            //this one is unpacked from an archive. we don't have a single cleaned file...
+		        	        	dirtyBtn = getDownloadLink('downloadDirty', 'javascript:void(0)', 'File is unpacked from an archive. Download the original archive in order to fetch this file', false, 'Original Dirty File');
 		        	        } else {
-		        	            dirtyBtn = "<a class='downloadDirty btn btn-default' title='Download original dirty dataset' href='" + full[0] + "' target='_blank'><span class='glyphicon glyphicon-download'></span> Original Dirty File</a>";
+		        	            dirtyBtn = getDownloadLink('downloadDirty', full[0].split(" ")[0], 'Download original dirty dataset', true, 'Original Dirty File');
 		        	        }
 		        	        
-		        	        var hdtBtn = "<a class='downloadHdt btn btn-default' download='" + $('<a>').prop('href', full[0]).prop('hostname') + ".clean.hdt' href='"+ api.wardrobe.download(full[4], "hdt") + "' title='Download the washed and cleaned data as HDT file' target='_blank'><img class='pull-left' style='height:20px;width: 20px;' src='../imgs/logo_hdt.png'>&nbsp;&nbsp;HDT</a>";
+		        	        if (full[3] === null) {
+                                //an archive file. no triples set (not '0' as well)
+		        	            cleanBtn = getDownloadLink('downloadClean', 'javascript:void(0)', 'Unable to download archive as cleaned file. Access the unpacked members as cleaned file instead', false, 'GZIP');
+		        	            hdtBtn = getHdtBtn('javascript:void(0)', 'Unable to download archive as cleaned file. Access the unpacked members as cleaned file instead', false);
+		        	        } else {
+		        	            cleanBtn = getDownloadLink('downloadClean', api.wardrobe.download(full[4]), 'Download the washed and cleaned data', true, 'GZIP');
+		        	            hdtBtn = getHdtBtn(api.wardrobe.download(full[4], "hdt"), 'Download the washed and cleaned data as HDT file', true);
+		        	        }
+		        	        
+		        	        
                             
 		        	        var space = "&nbsp;";//yes UGLY. Just want this done fast
 		        	        return cleanBtn + space + hdtBtn + space + dirtyBtn;
@@ -318,7 +349,10 @@ var sparqlResultToDataTable = function(sparqlResult) {
 		//0 url
 		var url = sparqlResult.results.bindings[i].url.value;
 		if (binding.parent && binding.parent.value) {
-		    url += ' <small>Unpacked from archive. <a href="' + binding.parent.value + '" target="_blank">show parent</a></small>';
+		    url += ' <span class="label label-default">Unpacked from archive. <a style="color:#272727" href="' + binding.parent.value + '" target="_blank">show parent</a></span>';
+		}
+		if (!binding.triples) {
+		    url += ' <span class="label label-default">Archive file. Access the unpacked files <a style="color:#272727" href="http://lodlaundromat.org/resource/' + md5 + '" target="_blank">here</a></span>';
 		}
 		row.push(url);
 		

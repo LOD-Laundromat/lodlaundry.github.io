@@ -130,7 +130,14 @@ wardrobeListing: function(drawId, orderBy, offset, limit, filter) {
            llo:triples ?triples ;\n\
            llo:md5 ?md5 .\n\
         ?parent llo:containsEntry ?datadoc .\n\
-        } " + filterClause;
+        } UNION {\n\
+        ?datadoc a llo:Archive ;\n\
+           llo:md5 ?md5;\n\
+           llo:containsEntry [].\n\
+        {?datadoc llo:url ?url}\n\
+        UNION\n\
+        {?datadoc llo:path ?url}\n\
+        }\n" + filterClause;
 
 	var query = prefixes + "SELECT DISTINCT ?totalFilterCount ?drawId ?md5 ?url ?triples ?parent \n\
 WHERE {\n\
