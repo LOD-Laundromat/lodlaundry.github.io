@@ -19,8 +19,7 @@
     "github-fork-ribbon-css": "0.1.0",
     "d3-tip": "0.6.4",
     "jquery.scrollTo": "1.4.11",
-    "YASQE": "YASGUI/YASQE#~2.2.6",
-    "YASR": "YASGUI/YASR#~2.4.1",
+    "YASGUI": "YASGUI/YASGUI#~1.0.12",
     "d3": "~3.4.11"
   }
 }
