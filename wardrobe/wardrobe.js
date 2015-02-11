@@ -69,13 +69,6 @@ $.ajax({
 	                      event.stopPropagation();
 	                    }
 	                );
-	                $(this).toggleClass('selected');
-	                $(row).click(
-	                    function(){
-	                      $(this).toggleClass('selected');
-	                      updateMultiSelectDownloads();
-	                    }
-	                );
 		        },
 		        "columns": [
                     {//0 URL
@@ -168,9 +161,7 @@ $.ajax({
 		        ]
 		    });
     	    dt.fnFilterOnReturn().css("display", "table");
-		    $("#wardrobeTable_wrapper").prepend(multiButtons);
 		    
-		    dt.on('draw.dt', function () { updateMultiSelectDownloads(); });
 		} );
     	  addFilterWidgets();
     	  
@@ -180,36 +171,6 @@ $.ajax({
     url: sparql.url
 });
 
-var downloadSelectedCleaned = function() {
-  $("#wardrobeTable tr.selected .downloadClean").each(function(){
-    this.click();
-  });
-};
-var downloadSelectedDirty = function() {
-  $("#wardrobeTable tr.selected .downloadDirty").each(function(){
-    this.click();
-  });
-};
-
-
-var multiButtons =  $("<div id='multiButtons' style='float:left; display:none'></div>");
-$("<button style='margin-left: 10px;' class='btn btn-primary' title='Download the selected washed and cleaned data'><span class='glyphicon glyphicon-download'></span> Download selected cleaned data</button>")
-.appendTo(multiButtons)
-.click(downloadSelectedCleaned);
-$("<button style='margin-left: 10px;' class='btn btn-primary' title='Download the selected dirty data'><span class='glyphicon glyphicon-download'></span> Download selected dirty data</button>")
-.appendTo(multiButtons)
-.click(downloadSelectedDirty);
-
-var updateMultiSelectDownloads = function(url) {
-	  if ($("#wardrobeTable tr.selected").length > 0) {
-	    if (!multiButtons.is(':visible')) {
-	      multiButtons.slideDown();
-	    }
-	  } else {
-	    if (multiButtons.is(':visible')) multiButtons.slideUp();
-	  }
-	  
-	};
 //
 // Pipelining function for DataTables. To be used to the `ajax` option of DataTables
 //
