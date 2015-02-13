@@ -487,7 +487,7 @@ var getAndDrawCounter = function() {
     $.ajax({
       url: sparql.url,
       data: [
-//             {name: "default-graph-uri", value: sparql.basketGraph},
+             {name: "default-graph-uri", value: sparql.graphs.main},
              {name: "query", value: sparql.queries.totalTripleCount}
       ],
       success: function(data) {
