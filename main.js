@@ -71,7 +71,7 @@ prefixes + "SELECT ?md5 ?doc ?triples ?duplicates {\n\
     llo:url ?doc ;\n\
     llo:md5 ?md5 .\n\
   FILTER(?triples > 0)\n\
-} ORDER BY DESC(?triples) LIMIT 1000",
+} ORDER BY DESC(?triples + ?duplicates) LIMIT 1000",
 exceptionCounts:
 prefixes + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n\
 PREFIX error: <http://lodlaundromat.org/error/ontology/>\n\
