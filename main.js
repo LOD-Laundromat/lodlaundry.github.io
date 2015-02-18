@@ -5,7 +5,7 @@ if (!console.log) {
 };
 var prefixes = "PREFIX llo: <http://lodlaundromat.org/ontology/>\n\
 PREFIX ll: <http://lodlaundromat/org/resource/>\n";
-var llVersion = 11;
+var llVersion = 12;
 var sparql = {
 	url : "http://sparql.backend.lodlaundromat.org",
 	graphs: {
