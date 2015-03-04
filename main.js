@@ -523,7 +523,7 @@ var showNotification = function(msg) {
         $('<div>', {class: 'alert alert-info', role: 'alert'}).text(msg).prependTo($('body'));
     }
 }
-showNotification('We have upgraded the Washing Machine crawling mechanism. For consistency reasons, we have re-initiated the crawl from scratch. (taking the manually added seed-items from the previous crawl into account) (20 Feb. 2015)');
+//showNotification('We have upgraded the Washing Machine crawling mechanism. For consistency reasons, we have re-initiated the crawl from scratch. (taking the manually added seed-items from the previous crawl into account) (20 Feb. 2015)');
 /**
  * draw google analytics
  */
