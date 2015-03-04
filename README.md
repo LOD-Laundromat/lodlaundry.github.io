@@ -1,4 +1,1 @@
-lodlaundy.github.io
-===================
-
-Public organisation page
+http://lodlaundromat.org
