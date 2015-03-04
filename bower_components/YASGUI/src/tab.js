@@ -2,11 +2,13 @@
 var $ = require('jquery'),
 	utils = require('./utils.js'),
 	yUtils = require('yasgui-utils'),
+	_ = require('underscore'),
 	YASGUI = require('./main.js');
 //we only generate the settings for YASQE, as we modify lots of YASQE settings via the YASGUI interface
 //We leave YASR to store its settings separately, as this is all handled directly from the YASR controls
 var defaultPersistent = {
 	yasqe: {
+		height: 300,
 		sparql: {
 			endpoint: YASGUI.YASQE.defaults.sparql.endpoint,
 			acceptHeaderGraph: YASGUI.YASQE.defaults.sparql.acceptHeaderGraph,
@@ -123,22 +125,32 @@ module.exports = function(yasgui, id, name, endpoint) {
 	}
 	$.extend(yasqeOptions, persistentOptions.yasqe);
 	
-	tab.onShow = function() {
-		if (!tab.yasqe || !tab.yasr) {
+	var initYasr = function() {
+		if (!tab.yasr) {
+			if (!tab.yasqe) initYasqe();//we need this one to initialize yasr
 			var getQueryString = function() {
 				return persistentOptions.yasqe.sparql.endpoint + "?" +
 					$.param(tab.yasqe.getUrlArguments(persistentOptions.yasqe.sparql));
 			};
 			YASGUI.YASR.plugins.error.defaults.tryQueryLink = getQueryString;
-			tab.yasqe = YASGUI.YASQE(yasqeContainer[0], yasqeOptions);
-			tab.yasqe.on('blur', function(yasqe) {
-				persistentOptions.yasqe.value = yasqe.getValue();
-				yasgui.store();
-			});
 			tab.yasr = YASGUI.YASR(yasrContainer[0], $.extend({
 				//this way, the URLs in the results are prettified using the defined prefixes in the query
 				getUsedPrefixes: tab.yasqe.getPrefixesFromQuery
 			}, persistentOptions.yasr));
+			
+		}
+	};
+	
+	
+	var initYasqe = function() {
+		if (!tab.yasqe) {
+      addControlBar();
+			tab.yasqe = YASGUI.YASQE(yasqeContainer[0], yasqeOptions);
+			tab.yasqe.setSize("100%", persistentOptions.yasqe.height);
+			tab.yasqe.on('blur', function(yasqe) {
+				persistentOptions.yasqe.value = yasqe.getValue();
+				yasgui.store();
+			});
 			var beforeSend = null;
 			tab.yasqe.options.sparql.callbacks.beforeSend = function() {
 				beforeSend = +new Date();
@@ -167,12 +179,42 @@ module.exports = function(yasgui, id, name, endpoint) {
 					YASGUI.YASQE.executeQuery(tab.yasqe);
 				}
 			};
-			addControlBar();
+			
+
+			
+			
 		}
 	};
+	tab.onShow = function() {
+		initYasqe();
+		tab.yasqe.refresh();
+		initYasr();
+		
+		$(tab.yasqe.getWrapperElement()).resizable({
+			minHeight: 200,
+			handles: 's',
+			resize : function() {
+				_.debounce(function() {
+					tab.yasqe.setSize("100%", $(this).height());
+					tab.yasqe.refresh()
+				}, 500);
+			},
+			stop: function() {
+				persistentOptions.yasqe.height = $(this).height();
+				tab.yasqe.refresh()
+				yasgui.store();
+			}
+		});
+	};
+	
+	tab.beforeShow = function() {
+		initYasqe();
+	}
 	tab.refreshYasqe = function() {
-		$.extend(true, tab.yasqe.options, tab.persistentOptions.yasqe);
-		if (tab.persistentOptions.yasqe.value) tab.yasqe.setValue(tab.persistentOptions.yasqe.value);
+    if (tab.yasqe) {
+      $.extend(true, tab.yasqe.options, tab.persistentOptions.yasqe);
+      if (tab.persistentOptions.yasqe.value) tab.yasqe.setValue(tab.persistentOptions.yasqe.value);
+    }
 	};
 	tab.destroy = function() {
 		if (!tab.yasr) {

@@ -55,7 +55,9 @@ module.exports = function(yasgui) {
 		
 		//init add button
 		var $addTab= $('<a>', {role: 'addTab'})
-			.click(function(){addTab()})
+			.click(function(e){ 
+				addTab();
+			})
 			.text('+');
 		$tabsParent.append(
 				$("<li>", {role: "presentation"})
@@ -120,11 +122,19 @@ module.exports = function(yasgui) {
 				$listItem.addClass('divider');
 			}
 		};
+		addMenuItem('Add new Tab', function(tabId) {
+			addTab();
+		});
 		addMenuItem('Rename', function(tabId) {
 			$tabsParent.find('a[href="#' +tabId+ '"]').dblclick();
 		});
 		addMenuItem('Copy', function(tabId){
-			console.log('todo');
+			var newTabId = getRandomId();
+			var copiedSettings = $.extend(true, {}, persistentOptions.tabs[tabId]);
+			copiedSettings.id = newTabId;
+			persistentOptions.tabs[newTabId] = copiedSettings;
+			addTab(newTabId);
+			selectTab(newTabId);
 		});
 		addMenuItem();
 		addMenuItem('Close', closeTab);
@@ -183,7 +193,11 @@ module.exports = function(yasgui) {
 		var newItem = !tabId;
 		if (!tabId) tabId = getRandomId();
 		if (!('tabs' in persistentOptions)) persistentOptions.tabs = {};
-		var name = (persistentOptions.tabs[tabId]? persistentOptions.tabs[tabId].name: getName());
+		var name = null;
+		if (persistentOptions.tabs[tabId] && persistentOptions.tabs[tabId].name) {
+			name = persistentOptions.tabs[tabId].name
+		}
+		if (!name) name = getName();
 		
 		
 		//Initialize new tab with endpoint from currently selected tab (if there is one)
@@ -268,6 +282,7 @@ module.exports = function(yasgui) {
 		if (newItem) persistentOptions.tabOrder.push(tabId);
 		manager.tabs[tabId] = require('./tab.js')(yasgui, tabId, name, endpoint);
 		if (newItem || persistentOptions.selected == tabId) {
+			manager.tabs[tabId].beforeShow();
 			$tabToggle.tab('show');
 		}
 		return manager.tabs[tabId];
@@ -276,6 +291,7 @@ module.exports = function(yasgui) {
 	manager.current = function() {
 		return manager.tabs[persistentOptions.selected];
 	}
+	manager.addTab = addTab;
 	return manager;
 };
 

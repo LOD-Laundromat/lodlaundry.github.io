@@ -1,3 +1,4 @@
+@charset "UTF-8";
 .yasgui {
   position: relative;
   /**We need to set some bootstrap properties manually. These are normally assigned to body, but cannot do this as everyhing is namespaced*/
@@ -30,12 +31,20 @@
   @-ms-viewport {
     width: device-width; }
 
+  /*!
+ * jQuery UI Resizable 1.10.4
+ * http://jqueryui.com
+ *
+ * Copyright 2014 jQuery Foundation and other contributors
+ * Released under the MIT license.
+ * http://jquery.org/license
+ */
   /**Disable webkit perspective for now (disappointing, because it improves the transition a lot..)
 This perspective messes up the full screen capabilities of YASR/YASQE, and positioning of e.g. selectboxes
 **/
   /**
- * selectize.css (v0.11.2)
- * Copyright (c) 2013 Brian Reavis & contributors
+ * selectize.css (v0.12.0)
+ * Copyright (c) 2013–2015 Brian Reavis & contributors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
  * file except in compliance with the License. You may obtain a copy of the License at:
@@ -49,8 +58,8 @@ This perspective messes up the full screen capabilities of YASR/YASQE, and posit
  * @author Brian Reavis <brian@thirdroute.com>
  */
   /**
- * selectize.bootstrap3.css (v0.11.2) - Bootstrap 3 Theme
- * Copyright (c) 2013 Brian Reavis & contributors
+ * selectize.bootstrap3.css (v0.12.0) - Bootstrap 3 Theme
+ * Copyright (c) 2013–2015 Brian Reavis & contributors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
  * file except in compliance with the License. You may obtain a copy of the License at:
@@ -4182,8 +4191,66 @@ This perspective messes up the full screen capabilities of YASR/YASQE, and posit
   @media print {
     .yasgui .hidden-print {
       display: none !important; } }
+  .yasgui .ui-resizable {
+    position: relative; }
+  .yasgui .ui-resizable-handle {
+    position: absolute;
+    font-size: 0.1px;
+    display: block; }
+  .yasgui .ui-resizable-disabled .ui-resizable-handle, .yasgui .ui-resizable-autohide .ui-resizable-handle {
+    display: none; }
+  .yasgui .ui-resizable-n {
+    cursor: n-resize;
+    height: 7px;
+    width: 100%;
+    top: -5px;
+    left: 0; }
+  .yasgui .ui-resizable-s {
+    cursor: s-resize;
+    height: 7px;
+    width: 100%;
+    bottom: -5px;
+    left: 0; }
+  .yasgui .ui-resizable-e {
+    cursor: e-resize;
+    width: 7px;
+    right: -5px;
+    top: 0;
+    height: 100%; }
+  .yasgui .ui-resizable-w {
+    cursor: w-resize;
+    width: 7px;
+    left: -5px;
+    top: 0;
+    height: 100%; }
+  .yasgui .ui-resizable-se {
+    cursor: se-resize;
+    width: 12px;
+    height: 12px;
+    right: 1px;
+    bottom: 1px; }
+  .yasgui .ui-resizable-sw {
+    cursor: sw-resize;
+    width: 9px;
+    height: 9px;
+    left: -5px;
+    bottom: -5px; }
+  .yasgui .ui-resizable-nw {
+    cursor: nw-resize;
+    width: 9px;
+    height: 9px;
+    left: -5px;
+    top: -5px; }
+  .yasgui .ui-resizable-ne {
+    cursor: ne-resize;
+    width: 9px;
+    height: 9px;
+    right: -5px;
+    top: -5px; }
   .yasgui .yasqe .CodeMirror {
-    border-color: #ddd; }
+    border-color: #ddd;
+    border-bottom-width: 4px;
+    border-bottom-color: #B6B6B6; }
   .yasgui .yasr .CodeMirror {
     border-color: #ddd; }
   .yasgui .nav-tabs li.tab-sortable-highlight {
@@ -4348,6 +4415,7 @@ This perspective messes up the full screen capabilities of YASR/YASQE, and posit
       vertical-align: middle;
       padding-left: 10px;
       padding-right: 10px;
+      margin-bottom: 5px;
       height: 34px; }
       .yasgui .controlbar .menuButton:focus {
         outline: none;
@@ -4713,8 +4781,8 @@ This perspective messes up the full screen capabilities of YASR/YASQE, and posit
     position: relative; }
   .yasgui .selectize-dropdown, .yasgui .selectize-input, .yasgui .selectize-input input {
     color: #333333;
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-size: 14px;
+    font-family: inherit;
+    font-size: inherit;
     line-height: 20px;
     -webkit-font-smoothing: inherit; }
   .yasgui .selectize-input, .yasgui .selectize-control.single .selectize-input.input-active {
@@ -4805,7 +4873,7 @@ This perspective messes up the full screen capabilities of YASR/YASQE, and posit
   .yasgui .selectize-dropdown {
     position: absolute;
     z-index: 10;
-    border: 1px solid #cccccc;
+    border: 1px solid #d0d0d0;
     background: #ffffff;
     margin: -1px 0 0 0;
     border-top: 0 none;
@@ -4943,6 +5011,7 @@ This perspective messes up the full screen capabilities of YASR/YASQE, and posit
     border-radius: 0; }
 
 .yasqe {
+  position: relative;
   /* BASICS */
   /* PADDING */
   /* GUTTER */
@@ -5311,7 +5380,7 @@ This perspective messes up the full screen capabilities of YASR/YASQE, and posit
   *vertical-align: text-bottom; }
 
 .yasqe .cm-force-border {
-  padding-right: 0.1px; }
+  padding-right: .1px; }
 
 @media print {
   .yasqe {
@@ -5338,11 +5407,11 @@ This perspective messes up the full screen capabilities of YASR/YASQE, and posit
   color: blue;
   text-shadow: #b9f 1px 1px 2px, #b9f -1px -1px 2px, #b9f 1px -1px 2px, #b9f -1px 1px 2px;
   font-family: arial;
-  line-height: 0.3;
+  line-height: .3;
   cursor: pointer; }
 
 .yasqe .CodeMirror-foldgutter {
-  width: 0.7em; }
+  width: .7em; }
 
 .yasqe .CodeMirror-foldgutter-open, .yasqe .CodeMirror-foldgutter-folded {
   cursor: pointer; }
@@ -5352,6 +5421,17 @@ This perspective messes up the full screen capabilities of YASR/YASQE, and posit
 
 .yasqe .CodeMirror-foldgutter-folded:after {
   content: "\25B8"; }
+
+.yasqe .backdrop {
+  background-color: #000;
+  opacity: 0.5;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  z-index: 5;
+  display: none; }
 
 .yasqe .svgImg {
   display: inline-block; }
@@ -6353,7 +6433,7 @@ li.CodeMirror-hint-active {
   *vertical-align: text-bottom; }
 
 .yasr .cm-force-border {
-  padding-right: 0.1px; }
+  padding-right: .1px; }
 
 @media print {
   .yasr {
@@ -6371,11 +6451,11 @@ li.CodeMirror-hint-active {
   color: blue;
   text-shadow: #b9f 1px 1px 2px, #b9f -1px -1px 2px, #b9f 1px -1px 2px, #b9f -1px 1px 2px;
   font-family: arial;
-  line-height: 0.3;
+  line-height: .3;
   cursor: pointer; }
 
 .yasr .CodeMirror-foldgutter {
-  width: 0.7em; }
+  width: .7em; }
 
 .yasr .CodeMirror-foldgutter-open, .yasr .CodeMirror-foldgutter-folded {
   cursor: pointer; }
@@ -6459,7 +6539,7 @@ li.CodeMirror-hint-active {
 
 .yasr .yasr_btn[disabled], .yasr .yasr_btn.disabled {
   cursor: default;
-  opacity: 0.5;
+  opacity: .5;
   filter: alpha(opacity=50);
   -webkit-box-shadow: none;
   box-shadow: none; }
@@ -6545,7 +6625,7 @@ li.CodeMirror-hint-active {
   line-height: 1;
   color: #000;
   text-shadow: 0 1px 0 #fff;
-  opacity: 0.2;
+  opacity: .2;
   position: relative;
   top: -2px;
   right: -21px;
@@ -6555,7 +6635,7 @@ li.CodeMirror-hint-active {
   color: #000;
   cursor: pointer;
   filter: alpha(opacity=50);
-  opacity: 0.5; }
+  opacity: .5; }
 
 .yasr .booleanResult {
   width: 70px;
@@ -6579,7 +6659,7 @@ li.CodeMirror-hint-active {
 
 .yasr .errorResult .errorHeader span.exception {
   display: inline;
-  padding: 0.2em 0.6em 0.3em;
+  padding: .2em .6em .3em;
   font-size: 75%;
   font-weight: 700;
   line-height: 1;
@@ -6587,7 +6667,7 @@ li.CodeMirror-hint-active {
   text-align: center;
   white-space: nowrap;
   vertical-align: baseline;
-  border-radius: 0.25em;
+  border-radius: .25em;
   background-color: #d9534f; }
 
 .yasr .errorResult pre {
