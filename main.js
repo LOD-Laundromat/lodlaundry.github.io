@@ -183,39 +183,20 @@ basketListing: function(basketGraph, mainGraph, drawId, orderBy, offset, limit, 
 	var requiredClause = "";
 	var minusClause = "";
 	var getStatusBlock = function() {
-		var tPatterns = [
-            "?datadoc llo:endClean ?endClean",
-			"?datadoc llo:startClean ?startClean",
-			"?datadoc llo:endUnpack ?endUnpack",
-			"?datadoc llo:startUnpack ?startUnpack",
-		];
-		var optionalTPatterns = [];
-		var minusTPatterns = [];
-		var requiredTPatterns = [];
-		//cleaned: everything non optional
-		//cleaning: everything except end clean
-		//unpacked: everything except cleaning
-		//unpacking: everything except cleaned non optional
-		//pending: everything does not exist
-		
-		
-		if (statusFilter == null) {
-			optionalTPatterns = tPatterns;
-		} else if (statusFilter == "cleaned") {
-			requiredTPatterns = tPatterns;
-		} else if (statusFilter == "cleaning") {
-			requiredTPatterns = tPatterns.slice(1, 3);
-			minusTPatterns = [tPatterns[0]];
-		} else if (statusFilter == "unpacked") {
-			requiredTPatterns = tPatterns.slice(2,3);
-			minusTPatterns = tPatterns.slice(0,1);
-		} else if (statusFilter == "unpacking") {
-			requiredTPatterns = [tPatterns[3]];
-			minusTPatterns = [tPatterns[2]];
-		} else {
-			//pending
-			minusTPatterns = tPatterns;
-		}
+	    var optionalTPatterns = [];
+	    var minusTPatterns = [];
+	    var requiredTPatterns = [];
+	    var cleanTPattern = "?datadoc llo:endClean ?endClean"
+	    
+	    if (statusFilter == null) {
+	        optionalTPatterns.push(cleanTPattern);
+	    } else if (statusFilter == "cleaned"){
+	        requiredTPatterns.push(cleanTPattern);
+	    } else {
+	        //we want the queued ones
+	        minusTPatterns.push(cleanTPattern);
+	    }
+	    
 		
 		var clauses = "";
 		

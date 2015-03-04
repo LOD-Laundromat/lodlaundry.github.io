@@ -198,11 +198,8 @@ var addFilterWidgets = function() {
 	 */
 	var select = $("<select id='statusFilter'/>").appendTo($("<div></div>").appendTo($("#statusHeader")));
 	$("<option value='-'>---</option>").appendTo(select);
-	$("<option value='pending'>pending</option>").appendTo(select);
-	$("<option value='unpacking'>unpacking</option>").appendTo(select);
-	$("<option value='unpacked'>unpacked</option>").appendTo(select);
-	$("<option value='cleaning'>cleaning</option>").appendTo(select);
 	$("<option value='cleaned'>cleaned</option>").appendTo(select);
+	$("<option value='queued'>queued</option>").appendTo(select);
 
 	select.on('change', function() {
 		doSearch();
@@ -237,14 +234,8 @@ var addFilterWidgets = function() {
 var getStatus = function(result) {
 	if (result.endClean) {
 		return "cleaned";
-	} else if(result.startClean) {
-		return "cleaning";
-	} else if(result.endUnpack) {
-		return "unpacked";
-	} else if(result.startUnpack) {
-		return "unpacking";
 	} else {
-		return "pending";
+		return "queued";
 	}
 };
 
