@@ -9,8 +9,7 @@ $( document ).ready(function() {
   YASGUI.YASQE.defaults.sparql.namedGraphs = namedGraphs;
   YASGUI.YASQE.defaults.sparql.defaultGraphs = defaultGraphs;
   YASGUI.YASQE.defaults.sparql.endpoint = sparql.url;
-  YASGUI.YASQE.defaults.value = "PREFIX ll: <http://lodlaundromat.org/vocab#>\n"+
-		"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n"+
+  YASGUI.YASQE.defaults.value = sparql.prefixes + 
 		"SELECT DISTINCT ?properties ?classes WHERE {\n"+
 		"	{[] a ?classes}\n"+
 		"	UNION\n"+

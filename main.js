@@ -15,6 +15,7 @@ var sparql = {
 		error: "http://lodlaundromat.org/ontology#error",
 		http: "http://lodlaundromat.org/ontology#http"
 	},
+  prefixes: prefixes,
 	queries : {
 totalTripleCount :
 
