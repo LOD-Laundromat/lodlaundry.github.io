@@ -1,6 +1,6 @@
 {
   "name": "yasgui",
-  "version": "1.0.17",
+  "version": "1.1.1",
   "homepage": "http://doc.yasgui.org",
   "authors": [
     "Laurens Rietveld <laurens.rietveld@gmail.com>"
@@ -22,13 +22,13 @@
     "test",
     "tests"
   ],
-  "_release": "1.0.17",
+  "_release": "1.1.1",
   "_resolution": {
     "type": "version",
-    "tag": "v1.0.17",
-    "commit": "0bdaaf85f8d3c1e6ebeca3e0cbac7530d2e4ba29"
+    "tag": "v1.1.1",
+    "commit": "3a619f2d7f5edaaa9e695b7b7f7434329623a8bb"
   },
   "_source": "git://github.com/YASGUI/YASGUI.git",
-  "_target": "~1.0.17",
+  "_target": "~1.1.1",
   "_originalSource": "YASGUI/YASGUI"
 }

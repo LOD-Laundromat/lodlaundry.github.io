@@ -1,5 +1,12 @@
 'use strict';
+
+//		mod.emit('initError')
+//		mod.once('initDone', load);
+
+
+
 var $ = require('jquery'),
+	EventEmitter = require('events').EventEmitter,
 	utils = require('./utils.js'),
 	yUtils = require('yasgui-utils'),
 	_ = require('underscore'),
@@ -24,22 +31,26 @@ var defaultPersistent = {
 
 
 module.exports = function(yasgui, id, name, endpoint) {
-	if (!yasgui.persistentOptions.tabManager.tabs[id]) {
-		yasgui.persistentOptions.tabManager.tabs[id] = $.extend(true, {
+	return new Tab(yasgui, id, name, endpoint);
+}
+var Tab = function(yasgui, id, name, endpoint) {
+	EventEmitter.call(this);
+	
+	if (!yasgui.persistentOptions.tabs[id]) {
+		yasgui.persistentOptions.tabs[id] = $.extend(true, {
 			id: id,
 			name: name
 		}, defaultPersistent);
 	} else {
-		yasgui.persistentOptions.tabManager.tabs[id] = $.extend(true, {}, defaultPersistent, yasgui.persistentOptions.tabManager.tabs[id]);
+		yasgui.persistentOptions.tabs[id] = $.extend(true, {}, defaultPersistent, yasgui.persistentOptions.tabs[id]);
 	}
-	var persistentOptions = yasgui.persistentOptions.tabManager.tabs[id];
+	var persistentOptions = yasgui.persistentOptions.tabs[id];
 	if (endpoint) persistentOptions.yasqe.sparql.endpoint = endpoint;
-	var tab = {
-		persistentOptions: persistentOptions
-	};
+	var tab = this;
+	tab.persistentOptions = persistentOptions;
 	
 	var menu = require('./tabPaneMenu.js')(yasgui, tab);
-	var $pane = $('<div>', {id:persistentOptions.id, style: 'position:relative', class: 'tab-pane', role: 'tabpanel'}).appendTo(yasgui.tabManager.$tabPanesParent);
+	var $pane = $('<div>', {id:persistentOptions.id, style: 'position:relative', class: 'tab-pane', role: 'tabpanel'}).appendTo(yasgui.$tabPanesParent);
 	
 	var $paneContent = $('<div>', {class:'wrapper'}).appendTo($pane);
 	var $controlBar = $('<div>', {class: 'controlbar'}).appendTo($paneContent);
@@ -137,14 +148,18 @@ module.exports = function(yasgui, id, name, endpoint) {
 				//this way, the URLs in the results are prettified using the defined prefixes in the query
 				getUsedPrefixes: tab.yasqe.getPrefixesFromQuery
 			}, persistentOptions.yasr));
-			
 		}
+		
 	};
-	
+	tab.query = function() {
+		tab.yasqe.query();
+	};
 	
 	var initYasqe = function() {
 		if (!tab.yasqe) {
-      addControlBar();
+			addControlBar();
+      		YASGUI.YASQE.defaults.extraKeys['Ctrl-Space'] = function(){tab.yasqe.query.apply(this, arguments)};
+      		YASGUI.YASQE.defaults.extraKeys['Cmd-Space'] = function(){tab.yasqe.query.apply(this, arguments)};
 			tab.yasqe = YASGUI.YASQE(yasqeContainer[0], yasqeOptions);
 			tab.yasqe.setSize("100%", persistentOptions.yasqe.height);
 			tab.yasqe.on('blur', function(yasqe) {
@@ -181,7 +196,6 @@ module.exports = function(yasgui, id, name, endpoint) {
 			};
 			
 
-			
 			
 		}
 	};
@@ -220,11 +234,11 @@ module.exports = function(yasgui, id, name, endpoint) {
 		if (!tab.yasr) {
 			//instantiate yasr (without rendering results, to avoid load)
 			//this way, we can clear the yasr persistent results
-			tab.yasr = YASGUI.YASR(yasrContainer[0], {}, '');
+			tab.yasr = YASGUI.YASR(yasrContainer[0], {outputPlugins: []}, '');
 		}
-		yUtils.storage.remove(tab.yasr.getPersistencyId(tab.yasr.options.persistency.results.key));
-		
-		
+		yUtils.storage.removeAll(function(key, val) {
+			return key.indexOf(tab.yasr.getPersistencyId('')) == 0;
+		})
 	}
 	tab.getEndpoint = function() {
 		var endpoint = null;
@@ -237,5 +251,5 @@ module.exports = function(yasgui, id, name, endpoint) {
 	return tab;
 }
 
-
+Tab.prototype = new EventEmitter;
 

@@ -1,7 +1,6 @@
-var getUrlParams = function(queryString) {
+var deparam = function(queryString) {
 	var params = [];
-	if (!queryString) queryString = window.location.search.substring(1);
-	if (queryString.length > 0) {
+	if (queryString && queryString.length > 0) {
 	    var vars = queryString.split("&");
 	    for (var i = 0; i < vars.length; i++) {
 	        var pair = vars[i].split("=");
@@ -17,14 +16,30 @@ var getUrlParams = function(queryString) {
 	        }
 	    }
 	}
-    return params;
+	return params;
+};
+
+
+var getUrlParams = function() {
+	//first try hash
+	var urlParams = [];
+	if (window.location.hash.length > 1) {
+		urlParams = deparam(window.location.hash.substring(1))
+		window.location.hash = "";//clear hash
+	} else if (window.location.search.length > 1) {
+		//ok, then just try regular url params
+		urlParams = deparam(window.location.search.substring(1));
+	}
+	return urlParams;
 };
 
 module.exports = {
 	getCreateLinkHandler: function(tab) {
 		return function() {
+			/**
+			 * First set YASQE settings
+			 */
 			var params = [
-				{name: 'outputFormat', value: tab.yasr.options.output},
 				{name: 'query', value: tab.yasqe.getValue()},
 				{name: 'contentTypeConstruct', value: tab.persistentOptions.yasqe.sparql.acceptHeaderGraph},
 				{name: 'contentTypeSelect', value: tab.persistentOptions.yasqe.sparql.acceptHeaderSelect},
@@ -43,24 +58,38 @@ module.exports = {
 				params.push({name: 'defaultGraph', value: dg});
 			});
 			
-			//extend existing link, so first fetch current arguments. But: make sure we don't include items already used in share link
-			var keys = [];
-			params.forEach(function(paramPair){keys.push(paramPair.name)});
-			var currentParams = getUrlParams();
-			currentParams.forEach(function(paramPair) {
-				if (keys.indexOf(paramPair.name) == -1) {
-					params.push(paramPair);
+			/**
+			 * Now set YASR settings
+			 */
+			params.push({name: 'outputFormat', value: tab.yasr.options.output});
+			if (tab.yasr.plugins[tab.yasr.options.output].getPersistentSettings) {
+				var persistentPluginSettings = tab.yasr.plugins[tab.yasr.options.output].getPersistentSettings();
+				if (typeof persistentPluginSettings == "object") {
+					persistentPluginSettings = JSON.stringify(persistentPluginSettings);
 				}
-			});
+				params.push({name: 'outputSettings', value: persistentPluginSettings});
+			}
+			
+			//extend existing link, so first fetch current arguments. But: make sure we don't include items already used in share link
+			if (window.location.hash.length > 1) {
+				var keys = [];
+				params.forEach(function(paramPair){keys.push(paramPair.name)});
+				var currentParams = deparam(window.location.hash.substring(1))
+				currentParams.forEach(function(paramPair) {
+					if (keys.indexOf(paramPair.name) == -1) {
+						params.push(paramPair);
+					}
+				});
+			}
 			
 			return params;
 		}
 	},
 	getOptionsFromUrl: function() {
 		var options = {yasqe: {sparql: {}}, yasr:{}};
+		
 		var params = getUrlParams();
 		var validYasguiOptions = false;
-		
 		
 		params.forEach(function(paramPair){
 			if (paramPair.name == 'query') {
@@ -70,6 +99,8 @@ module.exports = {
 				var output = paramPair.value;
 				if (output == 'simpleTable') output = 'table';//this query link is from v1. don't have this plugin anymore
 				options.yasr.output = output;
+			} else if (paramPair.name == 'outputSettings') {
+				options.yasr.outputSettings = JSON.parse(paramPair.value);
 			} else if (paramPair.name == 'contentTypeConstruct') {
 				options.yasqe.sparql.acceptHeaderGraph = paramPair.value;
 			} else if (paramPair.name == 'contentTypeSelect') {

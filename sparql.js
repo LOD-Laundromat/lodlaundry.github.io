@@ -17,8 +17,8 @@ $( document ).ready(function() {
 		"} LIMIT 10";
   yasgui = YASGUI(document.getElementById("sparql"));
   //overwrite settings from local storage w.r.t. default graphs (needed when changing crawl version)
-  for (var tabId in yasgui.tabManager.tabs) {
-      var tab = yasgui.tabManager.tabs[tabId];
+  for (var tabId in yasgui.tabs) {
+      var tab = yasgui.tabs[tabId];
       if (tab.persistentOptions && tab.persistentOptions.yasqe && tab.persistentOptions.yasqe.sparql) {
           tab.persistentOptions.yasqe.sparql.defaultGraphs = defaultGraphs;
       }
