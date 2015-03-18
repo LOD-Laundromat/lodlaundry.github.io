@@ -15,6 +15,9 @@ month_names[month_names.length] = "October";
 month_names[month_names.length] = "November";
 month_names[month_names.length] = "December";
 
+
+
+
 var datatable;
 $.ajax({
     data: [
@@ -271,7 +274,8 @@ var sparqlResultToDataTable = function(sparqlResult) {
 	}
 	return datatable;
 };
-
+var successMsg =
+    "<span class=\"label label-success\">Successfully received!</span>";
 function storeUrl() {
   var failureMsg = function(customMsg) {
 	  var msg = "<span class=\"label label-danger\">";
@@ -286,8 +290,7 @@ function storeUrl() {
 	  msg += " If this problem persists, please drop us a <a style=\"color:#2C2C2C\" href=\"https://github.com/LODLaundry/lodlaundry.github.io/issues\">Github issue</a>!</span>";
 	  return msg;
   };
-  var successMsg =
-      "<span class=\"label label-success\">Successfully received!</span>";
+  
   
   var url = $("#newDirtyLaundry").val().trim();
   if (url.length > 0) {
@@ -320,3 +323,30 @@ function storeUrl() {
     });
   }
 }
+
+
+$(document).ready(function() {
+    var button = Dropbox.createChooseButton({success: function(files) {
+        if (files.length > 0) {
+            var url = files[0].link;
+            $.ajax({
+                data: {
+                  url: url
+                },
+                error: function(response,textStatus,errorThrown) {
+                    $(".submitStatusDropbox").empty().hide().append("<span class=\"label label-danger\">Something went wrong.</span> If this problem persists, please drop us a <a style=\"color:#2C2C2C\" href=\"https://github.com/LODLaundry/lodlaundry.github.io/issues\">Github issue</a>!</span>").show(400);
+                },
+                success: function() {
+                  $(".submitStatusDropbox").empty().hide().append(successMsg).show(400);
+                  
+                  //update table as well
+                  $('#urlFilter').val(url);
+                  doSearch();
+                },
+                type: "GET",
+                url: api.laundryBasket.seedUpdateApi
+              });
+        }
+    }});
+    document.getElementById("dropboxBtn").appendChild(button);
+});

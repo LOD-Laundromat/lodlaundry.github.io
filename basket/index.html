@@ -73,8 +73,16 @@
     
     
     <div class="container">
+        <div class="row">
+        <h3 style="display:inline-block">Submit document via DropBox</h3><small style="margin-left: 10px"class="label label-info">note: this file will become publicly accessible!</small>
+       
+        <div id="dropboxBtn"></div>
+        <div class="submitStatusDropbox"></div>
+      </div>
+      
       <!-- LOD Laundry Basket: Form -->
       <div class="row">
+        <h3>Submit Link</h3>
         <p>
           Paste a URL that points to an online data source
           in the text field below and press the button.
@@ -130,6 +138,7 @@
     <script src="//cdn.datatables.net/1.10.2/js/jquery.dataTables.js"></script>
     <script src="//cdn.datatables.net/plug-ins/725b2a2115b/api/fnFilterOnReturn.js"></script>
     <script src="/bower_components/csv-js/csv.js"></script>
+    <script type="text/javascript" src="https://www.dropbox.com/static/api/2/dropins.js" id="dropboxjs" data-app-key="40v0ocb8ut6kmta"></script>
     <script src="/main.js"></script>
     <script src="laundryBasket.js"></script>
       <script>
