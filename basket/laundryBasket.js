@@ -328,7 +328,7 @@ function storeUrl() {
 $(document).ready(function() {
     var button = Dropbox.createChooseButton({success: function(files) {
         if (files.length > 0) {
-            var url = files[0].link;
+            var url = files[0].link.replace('dl=0', 'dl=1');
             $.ajax({
                 data: {
                   url: url
