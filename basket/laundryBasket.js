@@ -334,7 +334,17 @@ $(document).ready(function() {
                   url: url
                 },
                 error: function(response,textStatus,errorThrown) {
-                    $(".submitStatusDropbox").empty().hide().append("<span class=\"label label-danger\">Something went wrong.</span> If this problem persists, please drop us a <a style=\"color:#2C2C2C\" href=\"https://github.com/LODLaundry/lodlaundry.github.io/issues\">Github issue</a>!</span>").show(400);
+                    var errorThrown = response.responseText || errorThrown;
+                    try{
+                        errorThrown = JSON.parse(errorThrown);
+                    }catch(e){
+                        //never mind, it's just a string
+                    }
+                    var msg = "Something went wrong.";
+                    if (errorThrown && typeof errorThrown == "string" && errorThrown.length > 0){
+                        msg = errorThrown + '.';
+                    }
+                    $(".submitStatusDropbox").empty().hide().append("<span class=\"label label-danger\">" + msg + " If this problem persists, please drop us a <a style=\"color:#2C2C2C\" href=\"https://github.com/LODLaundry/lodlaundry.github.io/issues\">Github issue</a>!</span>").show(400);
                 },
                 success: function() {
                   $(".submitStatusDropbox").empty().hide().append(successMsg).show(400);
