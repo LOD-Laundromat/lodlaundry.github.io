@@ -38,3 +38,27 @@ disable some sorting/filtering features:
 .statusCol {
 	text-align: center;
 }
+table {
+	line-height: 1;
+}
+
+#emailInput {
+	display:block;
+}
+.form-inline .editable-input input {
+	width: 200px;
+}
+.notifyAlert {
+	display: block;
+	width: 300px;
+	white-space: normal;
+}
+.notifyAlert.label-success {
+	width: 200px;
+}
+#statusFilter {
+	width: 110px;
+}
+#urlFilter {
+	width: 300px;
+}

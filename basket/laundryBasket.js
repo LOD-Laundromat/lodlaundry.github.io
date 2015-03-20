@@ -267,8 +267,12 @@ var sparqlResultToDataTable = function(sparqlResult) {
 		//while we are at it, do some post processing as well
 		row.push(sparqlResult.results.bindings[i].url.value);
 		row.push(sparqlResult.results.bindings[i].dateAdded.value);
-		row.push(getStatus(sparqlResult.results.bindings[i]));
-		row.push("<a style='padding: 6px;' class='btn btn-default glyphicon glyphicon-info-sign' title='Show more info' href='" + sparqlResult.results.bindings[i].datadoc.value + "' target='_blank'></a>");
+		var status = getStatus(sparqlResult.results.bindings[i]);
+		if (status == 'queued') {
+		    status += '<br><a placeholder="Enter email address" style="font-size:x-small" href="javascript:void(0);" onClick="watch(this)">notify me when cleaned</a>';
+		}
+		row.push(status);
+		row.push("<a style='padding: 6px;' class='meta-info btn btn-default glyphicon glyphicon-info-sign' title='Show more info' href='" + sparqlResult.results.bindings[i].datadoc.value + "' target='_blank'></a>");
 		datatable.data.push(row);
 		
 	}
@@ -360,3 +364,68 @@ $(document).ready(function() {
     }});
     document.getElementById("dropboxBtn").appendChild(button);
 });
+
+var watch = function(el) {
+    $('.notifyAlert').remove();//first remove all previous notifications
+    var $el = $(el);
+    var $metaBtn = ($el.closest('tr').find('.meta-info'));
+    
+    if ($metaBtn.length > 0) {
+        var doc = $metaBtn.attr('href');
+        
+        var email = getCookie('email');
+//        $('#emailInput').remove();//remove previous one
+//        $('<span>', {
+//            href: '#',
+//            id: 'emailInput',
+//            'class': 'editable editable-click',
+//            'data-type': 'text',
+//            'data-title': 'Enter email',
+//            
+//        }).text('laurens.rietveld@gmail.com').insertAfter($el);
+        
+        //remove previous used ones
+//        $('.editable').editable().destroy();
+        $el.editable( {
+            'value': email,
+            'onBlur': 'submit'
+        });
+        $el.on('shown', function(e, editable) {
+            editable.input.$input.attr('placeholder', 'Enter email address');
+        });
+        $el.on('hidden', function(event, type){
+            if (type != 'cancel' && type != 'onblur') {
+                var email = $el.editable('getValue', true).trim();
+                if (email.length > 0) {
+                    setCookie('email', email);
+                  $.ajax({
+                      url: api.notifications.api + '/watch',
+                      data: {
+                          'doc': doc,
+                          email: email
+                      },
+                      error: function(response,textStatus,errorThrown) {
+                          $el.closest('td').append($('<span>', {'class': 'label label-danger notifyAlert'}).text(response.responseText || errorThrown));
+                          
+//                          <span class="label label-danger">Danger</span>
+                          console.log(response);
+                      },
+                      success: function(data, textStatus, jqXhr) {
+                          $el.closest('td').append($('<span>', {'class': 'label label-success notifyAlert'}).text("Now watching for notifications"));
+                          $el.remove();
+                      },
+                  });
+                }
+            }
+            
+            
+            //remove
+            $(el).editable('destroy');
+        });
+        $(el).editable('show');
+//        $('#emailInput').editable('toggle');
+        
+        
+
+    }
+}

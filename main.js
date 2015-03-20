@@ -309,6 +309,9 @@ var api = {
   "laundryBasket": {
     "seedUpdateApi": "http://backend.lodlaundromat.org"
   },
+  "notifications": {
+      "api": "http://notify.lodlaundromat.d2s.labs.vu.nl"
+  },
   "ldf": {
       browser: "http://ldf.lodlaundromat.org/",
       query: function(md5) {
@@ -508,5 +511,31 @@ var showNotification = function(msg) {
 }
 //showNotification('We have upgraded the Washing Machine crawling mechanism. For consistency reasons, we have re-initiated the crawl from scratch. (taking the manually added seed-items from the previous crawl into account) (20 Feb. 2015)');
 
-  
+var setCookie = function(name, value, days) {
+    var expires;
+    if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        expires = "; expires=" + date.toGMTString();
+    }
+    else {
+        expires = "";
+    }
+    document.cookie = name + "=" + value + expires + "; path=/";
+}
+
+function getCookie(c_name) {
+    if (document.cookie.length > 0) {
+        c_start = document.cookie.indexOf(c_name + "=");
+        if (c_start != -1) {
+            c_start = c_start + c_name.length + 1;
+            c_end = document.cookie.indexOf(";", c_start);
+            if (c_end == -1) {
+                c_end = document.cookie.length;
+            }
+            return unescape(document.cookie.substring(c_start, c_end));
+        }
+    }
+    return "";
+}
 
