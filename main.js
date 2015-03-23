@@ -5,7 +5,7 @@ if (!console.log) {
 };
 var analyticsId = 'UA-51130014-1';
 var prefixes = "PREFIX llo: <http://lodlaundromat.org/ontology/>\n\
-PREFIX ll: <http://lodlaundromat/org/resource/>\n";
+PREFIX ll: <http://lodlaundromat.org/resource/>\n";
 var llVersion = 12;
 var sparql = {
 	url : "http://sparql.backend.lodlaundromat.org",
