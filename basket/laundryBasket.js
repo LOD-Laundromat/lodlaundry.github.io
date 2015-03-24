@@ -411,7 +411,7 @@ var watch = function(el) {
                           console.log(response);
                       },
                       success: function(data, textStatus, jqXhr) {
-                          $el.closest('td').append($('<span>', {'class': 'label label-success notifyAlert'}).text("Now watching for notifications"));
+                          $el.closest('td').append($('<span>', {'class': 'label label-success notifyAlert'}).text("Now watching for changes"));
                           $el.remove();
                       },
                   });
