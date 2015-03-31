@@ -51,6 +51,9 @@ th.tripleCol  {
 th.buttonCol {
 	text-align: center;
 }
+td.buttonCol {
+	text-align: center;
+}
 .dataTables_filter {
 	height: 35px;
 }
@@ -69,4 +72,22 @@ th.buttonCol {
    -moz-hyphens: auto;
     -ms-hyphens: auto;
         hyphens: auto;
+}
+.showCustomSelect .defaultButtons {
+    display:none;   
+}
+.showCustomSelect #pageHeader {
+	display:none;
+}
+.showCustomSelect .jumbotron {
+	display:none;
+}
+.customSelect {
+    display: none;
+}
+.showCustomSelect .customSelect {
+	display: table-cell;
+}
+#urlFilter {
+	width: 300px;
 }

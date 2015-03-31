@@ -1,4 +1,11 @@
+if (!window.location.hash || window.location.hash.indexOf('select') < 0) {
+    $('body').removeClass('showCustomSelect');
+}
+
+
 var recordsTotal;
+
+
 
 var dt;
 var doSearch;
@@ -97,7 +104,7 @@ $.ajax({
 		        	        }
 	        	            return ldfBrowserButton + '&nbsp;' + ldfQueryButton + '&nbsp;' + metaDataBtn;
                         },
-                        "class": "buttonCol",
+                        "class": "buttonCol defaultButtons",
                         orderable: false,
                         width: 280
                     },
@@ -134,7 +141,7 @@ $.ajax({
 		        	        return cleanBtn + space + hdtBtn + space + dirtyBtn;
 		        		},
 		        		width: 315,
-		        		"class": "buttonCol",
+		        		"class": "buttonCol defaultButtons",
 		        		orderable: false
                     },
 		        	{//3 triples
@@ -157,7 +164,15 @@ $.ajax({
 
 		        	{//5 parent doc
 		        	    visible:false
-		        	}
+		        	},
+	                 {//6 custom select button for iframe use
+		        	    orderable: false,
+                        width: 100,
+                        class: 'buttonCol customSelect',
+                        render: function(data, type, full, meta) {
+                            return "<button class='btn btn-primary' title='Select document' onClick='customSelect(\"" + full[4] + "\")'>Select</button>";
+                        }
+                    }
 		        ]
 		    });
     	    dt.fnFilterOnReturn().css("display", "table");
@@ -171,6 +186,9 @@ $.ajax({
     url: sparql.url
 });
 
+var customSelect = function(md5) {
+    if (iframeSelect) iframeSelect(md5);
+};
 //
 // Pipelining function for DataTables. To be used to the `ajax` option of DataTables
 //
@@ -341,6 +359,9 @@ var sparqlResultToDataTable = function(sparqlResult) {
 		} else {
 		    row.push('');
 		}
+		
+		//6 special select button for use in iframe
+		row.push('');
 		datatable.data.push(row);
 		
 	}
