@@ -187,7 +187,7 @@ $.ajax({
 });
 
 var customSelect = function(md5) {
-    if (iframeSelect) iframeSelect(md5);
+    if (parent && parent.postMessage) parent.postMessage(md5,'*');
 };
 //
 // Pipelining function for DataTables. To be used to the `ajax` option of DataTables
