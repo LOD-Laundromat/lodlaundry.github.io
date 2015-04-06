@@ -269,7 +269,7 @@ var sparqlResultToDataTable = function(sparqlResult) {
 		row.push(sparqlResult.results.bindings[i].dateAdded.value);
 		var status = getStatus(sparqlResult.results.bindings[i]);
 		if (status == 'queued') {
-		    status += '<br><a placeholder="Enter email address" style="font-size:x-small" href="javascript:void(0);" onClick="watch(this)">notify me when cleaned</a>';
+		    status += '<br><a placeholder="Enter email address" style="font-size:x-small" href="javascript:void(0);" onClick="watchDoc(this)">notify me when cleaned</a>';
 		}
 		row.push(status);
 		row.push("<a style='padding: 6px;' class='meta-info btn btn-default glyphicon glyphicon-info-sign' title='Show more info' href='" + sparqlResult.results.bindings[i].datadoc.value + "' target='_blank'></a>");
@@ -365,7 +365,7 @@ $(document).ready(function() {
     document.getElementById("dropboxBtn").appendChild(button);
 });
 
-var watch = function(el) {
+var watchDoc = function(el) {
     $('.notifyAlert').remove();//first remove all previous notifications
     var $el = $(el);
     var $metaBtn = ($el.closest('tr').find('.meta-info'));
