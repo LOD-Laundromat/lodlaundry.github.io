@@ -1,0 +1,118 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="SPARQL endpoint of the LOD Laundromat">
+    <meta name="author" content="Laurens Rietveld">
+    <link rel="icon" href="/imgs/laundry.ico">
+    <title>Services</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/bower_components/YASQE/dist/yasqe.min.css" rel="stylesheet">
+    <link href="/bower_components/YASR/dist/yasr.min.css" rel="stylesheet">
+    <link href="/style.css" rel="stylesheet">
+    <link href="services.css" rel="stylesheet">
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+      <link rel="stylesheet" href="/bower_components/github-fork-ribbon-css/gh-fork-ribbon.ie.css">
+    <![endif]-->
+  </head>
+  <body>
+	  <div id="pageHeader" class="navbar navbar-default navbar-fixed-top bs-docs-nav">
+		<div class="container">
+			<div class="navbar-header">
+			  <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			  </button>
+			</div>
+			<nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
+				<ul id='topNavBar' class="nav navbar-nav">
+				</ul>
+			</nav>
+		</div>
+	</div>
+    <div class="jumbotron" style="height:100%; position:relative;">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-4">
+            <img
+                alt="Dev Corner"
+                class="mediumLogo"
+                src="/imgs/laundryLine.png"
+            >
+          </div>
+          <div class="col-md-8" style="vertical-align: middle;">
+            <h1>About</h1>
+            <p>
+             Which services do can I use??
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12">
+            <table class="table">
+			  <tr>
+				  <td>SPARQL</td>
+				  <td>Use the <a href="http://lodlaundromat.org/sparql" target="_blank">SPARQL</a> endpoint to access all the crawling and dataset meta-data.
+				  Using SPARQL, you're able to fetch the document identifiers (MD5 hashes) which we'll use in the services below</td>
+			  </tr>
+			  <tr>
+				  <td>Meta-Data download</td>
+				  <td>We provide a daily snapshot of all the crawling data (including references to the cleaned files) <a href="http://download.lodlaundromat.org/dump.nt.gz">here</a></td>
+			  </tr>
+			  <tr>
+				  <td>Dataset download</td>
+				  <td>To download a cleaned compressed (gzip) dataset, use its MD5, and use this url: <code>http://download.lodlaundromat.org/&lt;md5&gt;</code> <small>(add <code>?hdt</code> to download the <a href="http://www.rdfhdt.org" target="_blank">HDT</a> file instead of the Gzipped one)</small></td>
+			  </tr>
+			  <tr>
+				  <td>Dataset browsing/querying</td>
+				  <td>To browse or query the dataset use the <a href="https://github.com/LinkedDataFragments/Server.js" target="_blank">Triple Pattern Fragment API</a> at <code>http://ldf.lodlaundromat.org/&lt;md5&gt;</code>.
+				  Querying is only supported for simple triple patterns</td>
+			  </tr>
+			  <tr>
+				  <td>The LOD Laundromat Index</td>
+				  <td>Use the <a href="http://index.lodlaundromat.org" target="_blank">LOD Laundromat index</a> to find datasets containing a particular resource, or using a particular namespace</td>
+			  </tr>
+			</table>
+  
+            
+          </div>
+        </div>
+      </div>
+  
+    <!--
+        Bootstrap core JavaScript
+        Placed at the end of the document so the pages load faster
+    -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="/bower_components/d3/d3.min.js"></script>
+    <script src="/bower_components/YASR/dist/yasr.min.js"></script>
+    <script src="/bower_components/YASQE/dist/yasqe.min.js"></script>
+    <script src="/main.js"></script>
+      <script>
+     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+     (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+     m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+     })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    
+     ga('create', analyticsId, 'auto');
+     ga('send', 'pageview');
+    
+    </script>
+  </body>
+</html>
+

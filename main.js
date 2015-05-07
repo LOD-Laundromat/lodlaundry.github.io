@@ -429,6 +429,7 @@ var drawHeader = function() {
        {href: "/wardrobe", img: "/imgs/wardrobe.png", title: "Wardrobe"},
        {href: "/visualizations", img: "/imgs/analysis.png", title: "Analysis"},
        {href: "/sparql", img: "/imgs/labels.png", title: "SPARQL"},
+       {href: "/services", img: "/imgs/labels.png", title: "Services"},
        {href: "/about", img: "/imgs/laundryLine.png", title: "About"},
        
      ];
