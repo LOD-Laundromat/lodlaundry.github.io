@@ -114,7 +114,7 @@ wardrobeListing: function(drawId, orderBy, offset, limit, filter) {
 	var filterExpressions = [];
 	if (urlFilter && urlFilter.length > 0) {
 		
-		filterExpressions.push("CONTAINS(str(?url), \"" + urlFilter + "\")");
+		filterExpressions.push("CONTAINS(lcase(str(?url)), \"" + urlFilter.toLowerCase() + "\")");
 	}
 	if (triplesFilter && triplesFilter.length) {
 		filterExpressions.push("CONTAINS(str(?triples), \"" + triplesFilter + "\")");
@@ -246,7 +246,7 @@ basketListing: function(basketGraph, mainGraph, drawId, orderBy, offset, limit, 
 	var filterClause = "";
 	
 	if (urlFilter && urlFilter.length > 0) {
-		filterExpressions = [("CONTAINS(str(?url), \"" + urlFilter + "\")")];
+		filterExpressions = [("CONTAINS(lcase(str(?url)), \"" + urlFilter.toLowerCase() + "\")")];
 		filterClause = "      FILTER(" + filterExpressions.join(" || ") + ")\n";
 	}
 	var triplePatterns = 
