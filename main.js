@@ -26,7 +26,7 @@ prefixes + "SELECT (SUM(?triples) AS ?totalTriples) {\n\
 serializationsPerDoc:
 prefixes + "SELECT ?contentType (COUNT(?doc) AS ?count) WHERE {\n\
   ?doc llo:serializationFormat ?format \n\
-    BIND(REPLACE(str(?format), \"http://www.w3.org/ns/formats/\", \"\", \"i\") AS ?contentType)\n\
+    BIND(replace(str(?format),\".*/\",\"\") AS ?contentType)\n\
 } GROUP BY ?contentType",
 serializationsPerTriple :
 prefixes + "PREFIX llo: <http://lodlaundromat.org/ontology/>\n\
