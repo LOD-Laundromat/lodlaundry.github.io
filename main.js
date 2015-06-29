@@ -23,10 +23,10 @@ totalTripleCount :
 prefixes + "SELECT (SUM(?triples) AS ?totalTriples) {\n\
     ?dataset llo:triples ?triples . \n\
 }\n",
-serializationsPerDoc :
+serializationsPerDoc:
 prefixes + "SELECT ?contentType (COUNT(?doc) AS ?count) WHERE {\n\
-  ?doc llo:contentType ?contentTypeString\n\
-  BIND(REPLACE(?contentTypeString, \";.*\", \"\", \"i\") AS ?contentType)\n\
+  ?doc llo:serializationFormat ?format \n\
+    BIND(REPLACE(str(?format), \"http://www.w3.org/ns/formats/\", \"\", \"i\") AS ?contentType)\n\
 } GROUP BY ?contentType",
 serializationsPerTriple :
 prefixes + "PREFIX llo: <http://lodlaundromat.org/ontology/>\n\
@@ -81,7 +81,7 @@ SELECT DISTINCT ?exception (COUNT(?doc) AS ?count)\n\
 WHERE {\n\
   ?doc llo:exception/rdf:type/rdfs:label ?exception\n\
 } GROUP BY ?exception LIMIT 100",
-totalWardrobeContents: 
+totalWardrobeContents:
 prefixes + "SELECT (COUNT(?datadoc) AS ?total)\n\
 WHERE {\n\
   ?datadoc llo:md5 [] ;\n\
@@ -92,8 +92,8 @@ wardrobeListing: function(drawId, orderBy, offset, limit, filter) {
 		0: "?url",
 		3: "?triples"
 	};
-	
-	
+
+
 	filter = filter.trim().replace("\"", "");//very simple method to avoid injection
     var triplesFilter = null;
     var urlFilter = null;
@@ -107,22 +107,22 @@ wardrobeListing: function(drawId, orderBy, offset, limit, filter) {
             urlFilter = filter;
         }
     }
-    
-    
-    
-	
+
+
+
+
 	var filterExpressions = [];
 	if (urlFilter && urlFilter.length > 0) {
-		
+
 		filterExpressions.push("CONTAINS(lcase(str(?url)), \"" + urlFilter.toLowerCase() + "\")");
 	}
 	if (triplesFilter && triplesFilter.length) {
 		filterExpressions.push("CONTAINS(str(?triples), \"" + triplesFilter + "\")");
 	}
-	
+
 	var filterClause = "";
 	if (filterExpressions.length > 0) filterClause = "      FILTER(" + filterExpressions.join(" || ") + ")\n";
-	var triplePatterns = 
+	var triplePatterns =
 "      {\n\
          ?datadoc llo:url ?url ;\n\
 		   llo:triples ?triples ;\n\
@@ -158,7 +158,7 @@ WHERE {\n\
 //	if (orderBys.length > 0) {
 //		query += " ORDER BY " + orderBys.join(" ");
 //	}
-	
+
 	if (limit && limit > 0) {
 		query += " LIMIT " + limit;
 	}
@@ -175,7 +175,7 @@ WHERE {\n\
 	return query;
 
 },
-totalBasketContents: 
+totalBasketContents:
 prefixes + "SELECT (COUNT(?datadoc) AS ?total)\n\
 WHERE {\n\
   ?datadoc llo:url [] ;\n\
@@ -189,7 +189,7 @@ basketListing: function(basketGraph, mainGraph, drawId, orderBy, offset, limit, 
 	    var minusTPatterns = [];
 	    var requiredTPatterns = [];
 	    var cleanTPattern = "?datadoc llo:endClean ?endClean"
-	    
+
 	    if (statusFilter == null) {
 	        optionalTPatterns.push(cleanTPattern);
 	    } else if (statusFilter == "cleaned"){
@@ -198,10 +198,10 @@ basketListing: function(basketGraph, mainGraph, drawId, orderBy, offset, limit, 
 	        //we want the queued ones
 	        minusTPatterns.push(cleanTPattern);
 	    }
-	    
-		
+
+
 		var clauses = "";
-		
+
 		if (requiredTPatterns.length > 0 || minusTPatterns.length > 0) {
 			if (requiredTPatterns.length > 0) {
 				for (var i = 0; i < requiredTPatterns.length; i++) {
@@ -211,12 +211,12 @@ basketListing: function(basketGraph, mainGraph, drawId, orderBy, offset, limit, 
 			}
 			for (var i = 0; i < minusTPatterns.length; i++) {
 				minusClause += "       MINUS{" + minusTPatterns[i] + "}\n";
-				
+
 			}
 			clauses += minusClause;
-			
-			
-			
+
+
+
 		}
 		if (optionalTPatterns.length > 0) {
 			clauses = "OPTIONAL {\n\
@@ -226,7 +226,7 @@ basketListing: function(basketGraph, mainGraph, drawId, orderBy, offset, limit, 
 			}
 			clauses += "     }\n   }\n";
 		}
-		
+
 		return clauses;
 	};
 	filter = filter.trim();
@@ -242,14 +242,14 @@ basketListing: function(basketGraph, mainGraph, drawId, orderBy, offset, limit, 
 			urlFilter = filter;
 		}
 	}
-	
+
 	var filterClause = "";
-	
+
 	if (urlFilter && urlFilter.length > 0) {
 		filterExpressions = [("CONTAINS(lcase(str(?url)), \"" + urlFilter.toLowerCase() + "\")")];
 		filterClause = "      FILTER(" + filterExpressions.join(" || ") + ")\n";
 	}
-	var triplePatterns = 
+	var triplePatterns =
 "         ?datadoc llo:url ?url ;\n\
          llo:added ?dateAdded .\n" + filterClause;
 
@@ -282,8 +282,8 @@ WHERE {\n\
 }";
 	return query;
 },
-getDegreeStats: 
-prefixes + 
+getDegreeStats:
+prefixes +
 "PREFIX llm: <http://lodlaundromat.org/metrics/ontology/>\n\
 SELECT DISTINCT * {\n\
   ?doc llm:outDegree/llm:mean ?outDegreeMean ;\n\
@@ -319,7 +319,7 @@ var api = {
           return "http://client.linkeddatafragments.org/#startFragment=" + encodeURIComponent(ldfUrl);
       },
   },
-  
+
   "namespace": "http://lodlaundromat.org/vocab#",
   "wardrobe": {
     "download": function(md5, type) {
@@ -378,7 +378,7 @@ var modalDiv = $("<div class='modal  fade'  tabindex='-1' role='dialog' aria-hid
 '    <div class="modal-body">' +
 '      <p>One fine body&hellip;</p>' +
 '    </div>' +
-'    <div class="modal-footer"></div>' + 
+'    <div class="modal-footer"></div>' +
 '  </div><!-- /.modal-content -->' +
 '</div><!-- /.modal-dialog -->')
 .appendTo($("body"));
@@ -431,7 +431,7 @@ var drawHeader = function() {
        {href: "/sparql", img: "/imgs/labels.png", title: "SPARQL"},
        {href: "/services", img: "/imgs/labels.png", title: "Services"},
        {href: "/about", img: "/imgs/laundryLine.png", title: "About"},
-       
+
      ];
   var lastIndexOf = document.URL.lastIndexOf("/");
   var basename = "";
@@ -444,11 +444,11 @@ var drawHeader = function() {
   } else if (hashTagIndex > 0) {
     basename = basename.substring(0, hashTagIndex-1);
   }
-  
+
   if (basename.length == 0) basename = "index.html";
-  
-  
-  
+
+
+
   for (var i = 0; i < items.length; i++) {
     if (basename == items[i].href) items[i].active = true;
     addItem(items[i]);
@@ -539,4 +539,3 @@ function getCookie(c_name) {
     }
     return "";
 }
-
