@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="/imgs/laundry.ico">
+    <title>LOD Laundromat - LOD Lab</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="//cdn.datatables.net/1.10.0/css/jquery.dataTables.css" rel="stylesheet">
+    <link href="/style.css" rel="stylesheet">
+    <link href="lodlab.css" rel="stylesheet">
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+      <link rel="stylesheet" href="/bower_components/github-fork-ribbon-css/gh-fork-ribbon.ie.css">
+    <![endif]-->
+  </head>
+  <body style="padding-top: 0px" class="showCustomSelect">
+    <div id="pageHeader" class="navbar navbar-default bs-docs-nav">
+		<div class="container">
+			<div class="navbar-header">
+			  <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			  </button>
+			</div>
+			<nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
+				<ul id='topNavBar' class="nav navbar-nav">
+				</ul>
+			</nav>
+		</div>
+	</div>
+    <!-- Header section. -->
+    <div class="jumbotron" style="height: 100%;">
+      <div class="container">
+        <div class="row">
+          <center>
+            <img alt="LOD Lab" src="/imgs/lodlab.png"/>
+            <p style="margin-top: 0.5cm">In current Semantic Web research very few datasets are used in evaluations.  With hundreds of thousands of datasets out in the world today the results of evaluations are less generalizable than they should be.  In this tutorial we show Semantic Web practitioners how to scale their evaluations to thousands of datasets.  We also show how to collect data for a specific research purpose.  This tutorial will focus on obtaining hands-on experience with LOD Lab: a new evaluation paradigm that makes algorithmic evaluation against hundreds of thousands of datasets the new norm.  The LOD Lab approach builds on the award-winning LOD Laundromat architecture.</p>
+          </center>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <h1>Program</h1>
+          <ul>
+            <li><b>Introduction</b>: The importance of LOD evaluations</li>
+            <li><b>LOTUS</b>: From natural language text to resources.</li>
+            <li><b>Index</b>: From resource to all documents about that resource</li>
+            <li><b>HDT+LDF+Frank</b>: From resource to all triples about that resource</li>
+            <li><b>Metadata</b>: Filter data with specific (graph) properties</li>
+            <li><b>Discussion</b>: The future of (tooling for) LOD evaluations</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <h1>Organizers</h1>
+          <div class="organizer">
+            <div class="name">Wouter Beek</div>
+            <div class="organization">VU University Amsterdam</div>
+            <div class="email">w.g.j.beek@vu.nl</div>
+            <div class="homepage">http://wouterbeek.com</div>
+          </div>
+          <div class="organizer">
+            <div class="name">Javier D. Fernández</div>
+            <div class="organization">Vienna University of Economics and Business</div>
+            <div class="email">javier.fernandez@wu.ac.at</div>
+            <div class="homepage">http://www.wu.ac.at/infobiz/team/fernandez/en</div>
+          </div>
+          <div class="organizer">
+            <div class="name">Paul Groth</div>
+            <div class="organization">Elsevier Labs</div>
+            <div class="email">p.groth@elsevier.com</div>
+            <div class="homepage">http://pgroth.com</div>
+          </div>
+          <div class="organizer">
+            <div class="name">Filip Ilievski</div>
+            <div class="organization">VU University Amsterdam</div>
+            <div class="email">f.ilievski@vu.nl</div>
+            <div class="homepage">http://filipilievski.wordpress.com</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!--
+        Bootstrap core JavaScript
+        Placed at the end of the document so the pages load faster.
+    -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="//cdn.datatables.net/1.10.2/js/jquery.dataTables.js"></script>
+    <script src="//cdn.datatables.net/plug-ins/725b2a2115b/api/fnFilterOnReturn.js"></script>
+    <script src="/bower_components/d3/d3.min.js"></script>
+    <script src="/bower_components/jquery.scrollTo/jquery.scrollTo.min.js"></script>
+    <!-- <script src="lib/datatables-column-filter.js"></script> -->
+    <script src="/main.js"></script>
+    <script src="lodlab.js"></script>
+      <script>
+     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+     (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+     m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+     })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    
+     ga('create', analyticsId, 'auto');
+     ga('send', 'pageview');
+    
+    </script>
+  </body>
+</html>

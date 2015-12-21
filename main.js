@@ -424,15 +424,15 @@ var drawHeader = function() {
     $("<span></span>").text(config.title).appendTo(anchor);
   };
   var items = [
-       {href: "/", img: "/imgs/laundry.png", title: "Main Page"},
-       {href: "/basket", img: "/imgs/basket.png", title: "Laundry Basket"},
-       {href: "/wardrobe", img: "/imgs/wardrobe.png", title: "Wardrobe"},
-       {href: "/visualizations", img: "/imgs/analysis.png", title: "Analysis"},
-       {href: "/sparql", img: "/imgs/labels.png", title: "SPARQL"},
-       {href: "/services", img: "/imgs/labels.png", title: "Services"},
-       {href: "/about", img: "/imgs/laundryLine.png", title: "About"},
-
-     ];
+    {href: "/", img: "/imgs/laundry.png", title: "Main"},
+    {href: "/basket", img: "/imgs/basket.png", title: "Basket"},
+    {href: "/wardrobe", img: "/imgs/wardrobe.png", title: "Wardrobe"},
+    {href: "/lodlab", title: "LOD Lab"},
+    {href: "/visualizations", img: "/imgs/analysis.png", title: "Widgets"},
+    {href: "/sparql", img: "/imgs/labels.png", title: "SPARQL"},
+    {href: "/services", img: "/imgs/labels.png", title: "Services"},
+    {href: "/about", img: "/imgs/laundryLine.png", title: "About"},
+  ];
   var lastIndexOf = document.URL.lastIndexOf("/");
   var basename = "";
   if (lastIndexOf < document.URL.length) {
