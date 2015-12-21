@@ -1,3 +1,11 @@
+li, p {
+  font-size: 18px;
+}
+
+.blocky {
+  margin-top: 25px;
+}
+
 .stack-of-cards {
   max-width: 750px;
   width: 85%
@@ -17,13 +25,14 @@
 
 .card-image img {
   border-radius: 90px;
-  max-height: 90px;
-  max-width: 90px;
+  height: 90px;
+  width: 90px;
 }
 
 .card-inner {
   float: right;
   margin-left: 25px;
+  vertical-align: middle;
 }
 
 .card-inner .card-title {
@@ -33,7 +42,6 @@
 
 .card-inner .card-content {
   line-height: 1.3em;
-  margin: 5px 0;
 }
 
 .tableHoverItem img {
