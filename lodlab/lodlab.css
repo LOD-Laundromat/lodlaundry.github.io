@@ -1,3 +1,41 @@
+.stack-of-cards {
+  max-width: 750px;
+  width: 85%
+}
+
+.card {
+  display: table;
+  margin: 25px;
+}
+
+.card-image {
+  float: left;
+  max-height: 160px;
+  max-width: 250px;
+  vertical-align: middle;
+}
+
+.card-image img {
+  border-radius: 90px;
+  max-height: 90px;
+  max-width: 90px;
+}
+
+.card-inner {
+  float: right;
+  margin-left: 25px;
+}
+
+.card-inner .card-title {
+  font-size: 1.5em;
+  font-weight: 400;
+}
+
+.card-inner .card-content {
+  line-height: 1.3em;
+  margin: 5px 0;
+}
+
 .tableHoverItem img {
 	margin-left:5px;
 	cursor:pointer;
