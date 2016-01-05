@@ -1,1 +1,3 @@
+static .
+
 http://lodlaundromat.org
